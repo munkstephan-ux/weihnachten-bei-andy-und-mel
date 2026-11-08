@@ -462,10 +462,6 @@ function render(){
   h+=`</div></section>`;
 
   h+=DIV;
-  /* WhatsApp */
-  h+=`<section><div class="sec-head"><h2>Für die WhatsApp-Gruppe</h2><p>Aktueller Stand als Text zum Einfügen</p></div>
-   <div class="share"><textarea id="wa" readonly aria-label="Text für WhatsApp">${esc(waText(gs,its,c,info,nm))}</textarea>
-   <div class="row"><button class="btn" data-a="copy">Text kopieren</button><small id="copy-hint">Danach in der Gruppe einfügen und abschicken.</small></div></div></section>`;
   const ny=nextYear();
   h+=`<details class="host" id="host"${hostOpen?' open':''}><summary>Für Andy &amp; Mel: Neues Jahr vorbereiten</summary>
     <p>Nach dem Fest könnt ihr die Liste hier fürs nächste Weihnachten zurücksetzen. Die Gäste bleiben stehen, alle Zusagen gehen auf „Offen“. Ideen, Mitbringsel, Antworten sowie Termin und Fleisch werden gelöscht. Der Link bleibt derselbe. Ihr postet ihn einfach wieder in die WhatsApp-Gruppe.</p>
