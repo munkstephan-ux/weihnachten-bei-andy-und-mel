@@ -221,6 +221,12 @@ img{max-width:100%}
 .notify h2{font-size:20px}
 .notify p{margin:4px 0 10px;color:var(--ink);font-size:14px;max-width:62ch}
 .nbtns{display:flex;flex-wrap:wrap;gap:8px}
+.host{font-size:14px;color:var(--muted);border-top:1px dashed var(--line);padding-top:14px}
+.host summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.host p{max-width:62ch}
+.hostform{display:grid;gap:6px}
+.hostform .row{display:flex;flex-wrap:wrap;gap:8px}
+.hostform input{flex:1;min-width:120px;max-width:200px;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 10px}
 .applink{word-break:break-all;color:var(--cran)}
 </style>
 </head>
@@ -284,7 +290,9 @@ const CFG=window.APP_CONFIG||{};
 const COLS=['gaeste','posten','antworten'];
 const data={info:{},gaeste:{},posten:{},antworten:{}};
 let mode='loading', canWrite=true, sb=null, me=lsGet(ME)||'', filter='alle', hintsOpen=false;
-const openThreads=new Set(), chains={};
+const openThreads=new Set(), chains={}; let hostOpen=false;
+// Ab dem 27. Dezember gilt die Liste fürs nächste Jahr.
+const nextYear=()=>{const d=new Date();return d.getFullYear()+(d.getMonth()===11&&d.getDate()>26?1:0)};
 
 function list(col){return Object.entries(data[col]).map(([id,d])=>Object.assign({},d,{id})).sort((a,b)=>(a.t||0)-(b.t||0)||a.id.localeCompare(b.id))}
 function guests(){return list('gaeste').map(g=>({...g,name:String(g.name||''),erw:+g.erw||0,kinder:+g.kinder||0,status:['ja','offen','nein'].includes(g.status)?g.status:'offen'}))}
@@ -309,6 +317,19 @@ async function toggleLike(id){
   const p=data.posten[id];if(!p)return;const l=(p.likes||[]).slice();const i=l.indexOf(me);i>=0?l.splice(i,1):l.push(me);
   data.posten[id]={...p,likes:l};render();
   const {error}=await sb.rpc('toggle_like',{p_id:id,g_id:me});if(error){console.error(error);toast('Speichern hat nicht geklappt.')}
+}
+
+async function resetYear(form){
+  const ny=nextYear(), v=form.querySelector('input').value.trim();
+  if(v!==String(ny)){toast(`Bitte genau ${ny} eingeben, dann wird die Liste zurückgesetzt.`);return}
+  if(mode!=='shared'){toast('Keine Verbindung. Bitte später noch einmal versuchen.');return}
+  const {error}=await sb.rpc('neues_jahr');
+  if(error){console.error(error);toast('Das Zurücksetzen hat nicht geklappt. Bitte noch einmal versuchen.');return}
+  hostOpen=false; openThreads.clear();
+  data.posten={};data.antworten={};for(const id in data.gaeste)data.gaeste[id]={...data.gaeste[id],status:'offen'};data.info.main={...(data.info.main||{}),datum:'',fleisch:''};
+  render(); scrollTo({top:0,behavior:'smooth'});
+  toast(`Die Liste für Weihnachten ${ny} ist bereit.`);
+  notify(`Die Liste für Weihnachten ${ny} ist bereit. Sagt zu und tragt ein, was ihr mitbringt!`);
 }
 
 /* ---------- Push & Installation ---------- */
@@ -366,7 +387,7 @@ function render(){
   const byId=Object.fromEntries(gs.map(g=>[g.id,g.name||'Ohne Name']));
   const nm=id=>byId[id]||'Jemand';
   if(me&&!byId[me])me='';
-  const now=new Date(), xmas=new Date(now.getFullYear(),11,24);
+  const now=new Date(), xmas=new Date(now.getFullYear()+(now.getMonth()===11&&now.getDate()>26?1:0),11,24);
   const days=Math.max(0,Math.ceil((xmas-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5));
   $('#f-days').textContent=days===0?'Heute!':days;
   $('#f-pers').textContent=c.n;
@@ -377,7 +398,7 @@ function render(){
 
   let h=pushCard();
   /* Wer kommt? */
-  h+=`<section><div class="sec-head"><h2>Wer kommt?</h2><p>Zugesagt: ${c.e} Erwachsene · ${c.k} Kinder${c.oh?` · ${c.oh} noch ohne Antwort`:''}</p></div><div class="list">`;
+  h+=`<section><div class="sec-head"><h2>Wer kommt?</h2><p>Zugesagt: ${c.e} Erwachsene · ${c.k} ${c.k===1?'Kind':'Kinder'}${c.oh?` · ${c.oh} noch ohne Antwort`:''}</p></div><div class="list">`;
   if(!gs.length)h+=`<div class="empty" style="padding:14px">Noch keine Gäste eingetragen.</div>`;
   for(const g of gs){
     h+=`<div class="guest ${g.status}" data-g="${esc(g.id)}">
@@ -445,6 +466,11 @@ function render(){
   h+=`<section><div class="sec-head"><h2>Für die WhatsApp-Gruppe</h2><p>Aktueller Stand als Text zum Einfügen</p></div>
    <div class="share"><textarea id="wa" readonly aria-label="Text für WhatsApp">${esc(waText(gs,its,c,info,nm))}</textarea>
    <div class="row"><button class="btn" data-a="copy">Text kopieren</button><small id="copy-hint">Danach in der Gruppe einfügen und abschicken.</small></div></div></section>`;
+  const ny=nextYear();
+  h+=`<details class="host" id="host"${hostOpen?' open':''}><summary>Für Andy &amp; Mel: Neues Jahr vorbereiten</summary>
+    <p>Nach dem Fest könnt ihr die Liste hier fürs nächste Weihnachten zurücksetzen. Die Gäste bleiben stehen, alle Zusagen gehen auf „Offen“. Ideen, Mitbringsel, Antworten sowie Termin und Fleisch werden gelöscht. Der Link bleibt derselbe. Ihr postet ihn einfach wieder in die WhatsApp-Gruppe.</p>
+    <form class="hostform" data-form="reset"><label for="reset-year">Zum Bestätigen die Jahreszahl ${ny} eingeben</label>
+    <div class="row"><input id="reset-year" inputmode="numeric" autocomplete="off" placeholder="${ny}"><button class="btn" type="submit">Liste für ${ny} vorbereiten</button></div></form></details>`;
 
   // Fokus und angefangene Eingaben erhalten
   const a=document.activeElement, keep=a&&a.id&&a.closest('#main')?{id:a.id,v:a.value,s:'selectionStart' in a?[a.selectionStart,a.selectionEnd]:null}:null;
@@ -476,7 +502,7 @@ const gid=el=>el.closest('[data-g]')?.dataset.g, pid=el=>el.closest('[data-p]')?
 function needMe(){if(me)return true;toast('Wähl zuerst oben bei „Ich bin“ aus, wer du bist.');const s=$('#me');if(s){s.scrollIntoView({block:'center',behavior:'smooth'});s.focus({preventScroll:true})}return false}
 let undo=null;
 
-document.addEventListener('toggle',e=>{if(e.target.id==='hints')hintsOpen=e.target.open},true);
+document.addEventListener('toggle',e=>{if(e.target.id==='hints')hintsOpen=e.target.open;if(e.target.id==='host')hostOpen=e.target.open},true);
 document.addEventListener('change',e=>{
   const t=e.target,f=t.dataset.f;
   if(f==='me'){me=t.value;lsSet(ME,me);render();if(pushState==='on'&&swReg)swReg.pushManager.getSubscription().then(s=>s&&saveSub(s)).catch(()=>{});return}
@@ -491,6 +517,7 @@ document.addEventListener('change',e=>{
 document.addEventListener('keydown',e=>{const t=e.target;if(e.key==='Enter'&&t.classList&&(t.classList.contains('txt')||t.id==='datum')){e.preventDefault();t.blur()}});
 document.addEventListener('submit',e=>{
   e.preventDefault(); if(!canWrite)return;
+  if(e.target.dataset.form==='reset'){resetYear(e.target);return}
   const f=e.target, inp=f.querySelector('input:not([type=checkbox])'), v=inp.value.trim(); if(!v)return;
   if(f.dataset.form==='gadd'){write('gaeste',uid(),{name:v,erw:1,kinder:0,status:'offen',t:Date.now()});notify(`${v} steht neu auf der Gästeliste`)}
   else if(f.dataset.form==='padd'){
