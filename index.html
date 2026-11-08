@@ -339,7 +339,7 @@ const pushOK='serviceWorker' in navigator&&'PushManager' in window&&'Notificatio
 let pushState='checking', swReg=null, installEvt=null;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;render()});
 function b64(s){const p='='.repeat((4-s.length%4)%4),r=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(r,c=>c.charCodeAt(0))}
-async function saveSub(sub){if(!sb)return;const j=sub.toJSON();const {error}=await sb.from('push_subs').upsert({endpoint:j.endpoint,sub:j,gast:me||''});if(error)throw error}
+async function saveSub(sub){if(!sb)return;const j=sub.toJSON();const {error}=await sb.rpc('push_abo',{p_endpoint:j.endpoint,p_sub:j,p_gast:me||''});if(error)throw error}
 async function initPush(){
   if('serviceWorker' in navigator){try{swReg=await navigator.serviceWorker.register('sw.js')}catch(e){console.error(e)}}
   if(!pushOK||!swReg){pushState=isIOS&&!standalone?'ios-install':'unsupported';render();return}
@@ -359,7 +359,7 @@ async function enablePush(){
   render();
 }
 async function disablePush(){
-  try{const sub=swReg&&await swReg.pushManager.getSubscription();if(sub){await sb.from('push_subs').delete().eq('endpoint',sub.endpoint);await sub.unsubscribe()}}catch(e){console.error(e)}
+  try{const sub=swReg&&await swReg.pushManager.getSubscription();if(sub){await sb.rpc('push_abmelden',{p_endpoint:sub.endpoint});await sub.unsubscribe()}}catch(e){console.error(e)}
   pushState='off';toast('Benachrichtigungen sind aus.');render();
 }
 function pushCard(){
