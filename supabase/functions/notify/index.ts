@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405, headers: cors });
   let input: { title?: string; body?: string; actor?: string };
   try { input = await req.json(); } catch { return new Response("Bad request", { status: 400, headers: cors }); }
-  const title = String(input.title ?? "Weihnachten bei Andy & Mel").slice(0, 80);
+  const title = String(input.title ?? "Weihnachten bei Andy, Mel & Connor").slice(0, 80);
   const body = String(input.body ?? "").slice(0, 240);
   const actor = String(input.actor ?? "");
   if (!body) return new Response("Bad request", { status: 400, headers: cors });
