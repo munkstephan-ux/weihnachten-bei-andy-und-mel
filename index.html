@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="de">
 <head>
-<title>Weihnachten bei Andreas</title>
+<title>Weihnachten bei Andy & Mel</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f3b2b">
-<meta name="description" content="Unsere Mitbringliste für Weihnachten bei Andreas: wer kommt, wer bringt was, Ideen und Wünsche.">
+<meta name="description" content="Unsere Mitbringliste für Weihnachten bei Andy & Mel: wer kommt, wer bringt was, Ideen und Wünsche.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -231,12 +231,12 @@ img{max-width:100%}
   <div class="lights" id="lights" aria-hidden="true"></div>
   <div class="wrap">
     <p class="tradition">Unsere liebgewordene Tradition</p>
-    <h1>Weihnachten bei Andreas<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5l2.9 7.1 7.6.5-5.9 4.9 1.9 7.4L12 17.3l-6.5 4.1 1.9-7.4-5.9-4.9 7.6-.5z"/></svg></h1>
+    <h1>Weihnachten bei Andy & Mel<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5l2.9 7.1 7.6.5-5.9 4.9 1.9 7.4L12 17.3l-6.5 4.1 1.9-7.4-5.9-4.9 7.6-.5z"/></svg></h1>
     <div class="facts">
       <div class="fact"><b id="f-days">–</b><span>Tage bis Heiligabend</span></div>
       <div class="fact"><b id="f-pers">–</b><span id="f-pers-l">Personen zugesagt</span></div>
       <div class="fact"><b id="f-open">–</b><span>Ideen suchen noch jemanden</span></div>
-      <div class="fact" style="flex:1;min-width:200px"><span>Wann? · trägt Andreas ein</span><input class="datum" id="datum" placeholder="Datum und Uhrzeit folgen" aria-label="Datum und Uhrzeit, trägt Andreas ein"></div>
+      <div class="fact" style="flex:1;min-width:200px"><span>Wann? · tragen Andy & Mel ein</span><input class="datum" id="datum" placeholder="Datum und Uhrzeit folgen" aria-label="Datum und Uhrzeit, tragen Andy & Mel ein"></div>
     </div>
   </div>
 </header>
@@ -303,7 +303,7 @@ function write(col,id,body){
   }).catch(e=>{console.error(e);toast('Speichern hat nicht geklappt. Prüf die Internetverbindung und versuch es noch einmal.')});
 }
 const setInfo=patch=>write('info','main',Object.assign({datum:'',fleisch:''},data.info.main||{},patch));
-function notify(text){if(mode!=='shared'||!text)return;sb.functions.invoke('notify',{body:{title:'Weihnachten bei Andreas',body:text,actor:me||''}}).catch(()=>{})}
+function notify(text){if(mode!=='shared'||!text)return;sb.functions.invoke('notify',{body:{title:'Weihnachten bei Andy & Mel',body:text,actor:me||''}}).catch(()=>{})}
 async function toggleLike(id){
   const p=data.posten[id];if(!p)return;const l=(p.likes||[]).slice();const i=l.indexOf(me);i>=0?l.splice(i,1):l.push(me);
   data.posten[id]={...p,likes:l};render();
@@ -402,7 +402,7 @@ function render(){
     ${[['alle','Alles ('+its.length+')'],['offen','Sucht noch jemanden ('+open+')']].map(([v,l])=>`<button class="chip" data-a="filter" data-v="${v}" aria-pressed="${filter===v}">${l}</button>`).join('')}</div></div>`;
   h+=`<div class="me"><label for="me">Ich bin</label><select id="me" data-f="me"><option value="">– bitte wählen –</option>${gs.filter(g=>g.status!=='nein').map(g=>`<option value="${esc(g.id)}"${g.id===me?' selected':''}>${esc(g.name||'Ohne Name')}</option>`).join('')}</select>
     <small>Damit deine Ideen, dein „Hab Lust drauf“ und deine Antworten deinen Namen tragen. Wird nur auf diesem Gerät gemerkt.</small></div>`;
-  h+=`<div class="meatline"><span>Fleisch kommt von <b>Andreas</b></span><input class="txt" id="fleisch" data-f="fleisch" value="${esc(info.fleisch)}" placeholder="Was gibt's? (trägt Andreas ein)" aria-label="Was Andreas an Fleisch macht"${dis}></div><div class="cats">`;
+  h+=`<div class="meatline"><span>Fleisch kommt von <b>Andy & Mel</b></span><input class="txt" id="fleisch" data-f="fleisch" value="${esc(info.fleisch)}" placeholder="Was gibt's? (tragen Andy & Mel ein)" aria-label="Was Andy & Mel an Fleisch macht"${dis}></div><div class="cats">`;
 
   const werOpts=w=>`<option value="">Sucht noch jemanden</option>`+gs.filter(g=>g.status!=='nein'||g.id===w).map(g=>`<option value="${esc(g.id)}"${g.id===w?' selected':''}>bringt ${esc(g.name||'Ohne Name')}</option>`).join('')+(w&&!byId[w]?`<option value="${esc(w)}" selected>(entfernt)</option>`:'');
   for(const k of CATS){
@@ -456,13 +456,13 @@ function render(){
 }
 
 function waText(gs,its,c,info,nm){
-  const L=['🎄 *Weihnachten bei Andreas*'];
+  const L=['🎄 *Weihnachten bei Andy & Mel*'];
   if(info.datum)L.push(info.datum);
   L.push(`Zugesagt: ${c.n} Personen`);
   const zu=gs.filter(g=>g.status==='ja').map(g=>g.name).filter(Boolean), of=gs.filter(g=>g.status==='offen').map(g=>g.name).filter(Boolean);
   if(zu.length)L.push('✅ '+zu.join(', '));
   if(of.length)L.push('⏳ Noch keine Antwort: '+of.join(', '));
-  L.push('',`🥩 *Fleisch:* Andreas${info.fleisch?' – '+info.fleisch:''}`);
+  L.push('',`🥩 *Fleisch:* Andy & Mel${info.fleisch?' – '+info.fleisch:''}`);
   for(const k of CATS){const it=its.filter(p=>p.kat===k.key);if(!it.length)continue;
     L.push('',`*${k.label}*`);
     for(const p of it)L.push(`• ${p.name} – ${p.wer?nm(p.wer):'sucht noch jemanden'}${p.likes.length?` (Lust: ${p.likes.map(nm).join(', ')})`:''}`);}
@@ -481,7 +481,7 @@ document.addEventListener('change',e=>{
   if(f==='me'){me=t.value;lsSet(ME,me);render();if(pushState==='on'&&swReg)swReg.pushManager.getSubscription().then(s=>s&&saveSub(s)).catch(()=>{});return}
   if(!canWrite)return;
   if(t.id==='datum'){const v=t.value.trim();setInfo({datum:v});if(v)notify('Termin: '+v);return}
-  if(f==='fleisch'){const v=t.value.trim();setInfo({fleisch:v});if(v)notify('Fleisch von Andreas: '+v);return}
+  if(f==='fleisch'){const v=t.value.trim();setInfo({fleisch:v});if(v)notify('Fleisch von Andy & Mel: '+v);return}
   if(f==='gname'||f==='gstatus'){const id=gid(t),g=data.gaeste[id];if(!g)return;write('gaeste',id,{...g,[f==='gname'?'name':'status']:f==='gname'?t.value.trim():t.value});
     if(f==='gstatus'&&t.value!==g.status)notify(t.value==='ja'?`${g.name} hat zugesagt 🎉`:t.value==='nein'?`${g.name} hat abgesagt`:`${g.name}: Zusage noch offen`);return}
   if(f==='pname'||f==='pwer'){const id=pid(t),p=data.posten[id];if(!p)return;write('posten',id,{...p,[f==='pname'?'name':'wer']:f==='pname'?t.value.trim():t.value});
