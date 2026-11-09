@@ -228,6 +228,15 @@ img{max-width:100%}
 .hostform .row{display:flex;flex-wrap:wrap;gap:8px}
 .hostform input{flex:1;min-width:120px;max-width:200px;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 10px}
 .menu{margin:-6px 0 0;font-size:clamp(17px,3.4vw,21px);font-weight:600;letter-spacing:.02em;color:#f6d77e}
+.hostcard .intro{color:var(--ink);font-size:15px}
+.hostnote{padding:0 14px 14px}
+.hostnote .txt{max-width:420px;border-color:var(--line)}
+.pill.rz.has{border-color:var(--gold);color:var(--gold);font-weight:600}
+.recipe{margin-left:8px;border-left:2px solid var(--b6);padding:6px 0 4px 12px}
+.rztext{white-space:pre-wrap;font-size:14px;line-height:1.55;max-width:62ch;margin-bottom:8px}
+.rzform{display:grid;gap:8px}
+.rzform label{font-size:13px;font-weight:600}
+.rzform textarea{width:100%;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:8px 10px;font-size:14px;line-height:1.5;resize:vertical}
 .applink{word-break:break-all;color:var(--cran)}
 </style>
 </head>
@@ -269,14 +278,14 @@ img{max-width:100%}
 <script>
 (function(){
 const CATS=[
- {key:'beilagen',bc:'--b2',label:'Fürs Raclette',hint:'Raclettekäse',g:200,unit:'g',intro:'Was gehört für euch ins Pfännchen? Käse, Kartoffeln, Gemüse, Pilze … Schreibt eure Ideen rein. Wer etwas mitbringt, trägt sich ein.',sugg:['Raclettekäse','Pellkartoffeln','Champignons']},
  {key:'dips',bc:'--b1',label:'Dips & Soßen fürs Fondue',hint:'Dips & Soßen',g:80,unit:'g',intro:'Ohne Soßen kein Fondue. Welche mögt ihr am liebsten? Ideen rein, „Hab Lust drauf“ drücken, und wer eine macht, trägt sich ein.',sugg:['Knoblauchsoße','Cocktailsoße','Currysoße']},
- {key:'salate',bc:'--b3',label:'Salate & Gemüse',g:100,unit:'g',intro:'Ein frischer Salat oder eine Gemüseplatte passt immer zu Raclette und Fondue. Wünsche und Ideen gerne rein.',sugg:['Grüner Salat','Gemüseplatte','Gewürzgurken & Silberzwiebeln']},
+ {key:'salate',bc:'--b3',label:'Salate',g:100,unit:'g',intro:'Welche Salate mögt ihr? Wenn ihr euch noch bestimmtes Gemüse wünscht, tragt es einfach als Wunsch hier ein. Was ihr mitbringt, sucht ihr euch selbst aus.',sugg:['Grüner Salat','Krautsalat']},
  {key:'brot',bc:'--b6',label:'Fladenbrot & Butter',hint:'Fladenbrot',g:100,unit:'g',intro:'Fladenbrot gehört bei uns immer dazu. Wer bringt es mit? Butter oder Kräuterbutter auch gerne eintragen.',sugg:['Fladenbrot','Kräuterbutter']},
  {key:'getraenke',bc:'--b5',label:'Getränke',g:1.5,unit:'l',intro:'Trag bitte ein, was du an Getränken mitbringst. Wenn du andere Vorschläge hast, antworte einfach darauf.',sugg:[]},
  {key:'dessert',bc:'--b4',label:'Nachtisch',g:150,unit:'g',intro:'Nach Raclette und Fondue passt noch was Süßes? Ideen und Wünsche gerne rein, wer mag, macht einen.',sugg:['Tiramisu','Bratäpfel','Plätzchen']}
 ];
 const DIV=`<div class="divider" aria-hidden="true"><svg width="78" height="26" viewBox="0 0 78 26"><path d="M39 3l1.8 4.6 4.9.3-3.8 3.1 1.2 4.8L39 13.2l-4.1 2.6 1.2-4.8-3.8-3.1 4.9-.3z" fill="currentColor"/><path d="M33 17c-6-5-14-5-20 0 4 0 6 2 7 4 2-2 5-3 8-2-1-1 2-2 5-2z" style="fill:var(--b3)"/><path d="M45 17c6-5 14-5 20 0-4 0-6 2-7 4-2-2-5-3-8-2 1-1-2-2-5-2z" style="fill:var(--b3)"/><circle cx="36" cy="20" r="2.6" style="fill:var(--b1)"/><circle cx="42" cy="20" r="2.6" style="fill:var(--b1)"/><circle cx="39" cy="23" r="2.6" style="fill:var(--b1)"/><circle cx="9" cy="13" r="1.4" fill="currentColor"/><circle cx="69" cy="13" r="1.4" fill="currentColor"/></svg></div>`;
+const BAUBLE=bc=>`<svg class="bauble" style="--bc:var(${bc})" viewBox="0 0 24 28" aria-hidden="true"><path d="M12 0v4" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".6"/><rect x="9" y="3.5" width="6" height="4" rx="1" fill="#b8962e"/><circle cx="12" cy="17" r="10" fill="currentColor"/><path d="M3.5 15.5c5 2.5 12 2.5 17 0" stroke="#fff" stroke-opacity=".35" stroke-width="1.4" fill="none"/><ellipse cx="8.5" cy="13" rx="2.4" ry="3.2" fill="#fff" opacity=".35"/></svg>`;
 const MEAT_G=250, LS='weihnachten-andreas-lokal', ME='weihnachten-andreas-ich';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -292,13 +301,13 @@ const CFG=window.APP_CONFIG||{};
 const COLS=['gaeste','posten','antworten'];
 const data={info:{},gaeste:{},posten:{},antworten:{}};
 let mode='loading', canWrite=true, sb=null, me=lsGet(ME)||'', filter='alle', hintsOpen=false;
-const openThreads=new Set(), chains={}; let hostOpen=false;
+const openThreads=new Set(), openRecipes=new Set(), editRecipes=new Set(), chains={}; let hostOpen=false;
 // Ab dem 27. Dezember gilt die Liste fürs nächste Jahr.
 const nextYear=()=>{const d=new Date();return d.getFullYear()+(d.getMonth()===11&&d.getDate()>26?1:0)};
 
 function list(col){return Object.entries(data[col]).map(([id,d])=>Object.assign({},d,{id})).sort((a,b)=>(a.t||0)-(b.t||0)||a.id.localeCompare(b.id))}
 function guests(){return list('gaeste').map(g=>({...g,name:String(g.name||''),erw:+g.erw||0,kinder:+g.kinder||0,status:['ja','offen','nein'].includes(g.status)?g.status:'offen'}))}
-function items(){return list('posten').filter(p=>CATS.some(c=>c.key===p.kat)).map(p=>({...p,name:String(p.name||''),kat:p.kat,wer:String(p.wer||''),von:String(p.von||''),likes:Array.isArray(p.likes)?p.likes.map(String):[]}))}
+function items(){return list('posten').filter(p=>CATS.some(c=>c.key===p.kat)).map(p=>({...p,rezept:String(p.rezept||''),name:String(p.name||''),kat:p.kat,wer:String(p.wer||''),von:String(p.von||''),likes:Array.isArray(p.likes)?p.likes.map(String):[]}))}
 function replies(pid){return list('antworten').filter(r=>r.posten===pid)}
 const gname=id=>(data.gaeste[id]&&data.gaeste[id].name)||'Jemand';
 const catLabel=k=>(CATS.find(c=>c.key===k)||{}).label||'';
@@ -414,7 +423,7 @@ function render(){
   }
   h+=`<form class="addrow" data-form="gadd"><input id="g-new" placeholder="Jemanden hinzufügen, z. B. Familie Müller" aria-label="Gast hinzufügen"><button class="btn" type="submit">Hinzufügen</button></form></div>`;
   if(c.p){
-    const li=[['Fleisch fürs Fondue',c.e?amount(c.e*MEAT_G,'g'):'–']].concat(CATS.filter(k=>k.g).map(k=>[k.hint||k.label,amount(c.p*k.g,k.unit)]));
+    const li=[['Fleisch fürs Fondue',c.e?amount(c.e*MEAT_G,'g'):'–'],['Raclettekäse',amount(c.p*200,'g')]].concat(CATS.filter(k=>k.g).map(k=>[k.hint||k.label,amount(c.p*k.g,k.unit)]));
     h+=`<details class="hints" id="hints"${hintsOpen?' open':''}><summary>Grobe Orientierung für ${c.n} Personen</summary><ul>${li.map(([k,v])=>`<li>${esc(k)} <b>~${v}</b></li>`).join('')}</ul><p>Nur als Hilfe gedacht. Jeder bringt so viel mit, wie er mag.</p></details>`;
   }
   h+=`</section>`;
@@ -425,15 +434,17 @@ function render(){
   h+=`<section><div class="sec-head"><h2>Wer bringt was?</h2><div class="filters" role="group" aria-label="Filter">
     ${[['alle','Alles ('+its.length+')'],['offen','Sucht noch jemanden ('+open+')']].map(([v,l])=>`<button class="chip" data-a="filter" data-v="${v}" aria-pressed="${filter===v}">${l}</button>`).join('')}</div></div>`;
   h+=`<div class="me"><label for="me">Ich bin</label><select id="me" data-f="me"><option value="">– bitte wählen –</option>${gs.filter(g=>g.status!=='nein').map(g=>`<option value="${esc(g.id)}"${g.id===me?' selected':''}>${esc(g.name||'Ohne Name')}</option>`).join('')}</select>
-    <small>Damit deine Ideen, dein „Hab Lust drauf“ und deine Antworten deinen Namen tragen. Wird nur auf diesem Gerät gemerkt.</small></div>`;
-  h+=`<div class="meatline"><span>Rind- und Schweinefleisch fürs Fondue kommt von <b>Andy, Mel &amp; Connor</b></span><input class="txt" id="fleisch" data-f="fleisch" value="${esc(info.fleisch)}" placeholder="Noch etwas dazu? (tragen Andy & Mel ein)" aria-label="Hinweis von Andy und Mel zum Fleisch"${dis}></div><div class="cats">`;
+    <small>Damit deine Ideen, dein „Hab Lust drauf“, deine Kommentare und Rezepte deinen Namen tragen. Wird nur auf diesem Gerät gemerkt.</small></div>`;
+  h+=`<div class="cats"><div class="cat hostcard"><div class="cat-head"><h3>${BAUBLE('--b2')}Raclette &amp; Fondue</h3></div>
+    <p class="intro">Darum kümmern sich <b>Andy, Mel &amp; Connor</b>: Rind- und Schweinefleisch fürs Fondue, Raclettekäse, Kartoffeln und alles, was ins Pfännchen gehört. Hier müsst ihr nichts mitbringen.</p>
+    <div class="hostnote"><input class="txt" id="fleisch" data-f="fleisch" value="${esc(info.fleisch)}" placeholder="Hinweis von Andy &amp; Mel (optional)" aria-label="Hinweis von Andy und Mel zu Raclette und Fondue"${dis}></div></div>`;
 
   const werOpts=w=>`<option value="">Sucht noch jemanden</option>`+gs.filter(g=>g.status!=='nein'||g.id===w).map(g=>`<option value="${esc(g.id)}"${g.id===w?' selected':''}>bringt ${esc(g.name||'Ohne Name')}</option>`).join('')+(w&&!byId[w]?`<option value="${esc(w)}" selected>(entfernt)</option>`:'');
   for(const k of CATS){
     const all=its.filter(p=>p.kat===k.key), shown=all.filter(p=>filter==='alle'||!p.wer);
     if(filter!=='alle'&&!shown.length)continue;
     const taken=all.filter(p=>p.wer).length;
-    h+=`<div class="cat"><div class="cat-head"><h3><svg class="bauble" style="--bc:var(${k.bc})" viewBox="0 0 24 28" aria-hidden="true"><path d="M12 0v4" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".6"/><rect x="9" y="3.5" width="6" height="4" rx="1" fill="#b8962e"/><circle cx="12" cy="17" r="10" fill="currentColor"/><path d="M3.5 15.5c5 2.5 12 2.5 17 0" stroke="#fff" stroke-opacity=".35" stroke-width="1.4" fill="none"/><ellipse cx="8.5" cy="13" rx="2.4" ry="3.2" fill="#fff" opacity=".35"/></svg>${esc(k.label)}</h3><div class="cov">${all.length?`${taken} von ${all.length} vergeben`:''}</div></div><p class="intro">${esc(k.intro)}</p>`;
+    h+=`<div class="cat"><div class="cat-head"><h3>${BAUBLE(k.bc)}${esc(k.label)}</h3><div class="cov">${all.length?`${taken} von ${all.length} vergeben`:''}</div></div><p class="intro">${esc(k.intro)}</p>`;
     for(const p of shown){
       const rs=replies(p.id), liked=me&&p.likes.includes(me), op=openThreads.has(p.id);
       h+=`<div class="item" data-p="${esc(p.id)}">
@@ -441,14 +452,20 @@ function render(){
         <div class="meta">
           <select class="wer ${p.wer?'has':'none'}" id="p-wer-${esc(p.id)}" data-f="pwer" aria-label="Wer bringt es mit"${dis}>${werOpts(p.wer)}</select>
           <button class="pill" data-a="like" aria-pressed="${liked?'true':'false'}"${dis}>Hab Lust drauf${p.likes.length?' · '+p.likes.length:''}</button>
-          <button class="pill" data-a="thread" aria-expanded="${op}">${rs.length?`Antworten · ${rs.length}`:'Antworten'}</button>
+          <button class="pill" data-a="thread" aria-expanded="${op}">${rs.length?`Kommentare · ${rs.length}`:'Kommentieren'}</button>
+          <button class="pill rz${p.rezept?' has':''}" data-a="recipe" aria-expanded="${openRecipes.has(p.id)}">${p.rezept?'Rezept ansehen':'Rezept teilen'}</button>
           ${p.von?`<span class="who">Idee von ${esc(nm(p.von))}</span>`:''}
           ${p.likes.length?`<span class="who">Lust: ${p.likes.map(l=>esc(nm(l))).join(', ')}</span>`:''}
         </div>`;
+      if(openRecipes.has(p.id)){
+        const ed=editRecipes.has(p.id)||!p.rezept;
+        h+=`<div class="recipe">${ed?`<form class="rzform" data-form="rezept"><label for="rz-${esc(p.id)}">Rezept für „${esc(p.name)}“</label><textarea id="rz-${esc(p.id)}" rows="7" placeholder="Zutaten und Zubereitung, so wie ihr es macht …">${esc(p.rezept)}</textarea><div class="nbtns"><button class="btn" type="submit">Rezept speichern</button><button class="btn ghost" type="button" data-a="rzcancel">Abbrechen</button></div></form>`
+          :`<div class="rztext">${esc(p.rezept)}</div><div class="nbtns"><button class="btn ghost" type="button" data-a="rzedit">Rezept bearbeiten</button></div>`}</div>`;
+      }
       if(op){
         h+=`<div class="thread">${rs.map(r=>`<div class="reply" data-r="${esc(r.id)}"><b>${esc(nm(r.von))}:</b> ${esc(r.inhalt)} ${canWrite?`<button class="x" data-a="rdel" aria-label="Antwort löschen" title="Löschen">×</button>`:''}</div>`).join('')}
-          ${rs.length?'':'<div class="who">Noch keine Antworten. Was meint ihr dazu?</div>'}
-          <form class="rform" data-form="reply"><input id="r-new-${esc(p.id)}" placeholder="Deine Meinung, ein anderer Vorschlag …" aria-label="Antwort schreiben"><button class="btn" type="submit">Senden</button></form></div>`;
+          ${rs.length?'':'<div class="who">Noch keine Kommentare. Fragen, Meinungen, andere Vorschläge?</div>'}
+          <form class="rform" data-form="reply"><input id="r-new-${esc(p.id)}" placeholder="Frage stellen oder kommentieren …" aria-label="Kommentar schreiben"><button class="btn" type="submit">Senden</button></form></div>`;
       }
       h+=`</div>`;
     }
@@ -472,12 +489,12 @@ function render(){
 
   // Fokus und angefangene Eingaben erhalten
   const a=document.activeElement, keep=a&&a.id&&a.closest('#main')?{id:a.id,v:a.value,s:'selectionStart' in a?[a.selectionStart,a.selectionEnd]:null}:null;
-  const drafts=[...document.querySelectorAll('#main form input[id]')].filter(i=>i.type!=='checkbox'&&i.value).map(i=>[i.id,i.value]);
+  const drafts=[...document.querySelectorAll('#main form input[id], #main form textarea[id]')].filter(i=>i.type!=='checkbox'&&i.value).map(i=>[i.id,i.value]);
   const checks=[...document.querySelectorAll('#main form input[type=checkbox]')].map(i=>[i.id,i.checked]);
   $('#main').innerHTML=h;
   for(const [id,v] of drafts){const n=document.getElementById(id);if(n)n.value=v}
   for(const [id,v] of checks){const n=document.getElementById(id);if(n)n.checked=v}
-  if(keep){const n=document.getElementById(keep.id);if(n){if(n.tagName==='INPUT'&&n.type!=='checkbox')n.value=keep.v;n.focus({preventScroll:true});if(keep.s&&n.setSelectionRange)try{n.setSelectionRange(keep.s[0],keep.s[1])}catch(e){}}}
+  if(keep){const n=document.getElementById(keep.id);if(n){if((n.tagName==='INPUT'&&n.type!=='checkbox')||n.tagName==='TEXTAREA')n.value=keep.v;n.focus({preventScroll:true});if(keep.s&&n.setSelectionRange)try{n.setSelectionRange(keep.s[0],keep.s[1])}catch(e){}}}
 }
 
 function waText(gs,its,c,info,nm){
@@ -516,6 +533,9 @@ document.addEventListener('keydown',e=>{const t=e.target;if(e.key==='Enter'&&t.c
 document.addEventListener('submit',e=>{
   e.preventDefault(); if(!canWrite)return;
   if(e.target.dataset.form==='reset'){resetYear(e.target);return}
+  if(e.target.dataset.form==='rezept'){const id=pid(e.target),p=data.posten[id];if(!p)return;const ta=e.target.querySelector('textarea'),v=ta.value.trim(),neu=!p.rezept;
+    ta.value='';editRecipes.delete(id);if(!v)openRecipes.delete(id);write('posten',id,{...p,rezept:v});
+    if(v)notify(`${me?gname(me):'Jemand'} hat ${neu?'das Rezept':'das Rezept aktualisiert'} für „${p.name}“${neu?' geteilt':''} 📖`);return}
   const f=e.target, inp=f.querySelector('input:not([type=checkbox])'), v=inp.value.trim(); if(!v)return;
   if(f.dataset.form==='gadd'){write('gaeste',uid(),{name:v,erw:1,kinder:0,status:'offen',t:Date.now()});notify(`${v} steht neu auf der Gästeliste`)}
   else if(f.dataset.form==='padd'){
@@ -530,6 +550,9 @@ document.addEventListener('submit',e=>{
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]'); if(!b)return; const a=b.dataset.a;
   if(a==='filter'){filter=b.dataset.v;render();return}
+  if(a==='recipe'){const id=pid(b);if(openRecipes.has(id)){openRecipes.delete(id);editRecipes.delete(id)}else openRecipes.add(id);render();const n=document.getElementById('rz-'+id);if(n)n.focus();return}
+  if(a==='rzedit'){const id=pid(b);editRecipes.add(id);render();const n=document.getElementById('rz-'+id);if(n)n.focus();return}
+  if(a==='rzcancel'){const id=pid(b);editRecipes.delete(id);if(!(data.posten[id]||{}).rezept)openRecipes.delete(id);render();return}
   if(a==='thread'){const id=pid(b);openThreads.has(id)?openThreads.delete(id):openThreads.add(id);render();if(openThreads.has(id)){const n=document.getElementById('r-new-'+id);if(n)n.focus()}return}
   if(a==='copy'){const ta=$('#wa'),hint=$('#copy-hint');const fb=()=>{ta.focus();ta.select();hint.textContent='Text ist markiert. Jetzt kopieren (⌘C / Strg+C oder lange drücken).'};
     try{navigator.clipboard.writeText(ta.value).then(()=>{hint.textContent='Kopiert. Jetzt in der WhatsApp-Gruppe einfügen.'},fb)}catch(err){fb()}return}
