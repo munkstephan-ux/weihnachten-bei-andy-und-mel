@@ -278,11 +278,11 @@ img{max-width:100%}
 <script>
 (function(){
 const CATS=[
+ {key:'wuensche',bc:'--b4',label:'Wünsche zum Fleisch',wish:true,intro:'Was möchtet ihr zum Fleisch? Zuckerschoten, Kartöffelchen oder etwas ganz anderes: Tragt eure Wünsche ein, Andy & Mel sehen sie direkt. Mit „Möchte ich auch“ zeigt ihr, was gut ankommt.',sugg:['Zuckerschoten','Kartöffelchen','Champignons']},
  {key:'dips',bc:'--b1',label:'Dips & Soßen fürs Fondue',hint:'Dips & Soßen',g:80,unit:'g',intro:'Ohne Soßen kein Fondue. Welche mögt ihr am liebsten? Ideen rein, „Hab Lust drauf“ drücken, und wer eine macht, trägt sich ein.',sugg:['Knoblauchsoße','Cocktailsoße','Currysoße']},
  {key:'salate',bc:'--b3',label:'Salate',g:100,unit:'g',intro:'Welche Salate mögt ihr? Wenn ihr euch noch bestimmtes Gemüse wünscht, tragt es einfach als Wunsch hier ein. Was ihr mitbringt, sucht ihr euch selbst aus.',sugg:['Grüner Salat','Krautsalat']},
  {key:'brot',bc:'--b6',label:'Fladenbrot & Butter',hint:'Fladenbrot',g:100,unit:'g',intro:'Fladenbrot gehört bei uns immer dazu. Wer bringt es mit? Butter oder Kräuterbutter auch gerne eintragen.',sugg:['Fladenbrot','Kräuterbutter']},
- {key:'getraenke',bc:'--b5',label:'Getränke',g:1.5,unit:'l',intro:'Trag bitte ein, was du an Getränken mitbringst. Wenn du andere Vorschläge hast, antworte einfach darauf.',sugg:[]},
- {key:'dessert',bc:'--b4',label:'Nachtisch',g:150,unit:'g',intro:'Nach Raclette und Fondue passt noch was Süßes? Ideen und Wünsche gerne rein, wer mag, macht einen.',sugg:['Tiramisu','Bratäpfel','Plätzchen']}
+ {key:'getraenke',bc:'--b5',label:'Getränke',g:1.5,unit:'l',intro:'Trag bitte ein, was du an Getränken mitbringst. Wenn du andere Vorschläge hast, antworte einfach darauf.',sugg:[]}
 ];
 const DIV=`<div class="divider" aria-hidden="true"><svg width="78" height="26" viewBox="0 0 78 26"><path d="M39 3l1.8 4.6 4.9.3-3.8 3.1 1.2 4.8L39 13.2l-4.1 2.6 1.2-4.8-3.8-3.1 4.9-.3z" fill="currentColor"/><path d="M33 17c-6-5-14-5-20 0 4 0 6 2 7 4 2-2 5-3 8-2-1-1 2-2 5-2z" style="fill:var(--b3)"/><path d="M45 17c6-5 14-5 20 0-4 0-6 2-7 4-2-2-5-3-8-2 1-1-2-2-5-2z" style="fill:var(--b3)"/><circle cx="36" cy="20" r="2.6" style="fill:var(--b1)"/><circle cx="42" cy="20" r="2.6" style="fill:var(--b1)"/><circle cx="39" cy="23" r="2.6" style="fill:var(--b1)"/><circle cx="9" cy="13" r="1.4" fill="currentColor"/><circle cx="69" cy="13" r="1.4" fill="currentColor"/></svg></div>`;
 const BAUBLE=bc=>`<svg class="bauble" style="--bc:var(${bc})" viewBox="0 0 24 28" aria-hidden="true"><path d="M12 0v4" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".6"/><rect x="9" y="3.5" width="6" height="4" rx="1" fill="#b8962e"/><circle cx="12" cy="17" r="10" fill="currentColor"/><path d="M3.5 15.5c5 2.5 12 2.5 17 0" stroke="#fff" stroke-opacity=".35" stroke-width="1.4" fill="none"/><ellipse cx="8.5" cy="13" rx="2.4" ry="3.2" fill="#fff" opacity=".35"/></svg>`;
@@ -309,6 +309,7 @@ function list(col){return Object.entries(data[col]).map(([id,d])=>Object.assign(
 function guests(){return list('gaeste').map(g=>({...g,name:String(g.name||''),erw:+g.erw||0,kinder:+g.kinder||0,status:['ja','offen','nein'].includes(g.status)?g.status:'offen'}))}
 function items(){return list('posten').filter(p=>CATS.some(c=>c.key===p.kat)).map(p=>({...p,rezept:String(p.rezept||''),name:String(p.name||''),kat:p.kat,wer:String(p.wer||''),von:String(p.von||''),likes:Array.isArray(p.likes)?p.likes.map(String):[]}))}
 function replies(pid){return list('antworten').filter(r=>r.posten===pid)}
+const isWish=p=>p.kat==='wuensche';
 const gname=id=>(data.gaeste[id]&&data.gaeste[id].name)||'Jemand';
 const catLabel=k=>(CATS.find(c=>c.key===k)||{}).label||'';
 
@@ -403,7 +404,7 @@ function render(){
   $('#f-days').textContent=days===0?'Heute!':days;
   $('#f-pers').textContent=c.n;
   $('#f-pers-l').textContent=c.on?`zugesagt · ${c.on} offen`:'Personen zugesagt';
-  $('#f-open').textContent=its.filter(p=>!p.wer).length;
+  $('#f-open').textContent=its.filter(p=>!p.wer&&!isWish(p)).length;
   const dt=$('#datum'); if(document.activeElement!==dt)dt.value=info.datum; dt.disabled=!canWrite;
   const dis=canWrite?'':' disabled';
 
@@ -430,7 +431,7 @@ function render(){
 
   h+=DIV;
   /* Wer bringt was? */
-  const open=its.filter(p=>!p.wer).length;
+  const open=its.filter(p=>!p.wer&&!isWish(p)).length;
   h+=`<section><div class="sec-head"><h2>Wer bringt was?</h2><div class="filters" role="group" aria-label="Filter">
     ${[['alle','Alles ('+its.length+')'],['offen','Sucht noch jemanden ('+open+')']].map(([v,l])=>`<button class="chip" data-a="filter" data-v="${v}" aria-pressed="${filter===v}">${l}</button>`).join('')}</div></div>`;
   h+=`<div class="me"><label for="me">Ich bin</label><select id="me" data-f="me"><option value="">– bitte wählen –</option>${gs.filter(g=>g.status!=='nein').map(g=>`<option value="${esc(g.id)}"${g.id===me?' selected':''}>${esc(g.name||'Ohne Name')}</option>`).join('')}</select>
@@ -441,7 +442,7 @@ function render(){
 
   const werOpts=w=>`<option value="">Sucht noch jemanden</option>`+gs.filter(g=>g.status!=='nein'||g.id===w).map(g=>`<option value="${esc(g.id)}"${g.id===w?' selected':''}>bringt ${esc(g.name||'Ohne Name')}</option>`).join('')+(w&&!byId[w]?`<option value="${esc(w)}" selected>(entfernt)</option>`:'');
   for(const k of CATS){
-    const all=its.filter(p=>p.kat===k.key), shown=all.filter(p=>filter==='alle'||!p.wer);
+    const all=its.filter(p=>p.kat===k.key), shown=all.filter(p=>filter==='alle'||(!p.wer&&!k.wish));
     if(filter!=='alle'&&!shown.length)continue;
     const taken=all.filter(p=>p.wer).length;
     h+=`<div class="cat"><div class="cat-head"><h3>${BAUBLE(k.bc)}${esc(k.label)}</h3><div class="cov">${all.length?`${taken} von ${all.length} vergeben`:''}</div></div><p class="intro">${esc(k.intro)}</p>`;
@@ -450,12 +451,12 @@ function render(){
       h+=`<div class="item" data-p="${esc(p.id)}">
         <div class="irow"><input class="txt" id="p-name-${esc(p.id)}" data-f="pname" value="${esc(p.name)}" aria-label="Was"${dis}><button class="x" data-a="pdel" aria-label="${esc(p.name)} entfernen" title="Entfernen">×</button></div>
         <div class="meta">
-          <select class="wer ${p.wer?'has':'none'}" id="p-wer-${esc(p.id)}" data-f="pwer" aria-label="Wer bringt es mit"${dis}>${werOpts(p.wer)}</select>
-          <button class="pill" data-a="like" aria-pressed="${liked?'true':'false'}"${dis}>Hab Lust drauf${p.likes.length?' · '+p.likes.length:''}</button>
+          ${k.wish?'':`<select class="wer ${p.wer?'has':'none'}" id="p-wer-${esc(p.id)}" data-f="pwer" aria-label="Wer bringt es mit"${dis}>${werOpts(p.wer)}</select>`}
+          <button class="pill" data-a="like" aria-pressed="${liked?'true':'false'}"${dis}>${k.wish?'Möchte ich auch':'Hab Lust drauf'}${p.likes.length?' · '+p.likes.length:''}</button>
           <button class="pill" data-a="thread" aria-expanded="${op}">${rs.length?`Kommentare · ${rs.length}`:'Kommentieren'}</button>
           <button class="pill rz${p.rezept?' has':''}" data-a="recipe" aria-expanded="${openRecipes.has(p.id)}">${p.rezept?'Rezept ansehen':'Rezept teilen'}</button>
-          ${p.von?`<span class="who">Idee von ${esc(nm(p.von))}</span>`:''}
-          ${p.likes.length?`<span class="who">Lust: ${p.likes.map(l=>esc(nm(l))).join(', ')}</span>`:''}
+          ${p.von?`<span class="who">${k.wish?'Wunsch':'Idee'} von ${esc(nm(p.von))}</span>`:''}
+          ${p.likes.length?`<span class="who">${k.wish?'Möchten auch':'Lust'}: ${p.likes.map(l=>esc(nm(l))).join(', ')}</span>`:''}
         </div>`;
       if(openRecipes.has(p.id)){
         const ed=editRecipes.has(p.id)||!p.rezept;
@@ -471,8 +472,8 @@ function render(){
     }
     if(!shown.length)h+=`<div class="empty">Noch nichts eingetragen.</div>`;
     if(filter==='alle'){
-      h+=`<form class="addrow" data-form="padd" data-k="${k.key}"><input id="p-new-${k.key}" placeholder="${k.mine?'Was bringst du mit?':'Idee oder Wunsch eintragen …'}" aria-label="${esc(k.label)}: Eintrag hinzufügen">
-        <label><input type="checkbox" id="p-mine-${k.key}"${k.mine?' checked':''}> Bringe ich mit</label><button class="btn" type="submit">Eintragen</button></form>`;
+      h+=`<form class="addrow" data-form="padd" data-k="${k.key}"><input id="p-new-${k.key}" placeholder="${k.wish?'Was möchtest du zum Fleisch?':'Idee oder Wunsch eintragen …'}" aria-label="${esc(k.label)}: Eintrag hinzufügen">
+        ${k.wish?'':`<label><input type="checkbox" id="p-mine-${k.key}"${k.mine?' checked':''}> Bringe ich mit</label>`}<button class="btn" type="submit">Eintragen</button></form>`;
       const names=new Set(all.map(p=>p.name.trim().toLowerCase())), left=k.sugg.filter(s=>!names.has(s.toLowerCase()));
       if(all.length<3&&left.length)h+=`<div class="sugg"><span>Ideen zum Antippen:</span>${left.map(s=>`<button data-a="sugg" data-k="${k.key}" data-v="${esc(s)}">+ ${esc(s)}</button>`).join('')}</div>`;
     }
@@ -542,7 +543,7 @@ document.addEventListener('submit',e=>{
     const mine=f.querySelector('input[type=checkbox]')?.checked;
     if(mine&&!needMe())return;
     write('posten',uid(),{kat:f.dataset.k,name:v,wer:mine?me:'',von:me||'',likes:[],t:Date.now()});
-    notify(mine?`${gname(me)} bringt ${v} mit (${catLabel(f.dataset.k)})`:`Neue Idee bei ${catLabel(f.dataset.k)}: ${v}${me?` (von ${gname(me)})`:''}`);
+    notify(f.dataset.k==='wuensche'?`Neuer Wunsch zum Fleisch: ${v}${me?` (von ${gname(me)})`:''}`:mine?`${gname(me)} bringt ${v} mit (${catLabel(f.dataset.k)})`:`Neue Idee bei ${catLabel(f.dataset.k)}: ${v}${me?` (von ${gname(me)})`:''}`);
   }
   else if(f.dataset.form==='reply'){if(!needMe())return;const p=pid(f);write('antworten',uid(),{posten:p,von:me,inhalt:v,t:Date.now()});notify(`${gname(me)} zu „${(data.posten[p]||{}).name||''}“: ${v}`)}
   inp.value=''; const n=document.getElementById(inp.id); if(n){n.value='';n.focus()}
@@ -564,7 +565,7 @@ document.addEventListener('click',e=>{
   else if(a==='pdel'){const id=pid(b),p=data.posten[id];if(!p)return;undo=['posten',id,p];write('posten',id,null);toast(`${p.name||'Eintrag'} entfernt.`,true)}
   else if(a==='rdel'){const id=b.closest('[data-r]').dataset.r,r=data.antworten[id];if(!r)return;undo=['antworten',id,r];write('antworten',id,null);toast('Antwort gelöscht.',true)}
   else if(a==='like'){if(!needMe())return;toggleLike(pid(b))}
-  else if(a==='sugg'){write('posten',uid(),{kat:b.dataset.k,name:b.dataset.v,wer:'',von:me||'',likes:[],t:Date.now()});notify(`Neue Idee bei ${catLabel(b.dataset.k)}: ${b.dataset.v}`)}
+  else if(a==='sugg'){write('posten',uid(),{kat:b.dataset.k,name:b.dataset.v,wer:'',von:me||'',likes:[],t:Date.now()});notify(b.dataset.k==='wuensche'?`Neuer Wunsch zum Fleisch: ${b.dataset.v}${me?` (von ${gname(me)})`:''}`:`Neue Idee bei ${catLabel(b.dataset.k)}: ${b.dataset.v}`)}
 });
 
 let toastT;
