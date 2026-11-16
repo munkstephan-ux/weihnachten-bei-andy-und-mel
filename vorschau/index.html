@@ -171,6 +171,8 @@ main{padding:22px 0 calc(var(--tabh) + 40px + env(safe-area-inset-bottom,0px));d
 .addform input[type=text]{flex:1 1 180px;min-width:0;border:1px solid var(--line2);background:var(--bg);border-radius:999px;padding:9px 14px}
 .addform input[type=text]:focus{outline:none;border-color:var(--gold)}
 .addform label{display:inline-flex;gap:7px;align-items:center;font-size:14px;color:var(--muted);white-space:nowrap}
+.whosel{border:1px solid var(--line2);background:var(--bg);border-radius:999px;padding:9px 12px;font-size:14px;max-width:100%}
+.whosel:focus{outline:none;border-color:var(--gold)}
 .addform input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold)}
 .sugg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:0 14px 14px}
 .sugg span{font-size:12.5px;color:var(--muted)}
@@ -405,7 +407,7 @@ async function toggleLike(id){
 function take(id,on){
   const p=data.posten[id];if(!p)return;
   write('posten',id,{...p,wer:on?me:''});
-  if(on){justTaken=id;render();toast(`Danke dir! ${p.name} steht jetzt bei dir.`);notify(`${short(me)} bringt ${p.name} mit. Danke! ✨`)}
+  if(on){justTaken=id;render();toast(`Danke dir! ${p.name} steht jetzt bei dir.`);notify(`${short(me)} ${isPlural(me)?'bringen':'bringt'} ${p.name} mit. Danke! ✨`)}
   else{toast(`Kein Ding, ${p.name} ist wieder frei.`);notify(`${p.name} ist wieder frei. Wer mag es mitbringen?`)}
 }
 function setMe(id){me=id;store.set(ME_KEY,id);if(pushState==='on'&&swReg)swReg.pushManager.getSubscription().then(s=>s&&saveSub(s)).catch(()=>{})}
@@ -536,7 +538,7 @@ function viewMitbringen(gs,its){
     if(k.wish)all.sort((a,b)=>b.likes.length-a.likes.length||(a.t||0)-(b.t||0));
     h+=`<section class="panel" id="k-${k.key}" style="scroll-margin-top:16px"><div class="cat-h"><span class="em">${ico(k.icon)}</span><div><h3>${esc(k.label)}</h3><div class="sub">${esc(k.sub)}</div></div></div><p class="cat-intro">${esc(k.intro)}</p>
       <div class="rows" style="border-top:1px solid var(--line)">${all.length?all.map(p=>itemRow(p,false)).join(''):`<div class="empty">Noch leer. Magst du anfangen?</div>`}</div>
-      <form class="addform" data-form="add" data-k="${k.key}"><input type="text" id="add-${k.key}" placeholder="${esc(k.ph)}" aria-label="${esc(k.label)}: Eintrag hinzufügen" autocomplete="off" enterkeyhint="done">${k.wish?'':`<label><input type="checkbox" id="mine-${k.key}"> Bring ich mit</label>`}<button class="btn small" type="submit">${ico('plus')} Eintragen</button></form>`;
+      <form class="addform" data-form="add" data-k="${k.key}"><input type="text" id="add-${k.key}" placeholder="${esc(k.ph)}" aria-label="${esc(k.label)}: Eintrag hinzufügen" autocomplete="off" enterkeyhint="done">${k.wish?'':`<select class="whosel" id="who-${k.key}" aria-label="Wer bringt’s mit?"><option value="">Wer bringt’s? Noch offen</option><option value="__me">Bring ich mit</option>${gs.filter(g=>g.id!==me&&g.status!=='nein').map(g=>`<option value="${esc(g.id)}">Bringt ${esc(short(g.id))}</option>`).join('')}</select>`}<button class="btn small" type="submit">${ico('plus')} Eintragen</button></form>`;
     const names=new Set(all.map(p=>p.name.trim().toLowerCase())),left=k.sugg.filter(s=>!names.has(s.toLowerCase()));
     if(all.length<4&&left.length)h+=`<div class="sugg"><span>Ideen zum Antippen:</span>${left.map(s=>`<button data-a="sugg" data-k="${k.key}" data-v="${esc(s)}">+ ${esc(s)}</button>`).join('')}</div>`;
     h+=`</section>`;
@@ -546,7 +548,7 @@ function viewMitbringen(gs,its){
 
 function viewGaeste(gs,c){
   const by=s=>gs.filter(g=>g.status===s);
-  let h=`<section class="sec"><div class="sec-h"><span class="k">Gäste</span><h2>Wer an Heiligabend dabei ist</h2><p>${c.n?`${c.e} ${c.e===1?'Erwachsener':'Erwachsene'}${c.k?` und ${c.k} ${c.k===1?'Kind':'Kinder'}`:''} haben schon zugesagt.`:'Noch hat niemand zugesagt.'} Tipp auf einen Namen, wenn du was ändern willst.</p></div>`;
+  let h=`<section class="sec"><div class="sec-h"><span class="k">Gäste</span><h2>Wer an Heiligabend dabei ist</h2><p>${c.n?`${c.e} ${c.e===1?'Erwachsener':'Erwachsene'}${c.k?` und ${c.k} ${c.k===1?'Kind':'Kinder'}`:''} haben schon zugesagt.`:'Noch hat niemand zugesagt.'} Tipp auf einen Namen, wenn du was ändern willst. Geht auch für andere, zum Beispiel wenn ihr euch abgesprochen habt.</p></div>`;
   for(const [s,t] of [['ja','Sind dabei'],['offen','Wir hoffen, ihr könnt kommen'],['nein','Dieses Jahr leider nicht']]){
     const l=by(s);if(!l.length)continue;
     h+=`<div class="sec-h" style="margin-top:4px"><span class="k">${t}</span></div><div class="panel rows">${l.map(guestRow).join('')}</div>`;
@@ -621,9 +623,9 @@ function sheetHTML(){
     if(!isWish(p)){
       h+=`<div class="blk"><h4>Wer bringt es mit?</h4>`;
       if(mine)h+=`<p>${isPlural(me)?'Das bringt ihr mit. Danke euch!':'Das bringst du mit. Danke dir!'} ✨</p><button class="btn ghost" data-a="untake">Doch nicht, wieder freigeben</button>`;
-      else if(p.wer)h+=`<p>${esc(short(p.wer))} bringt es mit.</p>`;
+      else if(p.wer)h+=`<p>${esc(short(p.wer))} ${isPlural(p.wer)?'bringen':'bringt'} es mit.</p>`;
       else h+=`<p class="hint">Hat noch keiner. Magst du?</p><button class="btn gold" data-a="take">${ico('check')} Bring ich mit</button>`;
-      h+=`<label class="field" style="margin-top:6px"><small>Für wen anderes eintragen</small><select class="inp" data-f="pwer" id="it-wer"><option value="">Sucht noch jemanden</option>${gs.filter(g=>g.status!=='nein'||g.id===p.wer).map(g=>`<option value="${esc(g.id)}"${g.id===p.wer?' selected':''}>${esc(g.name)}</option>`).join('')}</select></label></div>`;
+      h+=`<label class="field" style="margin-top:8px"><span>Oder für jemand anderen eintragen</span><select class="inp" data-f="pwer" id="it-wer"><option value="">Noch offen, sucht jemanden</option>${gs.filter(g=>g.status!=='nein'||g.id===p.wer).map(g=>`<option value="${esc(g.id)}"${g.id===p.wer?' selected':''}>${esc(g.name)}</option>`).join('')}</select></label></div>`;
     }
     h+=`<div class="blk"><h4>${isWish(p)?'Möchten auch':'Hab Lust drauf'}</h4><div><button class="chip like" data-a="like" aria-pressed="${!!liked}">${ico('heart')} ${isWish(p)?(liked?'Ich auch':'Möchte ich auch'):(liked?'Ich hab Lust drauf':'Hab Lust drauf')}</button></div>${p.likes.length?`<p class="likers">${p.likes.map(l=>esc(short(l))).join(', ')}</p>`:''}</div>`;
     h+=`<div class="blk"><h4>Rezept</h4>`;
@@ -656,7 +658,7 @@ dlg.addEventListener('click',e=>{if(e.target===dlg)closeSheet()});
 /* ---------- Zeichnen ---------- */
 function paint(el,html){
   const a=document.activeElement, keep=a&&a.id&&el.contains(a)?{id:a.id,v:a.value,s:'selectionStart' in a?[a.selectionStart,a.selectionEnd]:null}:null;
-  const drafts=[...el.querySelectorAll('form input[id], form textarea[id]')].filter(i=>i.type!=='checkbox'&&i.value).map(i=>[i.id,i.value]);
+  const drafts=[...el.querySelectorAll('form input[id], form textarea[id], form select[id]')].filter(i=>i.type!=='checkbox'&&i.value).map(i=>[i.id,i.value]);
   const checks=[...el.querySelectorAll('form input[type=checkbox]')].map(i=>[i.id,i.checked]);
   const st=el.scrollTop;
   el.innerHTML=html;
@@ -703,7 +705,8 @@ document.addEventListener('change',e=>{
   if(f==='datum'){const v=t.value.trim();if(v===(data.info.main||{}).datum)return;setInfo({datum:v});if(v)notify('Heiligabend: '+v+'. Wir freuen uns auf euch!');return}
   if(f==='fleisch'){const v=t.value.trim();if(v===(data.info.main||{}).fleisch)return;setInfo({fleisch:v});if(v)notify('Andy, Mel & Connor: '+v);return}
   if(f==='pname'||f==='pwer'){const p=data.posten[sheet&&sheet.id];if(!p)return;const v=f==='pname'?t.value.trim():t.value;if(f==='pname'&&!v){t.value=p.name;return}
-    write('posten',p.id,{...p,[f==='pname'?'name':'wer']:v});if(f==='pwer'&&v)notify(`${short(v)} bringt ${p.name} mit. Danke! ✨`);return}
+    write('posten',p.id,{...p,[f==='pname'?'name':'wer']:v});
+    if(f==='pwer'){if(v){toast(v===me?`Danke dir! ${p.name} steht jetzt bei dir.`:`Danke! ${p.name} steht jetzt bei ${short(v)}.`);notify(`${short(v)} ${isPlural(v)?'bringen':'bringt'} ${p.name} mit${v!==me&&me?` (eingetragen von ${short(me)})`:''}. Danke! ✨`)}else if(p.wer){toast(`${p.name} ist wieder frei.`);notify(`${p.name} ist wieder frei. Wer mag es mitbringen?`)}}return}
   if(f==='gname'){const g=data.gaeste[sheet&&sheet.id];if(!g)return;const v=t.value.trim();if(!v){t.value=g.name;return}write('gaeste',g.id,{...g,name:v});return}
 });
 document.addEventListener('keydown',e=>{const t=e.target;if(e.key==='Enter'&&(t.classList.contains('titleinp')||t.id==='datum')){e.preventDefault();t.blur()}});
@@ -714,13 +717,14 @@ document.addEventListener('submit',e=>{
     if(v)toast('Danke fürs Teilen!');return}
   const inp=f.querySelector('input:not([type=checkbox])'),v=inp?inp.value.trim():'';if(!v)return;
   if(form==='add'){
-    const k=f.dataset.k,mine=f.querySelector('input[type=checkbox]')?.checked;
+    const k=f.dataset.k,sel=f.querySelector('select'),who=sel?sel.value:'',mine=who==='__me';
     if(mine&&!needMe())return;
-    const id=uid();write('posten',id,{kat:k,name:v,wer:mine?me:'',von:me||'',likes:[],rezept:'',t:Date.now()});
-    if(mine)justTaken=id;
-    toast(mine?`Danke dir! ${v} steht jetzt bei dir.`:'Danke für die Idee!');
-    notify(k==='wuensche'?`Neuer Wunsch zum Fleisch: ${v}${me?` (von ${short(me)})`:''}`:mine?`${short(me)} bringt ${v} mit. Danke! ✨`:`Neue Idee bei ${catOf(k).label}: ${v}${me?` (von ${short(me)})`:''}`);
-    const cb=f.querySelector('input[type=checkbox]');if(cb)cb.checked=false;
+    const wer=mine?me:who, other=wer&&wer!==me;
+    const id=uid();write('posten',id,{kat:k,name:v,wer,von:me||'',likes:[],rezept:'',t:Date.now()});
+    if(wer)justTaken=id;
+    toast(mine?`Danke dir! ${v} steht jetzt bei dir.`:other?`Danke! ${v} steht jetzt bei ${short(wer)}.`:'Danke für die Idee!');
+    notify(k==='wuensche'?`Neuer Wunsch zum Fleisch: ${v}${me?` (von ${short(me)})`:''}`:wer?`${short(wer)} ${isPlural(wer)?'bringen':'bringt'} ${v} mit${other&&me?` (eingetragen von ${short(me)})`:''}. Danke! ✨`:`Neue Idee bei ${catOf(k).label}: ${v}${me?` (von ${short(me)})`:''}`);
+    if(sel){const ns=document.getElementById(sel.id);if(ns)ns.value=''}
   }else if(form==='gadd'){write('gaeste',uid(),{name:v,erw:1,kinder:0,status:'offen',t:Date.now()});toast(`${v} steht jetzt auf der Gästeliste.`)}
   else if(form==='welcome-new'){const id=uid();write('gaeste',id,{name:v,erw:1,kinder:0,status:'offen',t:Date.now()});setMe(id);sheet.step='kommst';render()}
   else if(form==='reply'){if(!needMe())return;const p=data.posten[sheet&&sheet.id];if(!p)return;write('antworten',uid(),{posten:p.id,von:me,inhalt:v,t:Date.now()});notify(`${short(me)} zu „${p.name}“: ${v}`)}
