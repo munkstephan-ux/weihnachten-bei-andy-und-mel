@@ -351,7 +351,7 @@ const IC={
 const ico=(n,c='')=>`<svg class="ico ${c}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
 
 const CATS=[
- {key:'wuensche',wish:true,icon:'wish',label:'Wünsche zum Fleisch',sub:'Fürs Pfännchen und zum Fondue',intro:'Was darf ins Pfännchen oder neben das Fleisch? Schreibt eure Wünsche auf, Andy & Mel schauen hier rein. Mit „Möchte ich auch“ seht ihr, was vielen schmeckt.',ph:'Dein Wunsch …',sugg:['Zuckerschoten','Champignons','Kartöffelchen','Mais']},
+ {key:'wuensche',wish:true,icon:'wish',label:'Wünsche zum Fleisch',sub:'Fürs Pfännchen und zum Fondue',intro:'Was darf ins Pfännchen oder neben das Fleisch? Schreibt eure Wünsche auf, wir schauen hier rein und kümmern uns gern darum. Mit „Möchte ich auch“ seht ihr, was vielen schmeckt.',ph:'Dein Wunsch …',sugg:['Zuckerschoten','Champignons','Kartöffelchen','Mais']},
  {key:'dips',icon:'dip',label:'Dips & Soßen',sub:'Ohne Soßen kein Fondue',intro:'Wer Lust hat, eine Soße zu machen, trägt sie einfach ein. Gern auch mit Rezept, damit andere sie nachmachen können.',ph:'Soße oder Dip …',g:80,unit:'g',sugg:['Knoblauchsoße','Cocktailsoße','Currysoße','Kräuterquark']},
  {key:'salate',icon:'leaf',label:'Salate',sub:'Frisch zu Käse und Fleisch',intro:'Ein frischer Salat tut neben Käse und Fleisch richtig gut. Bring einfach mit, was du gern machst.',ph:'Welcher Salat?',g:100,unit:'g',sugg:['Grüner Salat','Gurkensalat','Krautsalat','Nudelsalat']},
  {key:'brot',icon:'bread',label:'Brot & Butter',sub:'Fladenbrot gehört dazu',intro:'Fladenbrot gehört bei uns einfach dazu. Butter und Kräuterbutter sind auch immer willkommen.',ph:'Brot oder Butter …',g:100,unit:'g',sugg:['Fladenbrot','Baguette','Kräuterbutter']},
@@ -477,7 +477,7 @@ function viewAbend(gs,its,c,info){
   const hello=!meG?'Schön, dass du da bist!':host?'Hallo, ihr Gastgeber!':many?`Schön, dass ihr da seid, ${esc(short(me))}!`:`Schön, dass du da bist, ${esc(short(me))}!`;
   h+=`<section class="panel welcome"><p class="eyebrow">Herzlich willkommen</p><h2>${hello}</h2>
     <p>Wie jedes Jahr gibt es an Heiligabend Raclette &amp; Fondue. Ums Fleisch kümmern wir uns. Alles andere darf, muss aber nicht: Bringt einfach mit, worauf ihr Lust habt. Hauptsache, wir sitzen zusammen.</p>
-    ${info.fleisch?`<p class="note"><b>Ein Wort von Andy &amp; Mel</b>${esc(info.fleisch)}</p>`:''}
+    ${info.fleisch?`<p class="note"><b>Noch ein Wort von uns</b>${esc(info.fleisch)}</p>`:''}
     <p class="sign">Andy, Mel &amp; Connor</p>`;
   if(!meG)h+=`<button class="btn gold" data-a="welcome">Los geht’s</button>`;
   else{
@@ -520,14 +520,14 @@ function guide(meG,its){
   const s1=!!meG&&meG.status!=='offen', s2=!!meG&&its.some(p=>p.wer===me&&!isWish(p)), s3=pushDone;
   if(s1&&s2&&s3)return '';
   const m=meG&&isPlural(me), st=(done,n,t,sub,act,go)=>`<button class="gstep${done?' done':''}" data-a="${act}"><span class="n">${done?ico('check'):n}</span><span><b>${t}</b><small>${sub}</small></span>${done?'':`<span class="go" aria-label="${go}">${ico('chev')}</span>`}</button>`;
-  return `<section class="panel guide"><p class="eyebrow" style="color:var(--gold)">So einfach geht’s</p><h3>In drei kleinen Schritten</h3><p>Alles freiwillig, nichts muss. Es hilft nur Andy &amp; Mel beim Planen.</p>
+  return `<section class="panel guide"><p class="eyebrow" style="color:var(--gold)">So einfach geht’s</p><h3>In drei kleinen Schritten</h3><p>Alles freiwillig, nichts muss. Es hilft uns einfach beim Planen.</p>
     ${st(s1,1,m?'Sagt Bescheid, ob ihr kommt':'Sag Bescheid, ob du kommst',meG?(meG.status==='ja'?(m?'Ihr seid dabei. Wie schön!':'Du bist dabei. Wie schön!'):meG.status==='nein'?'Danke fürs Bescheidgeben.':'Ja, nein oder weiß noch nicht, alles ist okay.'):'Ja, nein oder weiß noch nicht, alles ist okay.','welcome','Antworten')}
     ${st(s2,2,m?'Sucht euch etwas aus':'Such dir etwas aus','Ein Salat, eine Soße, Brot oder Getränke. Oder eine ganz eigene Idee.','tab-mitbringen','Ansehen')}
     ${st(s3,3,m?'Bleibt auf dem Laufenden':'Bleib auf dem Laufenden',pushState==='on'?'Benachrichtigungen sind an.':'Eine kurze Nachricht, wenn sich etwas tut. Nur zum Fest.','guide-push','Einschalten')}
   </section>`;
 }
 function viewMitbringen(gs,its){
-  let h=`<section class="sec"><div class="sec-h"><span class="k">Mitbringen</span><h2>Was auf den Tisch kommt</h2><p>Ums Fleisch kümmern sich Andy &amp; Mel. Für alles drumherum freuen wir uns über eure Ideen. Jeder bringt mit, worauf er Lust hat.</p></div>
+  let h=`<section class="sec"><div class="sec-h"><span class="k">Mitbringen</span><h2>Was auf den Tisch kommt</h2><p>Ums Fleisch kümmern wir uns gern. Für alles drumherum freuen wir uns über eure Ideen. Jeder bringt mit, worauf er Lust hat.</p></div>
     <nav class="jump" aria-label="Zu einer Kategorie springen">${CATS.map(k=>{const o=its.filter(p=>p.kat===k.key&&!p.wer&&!k.wish).length;return `<a href="#k-${k.key}" data-a="jump">${esc(k.label)}${o?`<small>${o}</small>`:''}</a>`}).join('')}</nav></section>`;
   for(const k of CATS){
     const all=its.filter(p=>p.kat===k.key);
@@ -556,7 +556,7 @@ function viewGaeste(gs,c){
 function hostArea(gs,its,c,info){
   const ny=nextYear();
   const li=c.p?[['Fleisch fürs Fondue',c.e?amount(c.e*MEAT_G,'g'):'–'],['Raclettekäse',amount(c.p*CHEESE_G,'g')]].concat(CATS.filter(k=>k.g).map(k=>[k.label,amount(c.p*k.g,k.unit)])):[];
-  return `<details class="host" id="host"${hostOpen?' open':''}><summary>${ico('key')} Für Andy &amp; Mel</summary><div class="in">
+  return `<details class="host" id="host"${hostOpen?' open':''}><summary>${ico('key')} Nur für uns Gastgeber</summary><div class="in">
     <label class="field"><span>Wann geht’s los?</span><input class="inp" id="datum" data-f="datum" value="${esc(info.datum)}" placeholder="z. B. 24.12. um 18 Uhr" enterkeyhint="done"><small>Steht oben in der Einladung.</small></label>
     <label class="field"><span>Ein Wort an alle (optional)</span><textarea class="inp" id="fleisch" data-f="fleisch" rows="2" placeholder="z. B. Bringt gern eure Lieblingssoße mit!">${esc(info.fleisch)}</textarea><small>Erscheint in der Begrüßung. Speichert, sobald du das Feld verlässt.</small></label>
     ${li.length?`<div class="field"><span>Grobe Mengen für ${c.n} ${c.n===1?'Person':'Personen'}</span><ul class="amounts">${li.map(([k,v])=>`<li>${esc(k)}</li><li><b>~${v}</b></li>`).join('')}</ul><small>Nur zur Orientierung, Kinder zählen halb.</small></div>`:''}
@@ -573,7 +573,7 @@ function waText(gs,its,c,info){
   const open=its.filter(p=>!p.wer&&!isWish(p));
   if(open.length){L.push('','Hier freuen wir uns noch über Hilfe:');for(const p of open)L.push('• '+p.name)}
   else L.push('','Alles hat schon jemanden gefunden. Danke euch! ❤️');
-  L.push('','Wer mag, trägt sich einfach in der App ein. Ums Fleisch kümmern sich Andy & Mel 🙂',location.origin+location.pathname);
+  L.push('','Wer mag, trägt sich einfach in der App ein. Ums Fleisch kümmern wir uns gern 🙂',location.origin+location.pathname);
   return L.join('\n');
 }
 
@@ -699,7 +699,7 @@ document.addEventListener('toggle',e=>{if(e.target.id==='host')hostOpen=e.target
 document.addEventListener('change',e=>{
   const t=e.target,f=t.dataset.f; if(!f)return;
   if(f==='datum'){const v=t.value.trim();if(v===(data.info.main||{}).datum)return;setInfo({datum:v});if(v)notify('Heiligabend: '+v+'. Wir freuen uns auf euch!');return}
-  if(f==='fleisch'){const v=t.value.trim();if(v===(data.info.main||{}).fleisch)return;setInfo({fleisch:v});if(v)notify('Andy & Mel: '+v);return}
+  if(f==='fleisch'){const v=t.value.trim();if(v===(data.info.main||{}).fleisch)return;setInfo({fleisch:v});if(v)notify('Andy, Mel & Connor: '+v);return}
   if(f==='pname'||f==='pwer'){const p=data.posten[sheet&&sheet.id];if(!p)return;const v=f==='pname'?t.value.trim():t.value;if(f==='pname'&&!v){t.value=p.name;return}
     write('posten',p.id,{...p,[f==='pname'?'name':'wer']:v});if(f==='pwer'&&v)notify(`${short(v)} bringt ${p.name} mit. Danke! ✨`);return}
   if(f==='gname'){const g=data.gaeste[sheet&&sheet.id];if(!g)return;const v=t.value.trim();if(!v){t.value=g.name;return}write('gaeste',g.id,{...g,name:v});return}
