@@ -428,14 +428,14 @@ async function initPush(){
   render();
 }
 async function enablePush(){
-  if(DEMO){toast('In der Vorschau bleiben Benachrichtigungen aus.');pushState='on';render();return true}
+  if(DEMO){toast('Vorschau: Benachrichtigungen wären jetzt an.');pushState='on';render();return true}
   pushState='busy';render();
   try{
     const perm=await Notification.requestPermission();
     if(perm!=='granted'){pushState=perm==='denied'?'denied':'off';render();return false}
     const reg=await navigator.serviceWorker.ready;
     const sub=(await reg.pushManager.getSubscription())||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64(CFG.vapid)});
-    await saveSub(sub);pushState='on';toast('Schön! Du bekommst ab jetzt Bescheid.');render();return true;
+    await saveSub(sub);pushState='on';toast('Benachrichtigungen sind an. Ausschalten geht jederzeit.');render();return true;
   }catch(e){console.error(e);pushState='off';toast('Das hat nicht geklappt. Magst du es gleich noch einmal versuchen?');render();return false}
 }
 async function disablePush(){
@@ -481,6 +481,8 @@ function viewAbend(gs,its,c,info){
     const st=host?'Hier seht ihr alles, was eure Gäste planen.':many?{ja:'Ihr seid dabei. Wir freuen uns riesig auf euch!',offen:'Wir würden uns sehr freuen, wenn ihr dabei seid.',nein:'Schade, dass es dieses Jahr nicht klappt. Ihr seid jederzeit herzlich willkommen.'}[meG.status]
       :{ja:'Du bist dabei. Wir freuen uns riesig auf dich!',offen:'Wir würden uns sehr freuen, wenn du dabei bist.',nein:'Schade, dass es dieses Jahr nicht klappt. Du bist jederzeit herzlich willkommen.'}[meG.status];
     h+=`<div class="mystatus"><span>${st}</span>${host?'':`<button class="link" data-a="welcome-kommst">${meG.status==='ja'?'Ändern':'Antworten'}</button>`}</div>`;
+    if(pushState==='on')h+=`<div class="mystatus">${ico('bell')}<span>Benachrichtigungen sind an.</span><button class="link" data-a="push-off">Ausschalten</button></div>`;
+    else if(pushState==='off')h+=`<div class="mystatus">${ico('bell')}<span>Benachrichtigungen sind aus.</span><button class="link" data-a="push-on">Einschalten</button></div>`;
   }
   h+=`</section>`;
   if(afterParty()&&its.length)h+=`<section class="panel thanks"><p class="eyebrow" style="color:var(--gold)">Danke</p><h2>Was für ein schöner Abend ❤️</h2><p>Danke an alle, die gekocht, mitgebracht und mitgefeiert haben. Wir freuen uns schon aufs nächste Jahr.</p></section>`;
@@ -589,13 +591,15 @@ function sheetHTML(){
       const m=isPlural(me);
       h+=`<h2 id="sheet-title" class="center" style="padding:0">Hallo ${esc(short(me))}!</h2><p class="lead center">${m?'Seid ihr':'Bist du'} an Heiligabend dabei? Jede Antwort ist willkommen, und ${m?'ihr könnt':'du kannst'} sie jederzeit ändern.</p>
         <div class="blk seg">
-          <button class="opt" data-a="answer" data-v="ja" aria-pressed="${g.status==='ja'}"><span class="em">🎄</span><span>${m?'Ja, wir sind dabei!':'Ja, ich bin dabei!'}<small>Wir freuen uns riesig.</small></span></button>
+          <button class="opt" data-a="answer" data-v="ja" aria-pressed="${g.status==='ja'}"><span class="em">🎄</span><span>${m?'Ja, wir sind dabei!':'Ja, ich bin dabei!'}<small>Wir freuen uns riesig und halten ${m?'euch':'dich'} auf dem Laufenden.</small></span></button>
           <button class="opt" data-a="answer" data-v="offen" aria-pressed="${g.status==='offen'}"><span class="em">🕯️</span><span>${m?'Wissen wir noch nicht':'Weiß ich noch nicht'}<small>Kein Stress, ${m?'sagt einfach Bescheid, wenn ihr es wisst':'sag einfach Bescheid, wenn du es weißt'}.</small></span></button>
           <button class="opt" data-a="answer" data-v="nein" aria-pressed="${g.status==='nein'}"><span class="em">💌</span><span>Dieses Jahr leider nicht<small>Schade! ${m?'Ihr seid':'Du bist'} jederzeit herzlich willkommen.</small></span></button>
         </div>
-        ${g.status==='ja'?`<div class="blk"><h4>Wie viele seid ihr?</h4>${stepper(g,'erw','Erwachsene')}${stepper(g,'kinder','Kinder')}</div>`:''}
+        ${g.status==='ja'?`<div class="blk"><h4>${m?'Wie viele seid ihr?':'Kommt noch jemand mit?'}</h4>${stepper(g,'erw','Erwachsene')}${stepper(g,'kinder','Kinder')}</div>`:''}
         <div class="blk"><button class="btn wide" data-a="w-next">Weiter</button></div>`;
     }else if(st==='push'){
+      if(pushState==='on'){h+=`<h2 id="sheet-title" class="center" style="padding:0">Du bekommst Bescheid 🔔</h2><p class="lead center">Wenn jemand zusagt, etwas mitbringt oder dir antwortet, bekommst du eine kurze Nachricht. Nur zum Fest. Möchtest du das nicht, schalte es einfach aus, auch später jederzeit auf der Startseite.</p>
+        <div class="blk"><button class="btn wide" data-a="close">Fertig</button><button class="btn wide ghost" data-a="push-off-w">Benachrichtigungen ausschalten</button></div>`;return h}
       h+=`<h2 id="sheet-title" class="center" style="padding:0">Sollen wir dir Bescheid geben?</h2><p class="lead center">Wenn jemand zusagt, etwas mitbringt oder dir antwortet, bekommst du eine kurze Nachricht. Nur zum Fest.</p>`;
       if(pushState==='ios-install')h+=`<div class="blk">${IOS_HOWTO}</div><div class="blk"><button class="btn wide" data-a="close">Alles klar</button></div>`;
       else if(pushState==='off'||pushState==='busy')h+=`<div class="blk"><button class="btn wide" data-a="push-on-w"${pushState==='busy'?' disabled':''}>${ico('bell')} Ja, gerne</button><button class="btn wide ghost" data-a="close">Lieber nicht</button></div>`;
@@ -732,8 +736,9 @@ document.addEventListener('click',e=>{
     case 'welcome-kommst':openSheet({t:'welcome',step:'kommst'});return;
     case 'pick':setMe(b.dataset.v);sheet.step='kommst';render();return;
     case 'iam':setMe(b.dataset.v);toast(`Hallo ${short(b.dataset.v)}! Schön, dass du da bist.`);render();return;
-    case 'answer':{setStatus(me,b.dataset.v);return}
-    case 'w-next':{sheet.step=pushState==='on'?null:'push';if(!sheet.step){closeSheet();toast('Schön, dass du da bist!')}else render();return}
+    case 'answer':{setStatus(me,b.dataset.v);if(b.dataset.v==='ja'&&pushState==='off')enablePush();return}
+    case 'w-next':{sheet.step='push';render();return}
+    case 'push-off-w':disablePush();return;
     case 'push-on':enablePush();return;
     case 'push-on-w':enablePush().then(ok=>{if(ok)closeSheet()});return;
     case 'push-off':disablePush();return;
@@ -749,7 +754,7 @@ document.addEventListener('click',e=>{
     case 'sugg':{const k=b.dataset.k,v=b.dataset.v;write('posten',uid(),{kat:k,name:v,wer:'',von:me||'',likes:[],rezept:'',t:Date.now()});toast('Danke für die Idee!');notify(k==='wuensche'?`Neuer Wunsch zum Fleisch: ${v}`:`Neue Idee bei ${catOf(k).label}: ${v}`);return}
     case 'pdel':{const p=data.posten[pid];if(!p)return;undo=['posten',pid,p];closeSheet();write('posten',pid,null);toast(`„${p.name}“ entfernt.`,true);return}
     case 'rdel':{const id=b.closest('[data-r]').dataset.r,r=data.antworten[id];if(!r)return;undo=['antworten',id,r];write('antworten',id,null);toast('Kommentar gelöscht.',true);return}
-    case 'gstatus':setStatus(gid,b.dataset.v);return;
+    case 'gstatus':setStatus(gid,b.dataset.v);if(gid===me&&b.dataset.v==='ja'&&pushState==='off')enablePush();return;
     case 'gstep':{const g=data.gaeste[gid];if(g){const k=b.dataset.k;write('gaeste',gid,{...g,[k]:Math.max(0,(+g[k]||0)+(+b.dataset.d))})}return}
     case 'gdel':{const g=data.gaeste[gid];if(!g)return;undo=['gaeste',gid,g];closeSheet();write('gaeste',gid,null);toast(`${g.name||'Gast'} ist nicht mehr auf der Liste.`,true);return}
     case 'copy':{const gs=guests(),its=items(),txt=waText(gs,its,counts(gs),Object.assign({datum:'',fleisch:''},data.info.main||{})),ta=$('#wa'),hint=$('#copy-hint');ta.value=txt;
