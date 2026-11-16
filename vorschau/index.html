@@ -214,6 +214,7 @@ textarea.inp{resize:vertical;line-height:1.5}
 dialog.sheet{border:0;padding:0;margin:0;max-width:none;width:100%;max-height:none;background:transparent;color:var(--ink)}
 dialog.sheet::backdrop{background:rgba(5,15,10,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 dialog.sheet[open]{position:fixed;inset:auto 0 0 0;display:flex;justify-content:center}
+.sh:focus{outline:none}
 .sh{position:relative;width:100%;max-width:560px;max-height:92dvh;overflow:auto;overscroll-behavior:contain;background:var(--paper);border-radius:24px 24px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(0,0,0,.25)}
 .sh::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:var(--line2);margin:0 auto 12px}
 @media (min-width:700px){dialog.sheet[open]{inset:0;align-items:center}.sh{border-radius:24px;max-height:86vh}.sh::before{display:none}}
@@ -307,7 +308,7 @@ dialog.sheet[open]{position:fixed;inset:auto 0 0 0;display:flex;justify-content:
 </div>
 
 <div class="tabs"><nav id="tabs" aria-label="Bereiche"></nav></div>
-<dialog class="sheet" id="sheet" aria-labelledby="sheet-title"><div class="sh" id="sh"></div></dialog>
+<dialog class="sheet" id="sheet" aria-labelledby="sheet-title"><div class="sh" id="sh" tabindex="-1"></div></dialog>
 <div id="toast-root" aria-live="polite"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -444,7 +445,7 @@ async function disablePush(){
   if(!DEMO){try{const sub=swReg&&await swReg.pushManager.getSubscription();if(sub){await sb.rpc('push_abmelden',{p_endpoint:sub.endpoint});await sub.unsubscribe()}}catch(e){console.error(e)}}
   pushState='off';toast('Benachrichtigungen sind aus.');render();
 }
-const IOS_HOWTO=`<ol class="howto"><li><span>Öffne diesen Link in <b>Safari</b>.</span></li><li><span>Tippe unten auf <b>Teilen</b> (das Quadrat mit dem Pfeil nach oben).</span></li><li><span>Wähle <b>„Zum Home-Bildschirm“</b> und tippe auf <b>Hinzufügen</b>.</span></li><li><span>Öffne die App über das neue Symbol auf deinem Home-Bildschirm und schalte die Benachrichtigungen hier ein.</span></li></ol>`;
+const IOS_HOWTO=`<ol class="howto"><li><span>Öffne diesen Link in <b>Safari</b>.</span></li><li><span>Tippe unten links in der Adressleiste auf <b>≡</b> und dann auf <b>Teilen</b>. Auf älteren iPhones tippst du direkt auf das Teilen-Symbol (Quadrat mit Pfeil nach oben).</span></li><li><span>Scrolle etwas nach unten, wähle <b>„Zum Home-Bildschirm“</b> und tippe auf <b>Hinzufügen</b>.</span></li><li><span>Öffne die App über das neue Symbol auf deinem Home-Bildschirm. Wenn du dort zusagst, schalten sich die Benachrichtigungen gleich mit ein.</span></li></ol>`;
 
 /* ---------- Bausteine ---------- */
 function itemRow(p,showCat){
@@ -645,8 +646,7 @@ function sheetHTML(){
 const stepper=(g,k,l)=>`<div class="stepper" data-g="${esc(g.id)}"><span>${l}</span><span class="ctl"><button data-a="gstep" data-k="${k}" data-d="-1" aria-label="${l}: eins weniger"${g[k]<=0?' disabled':''}>−</button><output>${g[k]}</output><button data-a="gstep" data-k="${k}" data-d="1" aria-label="${l}: eins mehr">+</button></span></div>`;
 
 const dlg=$('#sheet');
-function openSheet(s){sheet=s;editRecipe=false;paint($('#sh'),sheetHTML());if(!dlg.open){dlg.showModal();document.documentElement.style.overflow='hidden'}$('#sh').scrollTop=0;
-  const f=$('#sh .close');if(f)f.focus({preventScroll:true})}
+function openSheet(s){sheet=s;editRecipe=false;paint($('#sh'),sheetHTML());if(!dlg.open){dlg.showModal();document.documentElement.style.overflow='hidden'}$('#sh').scrollTop=0;$('#sh').focus({preventScroll:true})}
 function closeSheet(){if(dlg.open)dlg.close()}
 dlg.addEventListener('close',()=>{sheet=null;editRecipe=false;document.documentElement.style.overflow='';render()});
 dlg.addEventListener('click',e=>{if(e.target===dlg)closeSheet()});
