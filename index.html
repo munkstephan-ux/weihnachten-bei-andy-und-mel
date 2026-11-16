@@ -318,7 +318,8 @@ dialog.sheet[open]{position:fixed;inset:auto 0 0 0;display:flex;justify-content:
 /* ---------- Grundlagen ---------- */
 const DEMO=new URLSearchParams(location.search).has('vorschau')||/\/vorschau\//.test(location.pathname);
 const CFG=window.APP_CONFIG||{};
-const ME_KEY=DEMO?'weihnachten-vorschau-ich':'weihnachten-andreas-ich';
+const ME_KEY=DEMO?'weihnachten-vorschau-ich':'weihnachten-ich-v2';
+const STUMM=new URLSearchParams(location.search).has('stumm');
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -392,7 +393,7 @@ function write(col,id,body){
   }).catch(e=>{console.error(e);toast('Hat gerade nicht geklappt. Check kurz dein Internet und versuch’s nochmal.')});
 }
 const setInfo=patch=>write('info','main',Object.assign({datum:'',fleisch:''},data.info.main||{},patch));
-function notify(text){if(mode!=='shared'||!text)return;sb.functions.invoke('notify',{body:{title:'Heiligabend bei Andy, Mel & Connor',body:text,actor:me||''}}).catch(()=>{})}
+function notify(text){if(mode!=='shared'||!text||STUMM)return;sb.functions.invoke('notify',{body:{title:'Heiligabend bei Andy, Mel & Connor',body:text,actor:me||''}}).catch(()=>{})}
 async function toggleLike(id){
   const p=data.posten[id];if(!p||!me)return;const l=(p.likes||[]).slice(),i=l.indexOf(me);i>=0?l.splice(i,1):l.push(me);
   data.posten[id]={...p,likes:l};render();
