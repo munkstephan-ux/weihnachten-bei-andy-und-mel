@@ -179,12 +179,6 @@ main{padding:22px 0 calc(var(--tabh) + 40px + env(safe-area-inset-bottom,0px));d
 .jump a{flex:none;text-decoration:none;color:var(--ink);border:1px solid var(--line2);background:var(--paper);border-radius:999px;padding:7px 13px;font-size:13.5px;font-weight:600}
 .jump a small{color:var(--gold);font-weight:700;margin-left:4px}
 
-/* Benachrichtigungen */
-.bell{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;padding:16px 18px;background:var(--gold-soft);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:var(--r)}
-.bell .ico{width:26px;height:26px;color:var(--gold);margin-top:2px}
-.bell h3{font-size:21px;line-height:1.15}
-.bell p{font-size:14.5px;margin:4px 0 10px}
-.bell .row2{display:flex;flex-wrap:wrap;gap:8px}
 
 /* Gastgeber-Bereich */
 .host{border:1px dashed var(--line2);border-radius:var(--r);background:transparent}
@@ -266,6 +260,20 @@ dialog.sheet[open]{position:fixed;inset:auto 0 0 0;display:flex;justify-content:
 .toast button{background:transparent;border:0;color:var(--gold-2);font-weight:700}
 @media (prefers-reduced-motion:no-preference){.toast{animation:tin .2s ease-out}@keyframes tin{from{transform:translate(-50%,10px);opacity:0}}
   .view{animation:vin .28s ease-out}@keyframes vin{from{opacity:0;transform:translateY(6px)}}}
+.guide{padding:18px;display:grid;gap:4px}
+.guide h3{font-size:23px;line-height:1.15}
+.guide>p{color:var(--muted);font-size:14px;margin-bottom:6px}
+.gstep{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;text-align:left;width:100%;border:0;border-top:1px solid var(--line);background:transparent;padding:12px 0;color:inherit}
+.gstep .n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--body);font-weight:700;font-size:15px;border:1.5px solid var(--gold);color:var(--gold)}
+.gstep.done .n{background:var(--ok);border-color:var(--ok);color:#fff}
+.gstep.done .n .ico{width:18px;height:18px;stroke-width:2.4}
+.gstep b{display:block;font-size:15.5px}
+.gstep small{display:block;color:var(--muted);font-size:13.5px;line-height:1.35}
+.gstep.done b{color:var(--muted)}
+.gstep .go{color:var(--gold);display:grid;place-items:center}
+.gstep .go .ico{width:20px;height:20px;stroke-width:2}
+.thanks{padding:22px 20px;text-align:center;display:grid;gap:8px;background:linear-gradient(160deg,var(--gold-soft),var(--paper))}
+.thanks h2{font-size:28px}
 .foot{text-align:center;display:grid;gap:4px;justify-items:center;padding-top:6px;color:var(--muted);font-size:13.5px}
 .foot .tradition{font-family:var(--script);font-size:38px;line-height:1.05;color:var(--cran)}
 </style>
@@ -306,7 +314,7 @@ dialog.sheet[open]{position:fixed;inset:auto 0 0 0;display:flex;justify-content:
 (function(){
 'use strict';
 /* ---------- Grundlagen ---------- */
-const DEMO=new URLSearchParams(location.search).has('vorschau');
+const DEMO=new URLSearchParams(location.search).has('vorschau')||/\/vorschau\//.test(location.pathname);
 const CFG=window.APP_CONFIG||{};
 const ME_KEY=DEMO?'weihnachten-vorschau-ich':'weihnachten-andreas-ich';
 const $=s=>document.querySelector(s);
@@ -334,6 +342,7 @@ const IC={
   bread:'<path d="M4 13c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5v5H4z"/><path d="M9 10l-1.5 3M13 9.5l-1.5 3.5M17 10.5l-1.2 2.5"/>',
   cup:'<path d="M6 4h12l-1.5 15a1.5 1.5 0 0 1-1.5 1.3H9a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M6.5 9h11"/>',
   key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l2 2M14 9l2 2"/>',
+  chev:'<path d="M9 5.5l6.5 6.5L9 18.5"/>',
   copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/>'
 };
 const ico=(n,c='')=>`<svg class="ico ${c}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
@@ -348,6 +357,7 @@ const CATS=[
 const catOf=k=>CATS.find(c=>c.key===k);
 const MEAT_G=250, CHEESE_G=200;
 const nextYear=()=>{const d=new Date();return d.getFullYear()+(d.getMonth()===11&&d.getDate()>26?1:0)};
+const afterParty=()=>{const d=new Date();return d.getMonth()===11&&d.getDate()>=25};
 
 /* ---------- Zustand ---------- */
 const data={info:{},gaeste:{},posten:{},antworten:{}};
@@ -433,11 +443,6 @@ async function disablePush(){
   pushState='off';toast('Benachrichtigungen sind aus.');render();
 }
 const IOS_HOWTO=`<ol class="howto"><li><span>Öffne diesen Link in <b>Safari</b>.</span></li><li><span>Tippe unten auf <b>Teilen</b> (das Quadrat mit dem Pfeil nach oben).</span></li><li><span>Wähle <b>„Zum Home-Bildschirm“</b> und tippe auf <b>Hinzufügen</b>.</span></li><li><span>Öffne die App über das neue Symbol auf deinem Home-Bildschirm und schalte die Benachrichtigungen hier ein.</span></li></ol>`;
-function bellCard(){
-  if(['on','checking','busy','denied','unsupported'].includes(pushState))return'';
-  if(pushState==='ios-install')return `<section class="bell">${ico('bell')}<div><h3>Immer wissen, was sich tut</h3><p>Auf dem iPhone klappen Benachrichtigungen, wenn du die App einmal auf deinen Home-Bildschirm legst. Dauert keine Minute.</p><div class="row2"><button class="btn small" data-a="push-howto">So geht’s</button></div></div></section>`;
-  return `<section class="bell">${ico('bell')}<div><h3>Immer wissen, was sich tut</h3><p>Wir geben dir Bescheid, wenn jemand zusagt, etwas mitbringt oder dir antwortet. Nur zum Fest, versprochen.</p><div class="row2"><button class="btn small" data-a="push-on">Ja, gerne</button>${installEvt&&!standalone?'<button class="btn small ghost" data-a="install">Als App installieren</button>':''}</div></div></section>`;
-}
 
 /* ---------- Bausteine ---------- */
 function itemRow(p,showCat){
@@ -478,7 +483,8 @@ function viewAbend(gs,its,c,info){
     h+=`<div class="mystatus"><span>${st}</span>${host?'':`<button class="link" data-a="welcome-kommst">${meG.status==='ja'?'Ändern':'Antworten'}</button>`}</div>`;
   }
   h+=`</section>`;
-  h+=bellCard();
+  if(afterParty()&&its.length)h+=`<section class="panel thanks"><p class="eyebrow" style="color:var(--gold)">Danke</p><h2>Was für ein schöner Abend ❤️</h2><p>Danke an alle, die gekocht, mitgebracht und mitgefeiert haben. Wir freuen uns schon aufs nächste Jahr.</p></section>`;
+  else h+=guide(meG,its);
 
   /* Dein Beitrag */
   if(meG){
@@ -489,7 +495,7 @@ function viewAbend(gs,its,c,info){
 
   /* Hilfe willkommen */
   const open=its.filter(p=>!p.wer&&!isWish(p)), done=its.filter(p=>p.wer&&!isWish(p)).length, total=done+open.length;
-  h+=`<section class="sec"><div class="sec-h"><span class="k">Die Tafel</span><h2>${open.length?'Hier freuen wir uns über Hilfe':'Alles hat jemanden gefunden'}</h2><p>${open.length?'Diese Ideen suchen noch jemanden, der sie mitbringt. Ein Tipp genügt.':'Wunderbar, danke euch allen! Neue Ideen sind trotzdem jederzeit willkommen.'}</p></div>`;
+  h+=`<section class="sec"><div class="sec-h"><span class="k">Die Tafel</span><h2>${!total?'Noch ist der Tisch leer':open.length?'Hier freuen wir uns über Hilfe':'Alles hat jemanden gefunden'}</h2><p>${!total?'Magst du den Anfang machen? Trag ein, was du gern mitbringen würdest, oder eine Idee, über die sich alle freuen.':open.length?'Diese Ideen suchen noch jemanden, der sie mitbringt. Ein Tipp genügt.':'Wunderbar, danke euch allen! Neue Ideen sind trotzdem jederzeit willkommen.'}</p></div>`;
   if(total)h+=`<div class="panel progress"><div class="lbl"><span><b>${done} von ${total}</b> haben schon jemanden</span><span>${Math.round(done/total*100)} %</span></div><div class="bar"><i style="width:${Math.round(done/total*100)}%"></i></div></div>`;
   if(open.length)h+=`<div class="panel rows">${open.map(p=>itemRow(p,true)).join('')}</div>`;
   h+=`<div class="center"><button class="btn ghost" data-a="tab" data-v="mitbringen">${ico('basket')} Alles ansehen und eigene Idee eintragen</button></div></section>`;
@@ -504,6 +510,17 @@ function viewAbend(gs,its,c,info){
   return h;
 }
 
+function guide(meG,its){
+  const pushDone=['on','denied','unsupported'].includes(pushState);
+  const s1=!!meG&&meG.status!=='offen', s2=!!meG&&its.some(p=>p.wer===me&&!isWish(p)), s3=pushDone;
+  if(s1&&s2&&s3)return '';
+  const m=meG&&isPlural(me), st=(done,n,t,sub,act,go)=>`<button class="gstep${done?' done':''}" data-a="${act}"><span class="n">${done?ico('check'):n}</span><span><b>${t}</b><small>${sub}</small></span>${done?'':`<span class="go" aria-label="${go}">${ico('chev')}</span>`}</button>`;
+  return `<section class="panel guide"><p class="eyebrow" style="color:var(--gold)">So einfach geht’s</p><h3>In drei kleinen Schritten</h3><p>Alles freiwillig, nichts muss. Es hilft nur Andy &amp; Mel beim Planen.</p>
+    ${st(s1,1,m?'Sagt Bescheid, ob ihr kommt':'Sag Bescheid, ob du kommst',meG?(meG.status==='ja'?(m?'Ihr seid dabei. Wie schön!':'Du bist dabei. Wie schön!'):meG.status==='nein'?'Danke fürs Bescheidgeben.':'Ja, nein oder weiß noch nicht, alles ist okay.'):'Ja, nein oder weiß noch nicht, alles ist okay.','welcome','Antworten')}
+    ${st(s2,2,m?'Sucht euch etwas aus':'Such dir etwas aus','Ein Salat, eine Soße, Brot oder Getränke. Oder eine ganz eigene Idee.','tab-mitbringen','Ansehen')}
+    ${st(s3,3,m?'Bleibt auf dem Laufenden':'Bleib auf dem Laufenden',pushState==='on'?'Benachrichtigungen sind an.':'Eine kurze Nachricht, wenn sich etwas tut. Nur zum Fest.','guide-push','Einschalten')}
+  </section>`;
+}
 function viewMitbringen(gs,its){
   let h=`<section class="sec"><div class="sec-h"><span class="k">Mitbringen</span><h2>Was auf den Tisch kommt</h2><p>Ums Fleisch kümmern sich Andy &amp; Mel. Für alles drumherum freuen wir uns über eure Ideen. Jeder bringt mit, worauf er Lust hat.</p></div>
     <nav class="jump" aria-label="Zu einer Kategorie springen">${CATS.map(k=>{const o=its.filter(p=>p.kat===k.key&&!p.wer&&!k.wish).length;return `<a href="#k-${k.key}" data-a="jump">${esc(k.label)}${o?`<small>${o}</small>`:''}</a>`}).join('')}</nav></section>`;
@@ -649,7 +666,8 @@ function render(){
   const now=new Date(), y=now.getFullYear()+(now.getMonth()===11&&now.getDate()>26?1:0), xmas=new Date(y,11,24);
   const days=Math.max(0,Math.round((xmas-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5));
   $('#h-eyebrow').textContent='Heiligabend '+y;
-  $('#f-days').textContent=days===0?'Heute':days; $('#f-days-l').textContent=days===0?'ist Heiligabend!':days===1?'Tag bis Heiligabend':'Tage bis Heiligabend';
+  const fest=now.getMonth()===11&&(now.getDate()===25||now.getDate()===26);
+  $('#f-days').textContent=fest?'✨':days===0?'Heute':days; $('#f-days-l').textContent=fest?'Frohe Weihnachten':days===0?'ist Heiligabend!':days===1?'Tag bis Heiligabend':'Tage bis Heiligabend';
   const tm=(info.datum.match(/(\d{1,2})[:.](\d{2})\s*(?:uhr)?\s*$/i)||info.datum.match(/(\d{1,2})\s*uhr/i));
   $('#f-when').textContent=tm?(tm[2]?`${tm[1]}:${tm[2]}`:`${tm[1]}:00`):'24.12.'; $('#f-when-l').textContent=tm?'Uhr geht’s los':'Uhrzeit folgt';
   $('#f-pers').textContent=c.n;
@@ -666,7 +684,7 @@ function render(){
   justTaken=null;
 }
 addEventListener('hashchange',()=>{const t=location.hash.slice(1);if(['abend','mitbringen','gaeste'].includes(t)&&t!==tab){tab=t;render();scrollTo({top:0})}});
-function go(t){if(t===tab)return;tab=t;history.replaceState(null,'',location.search+(t==='abend'?'':'#'+t)||location.pathname);render();scrollTo({top:0})}
+function go(t){if(t===tab)return;tab=t;history.replaceState(null,'',location.pathname+location.search+(t==='abend'?'':'#'+t));render();scrollTo({top:0})}
 
 /* ---------- Eingaben ---------- */
 function needMe(){if(me)return true;openSheet({t:'welcome',step:'wer'});toast('Sag uns kurz, wer du bist, dann geht’s weiter.');return false}
@@ -706,6 +724,8 @@ document.addEventListener('click',e=>{
   const gid=b.closest('[data-g]')?.dataset.g||(sheet&&sheet.t==='guest'?sheet.id:null);
   switch(a){
     case 'tab':go(b.dataset.v);return;
+    case 'tab-mitbringen':go('mitbringen');return;
+    case 'guide-push':if(pushState==='ios-install')openSheet({t:'push'});else if(pushState==='off')enablePush();return;
     case 'jump':{e.preventDefault();const t=document.querySelector(b.getAttribute('href'));if(t)t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});return}
     case 'close':closeSheet();return;
     case 'welcome':openSheet({t:'welcome',step:me?'kommst':'wer'});return;
@@ -784,6 +804,7 @@ function demoData(){
   data.antworten.a1={id:'a1',posten:'d10',von:'wir',inhalt:'Was heißt denn Andys Kräuterbutter? 😄',t:T()};
   data.antworten.a2={id:'a2',posten:'d10',von:'andreas',inhalt:'Geheimrezept! Steht jetzt aber unter Rezept.',t:T()};
   data.info.main={id:'main',datum:'24.12.2026 19:00',fleisch:''};
+  if(new URLSearchParams(location.search).has('leer')){data.posten={};data.antworten={};for(const id in data.gaeste)data.gaeste[id].status='offen';data.info.main.datum=''}
 }
 
 /* ---------- Start ---------- */
