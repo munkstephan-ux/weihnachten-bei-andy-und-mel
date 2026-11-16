@@ -349,11 +349,11 @@ const IC={
 const ico=(n,c='')=>`<svg class="ico ${c}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
 
 const CATS=[
- {key:'wuensche',wish:true,icon:'wish',label:'Wünsche zum Fleisch',sub:'Fürs Pfännchen und zum Fondue',intro:'Was darf ins Pfännchen oder neben das Fleisch? Schreibt eure Wünsche auf, wir schauen hier rein und kümmern uns gern darum. Mit „Möchte ich auch“ seht ihr, was vielen schmeckt.',ph:'Dein Wunsch …',sugg:['Zuckerschoten','Champignons','Kartöffelchen','Mais']},
- {key:'dips',icon:'dip',label:'Dips & Soßen',sub:'Ohne Soßen kein Fondue',intro:'Wer Lust hat, eine Soße zu machen, trägt sie einfach ein. Gern auch mit Rezept, damit andere sie nachmachen können.',ph:'Soße oder Dip …',g:80,unit:'g',sugg:['Knoblauchsoße','Cocktailsoße','Currysoße','Kräuterquark']},
+ {key:'wuensche',wish:true,icon:'wish',label:'Wünsche zum Fleisch',sub:'Fürs Pfännchen und zum Fondue',intro:'Was soll ins Pfännchen oder neben das Fleisch? Schreibt eure Wünsche auf, wir kümmern uns drum. Mit „Möchte ich auch“ seht ihr, was alle mögen.',ph:'Dein Wunsch …',sugg:['Zuckerschoten','Champignons','Kartöffelchen','Mais']},
+ {key:'dips',icon:'dip',label:'Dips & Soßen',sub:'Ohne Soßen kein Fondue',intro:'Wer Lust hat, eine Soße zu machen: einfach eintragen. Gern mit Rezept, dann können’s andere nachmachen.',ph:'Soße oder Dip …',g:80,unit:'g',sugg:['Knoblauchsoße','Cocktailsoße','Currysoße','Kräuterquark']},
  {key:'salate',icon:'leaf',label:'Salate',sub:'Frisch zu Käse und Fleisch',intro:'Ein frischer Salat tut neben Käse und Fleisch richtig gut. Bring einfach mit, was du gern machst.',ph:'Welcher Salat?',g:100,unit:'g',sugg:['Grüner Salat','Gurkensalat','Krautsalat','Nudelsalat']},
- {key:'brot',icon:'bread',label:'Brot & Butter',sub:'Fladenbrot gehört dazu',intro:'Fladenbrot gehört bei uns einfach dazu. Butter und Kräuterbutter sind auch immer willkommen.',ph:'Brot oder Butter …',g:100,unit:'g',sugg:['Fladenbrot','Baguette','Kräuterbutter']},
- {key:'getraenke',icon:'cup',label:'Getränke',sub:'Alles ohne Alkohol',intro:'Säfte, Schorlen, Punsch oder Wasser: Trag ein, was du mitbringst, dann steht am Ende nicht alles doppelt auf dem Tisch.',ph:'Welches Getränk?',g:1.5,unit:'l',sugg:['Apfelschorle','Kinderpunsch','Orangensaft','Mineralwasser']}
+ {key:'brot',icon:'bread',label:'Brot & Butter',sub:'Fladenbrot gehört dazu',intro:'Ohne Fladenbrot geht bei uns nix. Butter und Kräuterbutter sind auch immer gern gesehen.',ph:'Brot oder Butter …',g:100,unit:'g',sugg:['Fladenbrot','Baguette','Kräuterbutter']},
+ {key:'getraenke',icon:'cup',label:'Getränke',sub:'Alles ohne Alkohol',intro:'Saft, Schorle, Punsch oder Wasser: Trag ein, was du mitbringst, sonst stehen am Ende fünf Flaschen Apfelschorle auf dem Tisch. 😄',ph:'Welches Getränk?',g:1.5,unit:'l',sugg:['Apfelschorle','Kinderpunsch','Orangensaft','Mineralwasser']}
 ];
 const catOf=k=>CATS.find(c=>c.key===k);
 const MEAT_G=250, CHEESE_G=200;
@@ -388,7 +388,7 @@ function write(col,id,body){
   chains[path]=(chains[path]||Promise.resolve()).then(async()=>{
     const {error}=row===null?await sb.from(col).delete().eq('id',id):await sb.from(col).upsert(row);
     if(error)throw error;
-  }).catch(e=>{console.error(e);toast('Das hat gerade nicht geklappt. Prüf kurz das Internet und versuch es noch einmal.')});
+  }).catch(e=>{console.error(e);toast('Hat gerade nicht geklappt. Check kurz dein Internet und versuch’s nochmal.')});
 }
 const setInfo=patch=>write('info','main',Object.assign({datum:'',fleisch:''},data.info.main||{},patch));
 function notify(text){if(mode!=='shared'||!text)return;sb.functions.invoke('notify',{body:{title:'Heiligabend bei Andy, Mel & Connor',body:text,actor:me||''}}).catch(()=>{})}
@@ -402,7 +402,7 @@ function take(id,on){
   const p=data.posten[id];if(!p)return;
   write('posten',id,{...p,wer:on?me:''});
   if(on){justTaken=id;render();toast(`Danke dir! ${p.name} steht jetzt bei dir.`);notify(`${short(me)} bringt ${p.name} mit. Danke! ✨`)}
-  else toast(`${p.name} ist wieder frei. Kein Problem.`);
+  else toast(`${p.name} ist wieder frei. Kein Ding.`);
 }
 function setMe(id){me=id;store.set(ME_KEY,id);if(pushState==='on'&&swReg)swReg.pushManager.getSubscription().then(s=>s&&saveSub(s)).catch(()=>{})}
 function setStatus(id,st){
@@ -437,13 +437,13 @@ async function enablePush(){
     const reg=await navigator.serviceWorker.ready;
     const sub=(await reg.pushManager.getSubscription())||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64(CFG.vapid)});
     await saveSub(sub);pushState='on';toast('Benachrichtigungen sind an. Ausschalten geht jederzeit.');render();return true;
-  }catch(e){console.error(e);pushState='off';toast('Das hat nicht geklappt. Magst du es gleich noch einmal versuchen?');render();return false}
+  }catch(e){console.error(e);pushState='off';toast('Hat nicht geklappt. Versuch’s gleich nochmal.');render();return false}
 }
 async function disablePush(){
   if(!DEMO){try{const sub=swReg&&await swReg.pushManager.getSubscription();if(sub){await sb.rpc('push_abmelden',{p_endpoint:sub.endpoint});await sub.unsubscribe()}}catch(e){console.error(e)}}
   pushState='off';toast('Benachrichtigungen sind aus.');render();
 }
-const IOS_HOWTO=`<ol class="howto"><li><span>Öffne diesen Link in <b>Safari</b>.</span></li><li><span>Tippe unten links in der Adressleiste auf <b>≡</b> und dann auf <b>Teilen</b>. Auf älteren iPhones tippst du direkt auf das Teilen-Symbol (Quadrat mit Pfeil nach oben).</span></li><li><span>Scrolle etwas nach unten, wähle <b>„Zum Home-Bildschirm“</b> und tippe auf <b>Hinzufügen</b>.</span></li><li><span>Öffne die App über das neue Symbol auf deinem Home-Bildschirm. Wenn du dort zusagst, schalten sich die Benachrichtigungen gleich mit ein.</span></li></ol>`;
+const IOS_HOWTO=`<ol class="howto"><li><span>Öffne den Link in <b>Safari</b>.</span></li><li><span>Tippe unten links in der Adressleiste auf <b>≡</b> und dann auf <b>Teilen</b>. Auf älteren iPhones tippst du direkt auf das Teilen-Symbol (Quadrat mit Pfeil nach oben).</span></li><li><span>Scrolle etwas nach unten, wähle <b>„Zum Home-Bildschirm“</b> und tippe auf <b>Hinzufügen</b>.</span></li><li><span>Öffne die App über das neue Symbol auf deinem Home-Bildschirm. Wenn du da zusagst, sind die Benachrichtigungen gleich mit an.</span></li></ol>`;
 
 /* ---------- Bausteine ---------- */
 function itemRow(p,showCat){
@@ -474,13 +474,13 @@ function viewAbend(gs,its,c,info){
   const host=meG&&me==='andreas', many=meG&&isPlural(me);
   const hello=!meG?'Schön, dass du da bist!':host?'Hallo, ihr Gastgeber!':many?`Schön, dass ihr da seid, ${esc(short(me))}!`:`Schön, dass du da bist, ${esc(short(me))}!`;
   h+=`<section class="panel welcome"><p class="eyebrow">Herzlich willkommen</p><h2>${hello}</h2>
-    <p>Wie jedes Jahr gibt es an Heiligabend Raclette &amp; Fondue. Ums Fleisch kümmern wir uns. Alles andere darf, muss aber nicht: Bringt einfach mit, worauf ihr Lust habt. Hauptsache, wir sitzen zusammen.</p>
+    <p>Wie jedes Jahr gibt’s an Heiligabend Raclette &amp; Fondue. Ums Fleisch kümmern wir uns. Alles andere kann, muss aber nicht: Bringt einfach mit, worauf ihr Lust habt. Hauptsache, wir sitzen alle zusammen.</p>
     ${info.fleisch?`<p class="note"><b>Noch ein Wort von uns</b>${esc(info.fleisch)}</p>`:''}
     <p class="sign">Andy, Mel &amp; Connor</p>`;
   if(!meG)h+=`<button class="btn gold" data-a="welcome">Los geht’s</button>`;
   else{
-    const st=host?'Hier seht ihr alles, was eure Gäste planen.':many?{ja:'Ihr seid dabei. Wir freuen uns riesig auf euch!',offen:'Wir würden uns sehr freuen, wenn ihr dabei seid.',nein:'Schade, dass es dieses Jahr nicht klappt. Ihr seid jederzeit herzlich willkommen.'}[meG.status]
-      :{ja:'Du bist dabei. Wir freuen uns riesig auf dich!',offen:'Wir würden uns sehr freuen, wenn du dabei bist.',nein:'Schade, dass es dieses Jahr nicht klappt. Du bist jederzeit herzlich willkommen.'}[meG.status];
+    const st=host?'Hier seht ihr alles, was die anderen so planen.':many?{ja:'Ihr seid dabei, wie schön! Wir freuen uns auf euch.',offen:'Wär schön, wenn ihr dabei seid!',nein:'Schade, dass es dieses Jahr nicht klappt. Wenn sich was ändert, kommt einfach!'}[meG.status]
+      :{ja:'Du bist dabei, wie schön! Wir freuen uns auf dich.',offen:'Wär schön, wenn du dabei bist!',nein:'Schade, dass es dieses Jahr nicht klappt. Wenn sich was ändert, komm einfach!'}[meG.status];
     h+=`<div class="mystatus"><span>${st}</span>${host?'':`<button class="link" data-a="welcome-kommst">${meG.status==='ja'?'Ändern':'Antworten'}</button>`}</div>`;
     if(pushState==='on')h+=`<div class="mystatus">${ico('bell')}<span>Benachrichtigungen sind an.</span><button class="link" data-a="push-off">Ausschalten</button></div>`;
     else if(pushState==='off')h+=`<div class="mystatus">${ico('bell')}<span>Benachrichtigungen sind aus.</span><button class="link" data-a="push-on">Einschalten</button></div>`;
@@ -492,16 +492,16 @@ function viewAbend(gs,its,c,info){
   /* Dein Beitrag */
   if(meG){
     const mine=its.filter(p=>p.wer===me&&!isWish(p));
-    h+=`<section class="sec"><div class="sec-h"><span class="k">Dein Beitrag</span><h2>${mine.length?(many?'Das bringt ihr mit':'Das bringst du mit'):'Noch nichts eingetragen'}</h2>${mine.length?'':`<p>Ganz ohne Druck. Wenn ${many?'ihr mögt, sucht euch':'du magst, such dir'} unten etwas aus oder ${many?'tragt':'trag'} eine eigene Idee ein.</p>`}</div>
+    h+=`<section class="sec"><div class="sec-h"><span class="k">Dein Beitrag</span><h2>${mine.length?(many?'Das bringt ihr mit':'Das bringst du mit'):'Noch nichts eingetragen'}</h2>${mine.length?'':`<p>Kein Druck. Wenn ${many?'ihr mögt, sucht euch':'du magst, such dir'} unten was aus oder ${many?'tragt':'trag'} eine eigene Idee ein.</p>`}</div>
       ${mine.length?`<div class="panel rows">${mine.map(p=>itemRow(p,true)).join('')}</div>`:''}</section>`;
   }
 
   /* Hilfe willkommen */
   const open=its.filter(p=>!p.wer&&!isWish(p)), done=its.filter(p=>p.wer&&!isWish(p)).length, total=done+open.length;
-  h+=`<section class="sec"><div class="sec-h"><span class="k">Die Tafel</span><h2>${!total?'Noch ist der Tisch leer':open.length?'Hier freuen wir uns über Hilfe':'Alles hat jemanden gefunden'}</h2><p>${!total?'Magst du den Anfang machen? Trag ein, was du gern mitbringen würdest, oder eine Idee, über die sich alle freuen.':open.length?'Diese Ideen suchen noch jemanden, der sie mitbringt. Ein Tipp genügt.':'Wunderbar, danke euch allen! Neue Ideen sind trotzdem jederzeit willkommen.'}</p></div>`;
+  h+=`<section class="sec"><div class="sec-h"><span class="k">Die Tafel</span><h2>${!total?'Noch ist der Tisch leer':open.length?'Da freuen wir uns noch über Hilfe':'Alles ist vergeben'}</h2><p>${!total?'Magst du anfangen? Trag ein, was du mitbringen würdest, oder einfach eine Idee.':open.length?'Das hier hat noch keiner. Ein Tipp auf „Bring ich mit“ reicht.':'Klasse, danke euch! Neue Ideen gehen trotzdem immer.'}</p></div>`;
   if(total)h+=`<div class="panel progress"><div class="lbl"><span><b>${done} von ${total}</b> haben schon jemanden</span><span>${Math.round(done/total*100)} %</span></div><div class="bar"><i style="width:${Math.round(done/total*100)}%"></i></div></div>`;
   if(open.length)h+=`<div class="panel rows">${open.map(p=>itemRow(p,true)).join('')}</div>`;
-  h+=`<div class="center"><button class="btn ghost" data-a="tab" data-v="mitbringen">${ico('basket')} Alles ansehen und eigene Idee eintragen</button></div></section>`;
+  h+=`<div class="center"><button class="btn ghost" data-a="tab" data-v="mitbringen">${ico('basket')} Alles ansehen oder eigene Idee eintragen</button></div></section>`;
 
   /* Wünsche kurz */
   const wishes=its.filter(isWish).sort((a,b)=>b.likes.length-a.likes.length).slice(0,3);
@@ -509,7 +509,7 @@ function viewAbend(gs,its,c,info){
 
   /* Gastgeber */
   h+=hostArea(gs,its,c,info);
-  h+=`<footer class="foot"><p class="tradition">Frohe Weihnachten</p><p>Wir freuen uns auf einen schönen Abend mit euch allen.</p></footer>`;
+  h+=`<footer class="foot"><p class="tradition">Frohe Weihnachten</p><p>Wir freuen uns auf einen schönen Abend mit euch!</p></footer>`;
   return h;
 }
 
@@ -518,10 +518,10 @@ function guide(meG,its){
   const s1=!!meG&&meG.status!=='offen', s2=!!meG&&its.some(p=>p.wer===me&&!isWish(p)), s3=pushDone;
   if(s1&&s2&&s3)return '';
   const m=meG&&isPlural(me), st=(done,n,t,sub,act,go)=>`<button class="gstep${done?' done':''}" data-a="${act}"><span class="n">${done?ico('check'):n}</span><span><b>${t}</b><small>${sub}</small></span>${done?'':`<span class="go" aria-label="${go}">${ico('chev')}</span>`}</button>`;
-  return `<section class="panel guide"><p class="eyebrow" style="color:var(--gold)">So einfach geht’s</p><h3>In drei kleinen Schritten</h3><p>Alles freiwillig, nichts muss. Es hilft uns einfach beim Planen.</p>
-    ${st(s1,1,m?'Sagt Bescheid, ob ihr kommt':'Sag Bescheid, ob du kommst',meG?(meG.status==='ja'?(m?'Ihr seid dabei. Wie schön!':'Du bist dabei. Wie schön!'):meG.status==='nein'?'Danke fürs Bescheidgeben.':'Ja, nein oder weiß noch nicht, alles ist okay.'):'Ja, nein oder weiß noch nicht, alles ist okay.','welcome','Antworten')}
-    ${st(s2,2,m?'Sucht euch etwas aus':'Such dir etwas aus','Ein Salat, eine Soße, Brot oder Getränke. Oder eine ganz eigene Idee.','tab-mitbringen','Ansehen')}
-    ${st(s3,3,m?'Bleibt auf dem Laufenden':'Bleib auf dem Laufenden',pushState==='on'?'Benachrichtigungen sind an.':'Eine kurze Nachricht, wenn sich etwas tut. Nur zum Fest.','guide-push','Einschalten')}
+  return `<section class="panel guide"><p class="eyebrow" style="color:var(--gold)">So einfach geht’s</p><h3>Drei kleine Schritte</h3><p>Alles freiwillig, nichts muss. Hilft uns aber beim Planen.</p>
+    ${st(s1,1,m?'Sagt Bescheid, ob ihr kommt':'Sag Bescheid, ob du kommst',meG?(meG.status==='ja'?(m?'Ihr seid dabei. Wie schön!':'Du bist dabei. Wie schön!'):meG.status==='nein'?'Danke, dass du Bescheid gesagt hast.':'Ja, nein oder weiß noch nicht, alles okay.'):'Ja, nein oder weiß noch nicht, alles okay.','welcome','Antworten')}
+    ${st(s2,2,m?'Sucht euch etwas aus':'Such dir etwas aus','Salat, Soße, Brot, Getränke oder was ganz Eigenes.','tab-mitbringen','Ansehen')}
+    ${st(s3,3,m?'Bleibt auf dem Laufenden':'Bleib auf dem Laufenden',pushState==='on'?'Benachrichtigungen sind an.':'Kurz Bescheid, wenn sich was tut. Nur rund ums Fest.','guide-push','Einschalten')}
   </section>`;
 }
 function viewMitbringen(gs,its){
@@ -531,7 +531,7 @@ function viewMitbringen(gs,its){
     const all=its.filter(p=>p.kat===k.key);
     if(k.wish)all.sort((a,b)=>b.likes.length-a.likes.length||(a.t||0)-(b.t||0));
     h+=`<section class="panel" id="k-${k.key}" style="scroll-margin-top:16px"><div class="cat-h"><span class="em">${ico(k.icon)}</span><div><h3>${esc(k.label)}</h3><div class="sub">${esc(k.sub)}</div></div></div><p class="cat-intro">${esc(k.intro)}</p>
-      <div class="rows" style="border-top:1px solid var(--line)">${all.length?all.map(p=>itemRow(p,false)).join(''):`<div class="empty">Noch nichts eingetragen. Magst du den Anfang machen?</div>`}</div>
+      <div class="rows" style="border-top:1px solid var(--line)">${all.length?all.map(p=>itemRow(p,false)).join(''):`<div class="empty">Noch leer. Magst du anfangen?</div>`}</div>
       <form class="addform" data-form="add" data-k="${k.key}"><input type="text" id="add-${k.key}" placeholder="${esc(k.ph)}" aria-label="${esc(k.label)}: Eintrag hinzufügen" autocomplete="off" enterkeyhint="done">${k.wish?'':`<label><input type="checkbox" id="mine-${k.key}"> Bring ich mit</label>`}<button class="btn small" type="submit">${ico('plus')} Eintragen</button></form>`;
     const names=new Set(all.map(p=>p.name.trim().toLowerCase())),left=k.sugg.filter(s=>!names.has(s.toLowerCase()));
     if(all.length<4&&left.length)h+=`<div class="sugg"><span>Ideen zum Antippen:</span>${left.map(s=>`<button data-a="sugg" data-k="${k.key}" data-v="${esc(s)}">+ ${esc(s)}</button>`).join('')}</div>`;
@@ -542,7 +542,7 @@ function viewMitbringen(gs,its){
 
 function viewGaeste(gs,c){
   const by=s=>gs.filter(g=>g.status===s);
-  let h=`<section class="sec"><div class="sec-h"><span class="k">Gäste</span><h2>Wer an Heiligabend dabei ist</h2><p>${c.n?`${c.e} ${c.e===1?'Erwachsener':'Erwachsene'}${c.k?` und ${c.k} ${c.k===1?'Kind':'Kinder'}`:''} haben schon zugesagt.`:'Noch hat niemand zugesagt.'} Tippe auf einen Namen, um etwas zu ändern.</p></div>`;
+  let h=`<section class="sec"><div class="sec-h"><span class="k">Gäste</span><h2>Wer an Heiligabend dabei ist</h2><p>${c.n?`${c.e} ${c.e===1?'Erwachsener':'Erwachsene'}${c.k?` und ${c.k} ${c.k===1?'Kind':'Kinder'}`:''} haben schon zugesagt.`:'Noch hat niemand zugesagt.'} Tipp auf einen Namen, wenn du was ändern willst.</p></div>`;
   for(const [s,t] of [['ja','Sind dabei'],['offen','Wir hoffen, ihr könnt kommen'],['nein','Dieses Jahr leider nicht']]){
     const l=by(s);if(!l.length)continue;
     h+=`<div class="sec-h" style="margin-top:4px"><span class="k">${t}</span></div><div class="panel rows">${l.map(guestRow).join('')}</div>`;
@@ -558,7 +558,7 @@ function hostArea(gs,its,c,info){
     <label class="field"><span>Wann geht’s los?</span><input class="inp" id="datum" data-f="datum" value="${esc(info.datum)}" placeholder="z. B. 24.12. um 18 Uhr" enterkeyhint="done"><small>Steht oben in der Einladung.</small></label>
     <label class="field"><span>Ein Wort an alle (optional)</span><textarea class="inp" id="fleisch" data-f="fleisch" rows="2" placeholder="z. B. Bringt gern eure Lieblingssoße mit!">${esc(info.fleisch)}</textarea><small>Erscheint in der Begrüßung. Speichert, sobald du das Feld verlässt.</small></label>
     ${li.length?`<div class="field"><span>Grobe Mengen für ${c.n} ${c.n===1?'Person':'Personen'}</span><ul class="amounts">${li.map(([k,v])=>`<li>${esc(k)}</li><li><b>~${v}</b></li>`).join('')}</ul><small>Nur zur Orientierung, Kinder zählen halb.</small></div>`:''}
-    <div class="field"><span>Stand in die WhatsApp-Gruppe</span><button class="btn ghost" data-a="copy" type="button">${ico('copy')} Kurzen Stand kopieren</button><small id="copy-hint">Ein freundlicher Text mit Zusagen und dem, was noch gesucht wird. Einfach in die Gruppe einfügen.</small><textarea class="inp" id="wa" rows="8" hidden readonly></textarea></div>
+    <div class="field"><span>Stand in die WhatsApp-Gruppe</span><button class="btn ghost" data-a="copy" type="button">${ico('copy')} Kurzen Stand kopieren</button><small id="copy-hint">Kurzer Text mit Zusagen und dem, was noch fehlt. Einfach in die Gruppe kopieren.</small><textarea class="inp" id="wa" rows="8" hidden readonly></textarea></div>
     <form class="field" data-form="reset"><span class="hostsub">Nach dem Fest: Neues Jahr vorbereiten</span><small>Die Gäste bleiben, alle Zusagen gehen auf „Noch offen“. Mitbringsel, Kommentare, Rezepte, Termin und Hinweis werden gelöscht. Der Link bleibt gleich.</small>
       <label class="field"><span>Zum Bestätigen ${ny} eingeben</span><span style="display:flex;gap:8px;flex-wrap:wrap"><input class="inp" style="flex:1;min-width:120px;max-width:180px" id="reset-year" inputmode="numeric" autocomplete="off" placeholder="${ny}"><button class="btn small" type="submit">Liste für ${ny} vorbereiten</button></span></label></form>
   </div></details>`;
@@ -569,8 +569,8 @@ function waText(gs,its,c,info){
   const zu=gs.filter(g=>g.status==='ja').map(g=>g.name.replace(/\s*\(.*?\)\s*/g,' ').trim()).filter(Boolean);
   if(zu.length)L.push('','✨ Schon dabei: '+zu.join(', '));
   const open=its.filter(p=>!p.wer&&!isWish(p));
-  if(open.length){L.push('','Hier freuen wir uns noch über Hilfe:');for(const p of open)L.push('• '+p.name)}
-  else L.push('','Alles hat schon jemanden gefunden. Danke euch! ❤️');
+  if(open.length){L.push('','Da freuen wir uns noch über Hilfe:');for(const p of open)L.push('• '+p.name)}
+  else L.push('','Alles ist vergeben, danke euch! ❤️');
   L.push('','Wer mag, trägt sich einfach in der App ein. Ums Fleisch kümmern wir uns gern 🙂',location.origin+location.pathname);
   return L.join('\n');
 }
@@ -583,32 +583,32 @@ function sheetHTML(){
     const st=sheet.step, nr={wer:1,kommst:2,push:3}[st];
     let h=close+`<div class="steps" aria-hidden="true">${[1,2,3].map(i=>`<i class="${i<=nr?'on':''}"></i>`).join('')}</div>`;
     if(st==='wer'){
-      h+=`<h2 id="sheet-title" class="center" style="padding:0">Herzlich willkommen 🎄</h2><p class="lead center">Schön, dass du da bist! Wer bist du? Dann wissen alle, von wem Ideen und Kommentare kommen.</p>
+      h+=`<h2 id="sheet-title" class="center" style="padding:0">Herzlich willkommen 🎄</h2><p class="lead center">Schön, dass du da bist! Tipp kurz auf deinen Namen, dann wissen alle, von wem was kommt.</p>
         <div class="blk"><div class="tiles">${gs.map(g=>`<button class="tile" data-a="pick" data-v="${esc(g.id)}" aria-pressed="${g.id===me}"><span class="av" aria-hidden="true">${esc(initials(g.name))}</span>${esc(g.name||'Ohne Namen')}</button>`).join('')}</div></div>
-        <form class="blk" data-form="welcome-new"><h4>Du stehst noch nicht drauf?</h4><div class="msgform"><input class="inp" id="w-new" placeholder="Dein Name" autocomplete="off"><button class="btn small" type="submit">Weiter</button></div></form>
-        <p class="hint center" style="margin-top:16px">Wird nur auf diesem Gerät gemerkt. <button class="link" data-a="close">Erst mal nur umschauen</button></p>`;
+        <form class="blk" data-form="welcome-new"><h4>Du fehlst in der Liste?</h4><div class="msgform"><input class="inp" id="w-new" placeholder="Dein Name" autocomplete="off"><button class="btn small" type="submit">Weiter</button></div></form>
+        <p class="hint center" style="margin-top:16px">Merkt sich nur dein Handy. <button class="link" data-a="close">Erst mal nur umschauen</button></p>`;
     }else if(st==='kommst'){
       const g=gs.find(x=>x.id===me);if(!g){sheet.step='wer';return sheetHTML()}
       const m=isPlural(me);
-      h+=`<h2 id="sheet-title" class="center" style="padding:0">Hallo ${esc(short(me))}!</h2><p class="lead center">${m?'Seid ihr':'Bist du'} an Heiligabend dabei? Jede Antwort ist willkommen, und ${m?'ihr könnt':'du kannst'} sie jederzeit ändern.</p>
+      h+=`<h2 id="sheet-title" class="center" style="padding:0">Hallo ${esc(short(me))}!</h2><p class="lead center">${m?'Seid ihr':'Bist du'} an Heiligabend dabei? Egal wie, alles gut. Ändern ${m?'könnt ihr':'kannst du'}’s jederzeit.</p>
         <div class="blk seg">
-          <button class="opt" data-a="answer" data-v="ja" aria-pressed="${g.status==='ja'}"><span class="em">🎄</span><span>${m?'Ja, wir sind dabei!':'Ja, ich bin dabei!'}<small>Wir freuen uns riesig und halten ${m?'euch':'dich'} auf dem Laufenden.</small></span></button>
-          <button class="opt" data-a="answer" data-v="offen" aria-pressed="${g.status==='offen'}"><span class="em">🕯️</span><span>${m?'Wissen wir noch nicht':'Weiß ich noch nicht'}<small>Kein Stress, ${m?'sagt einfach Bescheid, wenn ihr es wisst':'sag einfach Bescheid, wenn du es weißt'}.</small></span></button>
-          <button class="opt" data-a="answer" data-v="nein" aria-pressed="${g.status==='nein'}"><span class="em">💌</span><span>Dieses Jahr leider nicht<small>Schade! ${m?'Ihr seid':'Du bist'} jederzeit herzlich willkommen.</small></span></button>
+          <button class="opt" data-a="answer" data-v="ja" aria-pressed="${g.status==='ja'}"><span class="em">🎄</span><span>${m?'Ja, wir sind dabei!':'Ja, ich bin dabei!'}<small>Wir freuen uns riesig! Und wir halten ${m?'euch':'dich'} auf dem Laufenden.</small></span></button>
+          <button class="opt" data-a="answer" data-v="offen" aria-pressed="${g.status==='offen'}"><span class="em">🕯️</span><span>${m?'Wissen wir noch nicht':'Weiß ich noch nicht'}<small>Kein Stress, ${m?'sagt einfach Bescheid, wenn ihr’s wisst':'sag einfach Bescheid, wenn du’s weißt'}.</small></span></button>
+          <button class="opt" data-a="answer" data-v="nein" aria-pressed="${g.status==='nein'}"><span class="em">💌</span><span>Dieses Jahr leider nicht<small>Schade! Falls sich was ändert: ${m?'Ihr seid':'Du bist'} immer willkommen.</small></span></button>
         </div>
         ${g.status==='ja'?`<div class="blk"><h4>${m?'Wie viele seid ihr?':'Kommt noch jemand mit?'}</h4>${stepper(g,'erw','Erwachsene')}${stepper(g,'kinder','Kinder')}</div>`:''}
         <div class="blk"><button class="btn wide" data-a="w-next">Weiter</button></div>`;
     }else if(st==='push'){
-      if(pushState==='on'){h+=`<h2 id="sheet-title" class="center" style="padding:0">Du bekommst Bescheid 🔔</h2><p class="lead center">Wenn jemand zusagt, etwas mitbringt oder dir antwortet, bekommst du eine kurze Nachricht. Nur zum Fest. Möchtest du das nicht, schalte es einfach aus, auch später jederzeit auf der Startseite.</p>
+      if(pushState==='on'){h+=`<h2 id="sheet-title" class="center" style="padding:0">Du bekommst Bescheid 🔔</h2><p class="lead center">Wenn jemand zusagt, was mitbringt oder dir antwortet, kriegst du kurz Bescheid. Nur rund ums Fest. Nervt dich das, schalt’s einfach aus. Geht auch später noch auf der Startseite.</p>
         <div class="blk"><button class="btn wide" data-a="close">Fertig</button><button class="btn wide ghost" data-a="push-off-w">Benachrichtigungen ausschalten</button></div>`;return h}
-      h+=`<h2 id="sheet-title" class="center" style="padding:0">Sollen wir dir Bescheid geben?</h2><p class="lead center">Wenn jemand zusagt, etwas mitbringt oder dir antwortet, bekommst du eine kurze Nachricht. Nur zum Fest.</p>`;
+      h+=`<h2 id="sheet-title" class="center" style="padding:0">Sollen wir dir Bescheid geben?</h2><p class="lead center">Wenn jemand zusagt, was mitbringt oder dir antwortet, kriegst du kurz Bescheid. Nur rund ums Fest, versprochen.</p>`;
       if(pushState==='ios-install')h+=`<div class="blk">${IOS_HOWTO}</div><div class="blk"><button class="btn wide" data-a="close">Alles klar</button></div>`;
       else if(pushState==='off'||pushState==='busy')h+=`<div class="blk"><button class="btn wide" data-a="push-on-w"${pushState==='busy'?' disabled':''}>${ico('bell')} Ja, gerne</button><button class="btn wide ghost" data-a="close">Lieber nicht</button></div>`;
-      else h+=`<div class="blk"><p class="center">${pushState==='on'?'Benachrichtigungen sind schon an. Perfekt!':pushState==='denied'?'Benachrichtigungen sind auf diesem Gerät blockiert. Du kannst sie in den Einstellungen wieder erlauben.':'Dieser Browser kann leider keine Benachrichtigungen empfangen. Am besten klappt es mit Safari auf dem iPhone oder Chrome auf Android.'}</p><button class="btn wide" data-a="close">Fertig</button></div>`;
+      else h+=`<div class="blk"><p class="center">${pushState==='on'?'Benachrichtigungen sind schon an. Perfekt!':pushState==='denied'?'Auf deinem Handy sind die Mitteilungen für die App gesperrt. In den Einstellungen kannst du sie wieder erlauben.':'Dein Browser kann leider keine Benachrichtigungen. Am besten klappt’s mit Safari auf dem iPhone oder Chrome auf Android.'}</p><button class="btn wide" data-a="close">Fertig</button></div>`;
     }
     return h;
   }
-  if(sheet.t==='push')return close+`<h2 id="sheet-title">So bekommst du Benachrichtigungen</h2><p class="lead">Auf dem iPhone geht das, sobald die App auf deinem Home-Bildschirm liegt.</p><div class="blk">${IOS_HOWTO}</div><div class="blk"><button class="btn wide" data-a="close">Alles klar</button></div>`;
+  if(sheet.t==='push')return close+`<h2 id="sheet-title">So bekommst du Benachrichtigungen</h2><p class="lead">Auf dem iPhone klappt das, sobald die App auf deinem Home-Bildschirm liegt.</p><div class="blk">${IOS_HOWTO}</div><div class="blk"><button class="btn wide" data-a="close">Alles klar</button></div>`;
   if(sheet.t==='item'){
     const p=items().find(x=>x.id===sheet.id);if(!p){sheet=null;return''}
     const k=catOf(p.kat), rs=replies(p.id), mine=me&&p.wer===me, liked=me&&p.likes.includes(me);
@@ -618,16 +618,16 @@ function sheetHTML(){
       h+=`<div class="blk"><h4>Wer bringt es mit?</h4>`;
       if(mine)h+=`<p>${isPlural(me)?'Das bringt ihr mit. Danke euch!':'Das bringst du mit. Danke dir!'} ✨</p><button class="btn ghost" data-a="untake">Doch nicht, wieder freigeben</button>`;
       else if(p.wer)h+=`<p>${esc(short(p.wer))} bringt es mit.</p>`;
-      else h+=`<p class="hint">Hier freuen wir uns noch über Hilfe.</p><button class="btn gold" data-a="take">${ico('check')} Bring ich mit</button>`;
-      h+=`<label class="field" style="margin-top:6px"><small>Für jemanden anderen eintragen</small><select class="inp" data-f="pwer" id="it-wer"><option value="">Sucht noch jemanden</option>${gs.filter(g=>g.status!=='nein'||g.id===p.wer).map(g=>`<option value="${esc(g.id)}"${g.id===p.wer?' selected':''}>${esc(g.name)}</option>`).join('')}</select></label></div>`;
+      else h+=`<p class="hint">Hat noch keiner. Magst du?</p><button class="btn gold" data-a="take">${ico('check')} Bring ich mit</button>`;
+      h+=`<label class="field" style="margin-top:6px"><small>Für wen anderes eintragen</small><select class="inp" data-f="pwer" id="it-wer"><option value="">Sucht noch jemanden</option>${gs.filter(g=>g.status!=='nein'||g.id===p.wer).map(g=>`<option value="${esc(g.id)}"${g.id===p.wer?' selected':''}>${esc(g.name)}</option>`).join('')}</select></label></div>`;
     }
     h+=`<div class="blk"><h4>${isWish(p)?'Möchten auch':'Hab Lust drauf'}</h4><div><button class="chip like" data-a="like" aria-pressed="${!!liked}">${ico('heart')} ${isWish(p)?(liked?'Ich auch':'Möchte ich auch'):(liked?'Ich hab Lust drauf':'Hab Lust drauf')}</button></div>${p.likes.length?`<p class="likers">${p.likes.map(l=>esc(short(l))).join(', ')}</p>`:''}</div>`;
     h+=`<div class="blk"><h4>Rezept</h4>`;
     if(p.rezept&&!editRecipe)h+=`<div class="rztext">${esc(p.rezept)}</div><div><button class="link" data-a="rz-edit">Rezept bearbeiten</button></div>`;
     else if(editRecipe)h+=`<form class="field" data-form="rezept"><textarea class="inp" id="rz" rows="8" placeholder="Zutaten und Zubereitung, so wie du es machst …">${esc(p.rezept)}</textarea><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" type="submit">Rezept speichern</button><button class="btn small ghost" type="button" data-a="rz-cancel">Abbrechen</button></span></form>`;
-    else h+=`<p class="hint">Du machst das selbst? Teil dein Rezept, dann können andere es nachmachen.</p><div><button class="btn small ghost" data-a="rz-edit">${ico('book')} Rezept teilen</button></div>`;
+    else h+=`<p class="hint">Selbst gemacht? Teil dein Rezept, dann können’s andere nachmachen.</p><div><button class="btn small ghost" data-a="rz-edit">${ico('book')} Rezept teilen</button></div>`;
     h+=`</div><div class="blk"><h4>Kommentare</h4><div class="thread">${rs.map(r=>`<div class="msg" data-r="${esc(r.id)}"><b>${esc(short(r.von))}</b>${esc(r.inhalt)}<button class="x" data-a="rdel" aria-label="Kommentar löschen">${ico('x')}</button></div>`).join('')||'<p class="hint">Noch keine Kommentare. Fragen, Ideen, Vorfreude?</p>'}</div>
-      <form class="msgform" data-form="reply"><input class="inp" id="r-new" placeholder="Schreib etwas …" autocomplete="off" enterkeyhint="send"><button class="btn small" type="submit">Senden</button></form></div>
+      <form class="msgform" data-form="reply"><input class="inp" id="r-new" placeholder="Schreib was …" autocomplete="off" enterkeyhint="send"><button class="btn small" type="submit">Senden</button></form></div>
       <div class="blk"><button class="danger" data-a="pdel">Eintrag entfernen</button></div>`;
     return h;
   }
