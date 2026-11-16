@@ -213,6 +213,7 @@ dialog.sheet{border:0;padding:0;margin:0;max-width:none;width:100%;max-height:no
 dialog.sheet::backdrop{background:rgba(5,15,10,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 dialog.sheet[open]{position:fixed;inset:auto 0 0 0;display:flex;justify-content:center}
 .sh:focus{outline:none}
+.sh .stick{position:sticky;bottom:calc(-24px - env(safe-area-inset-bottom,0px));margin:16px -20px 0;padding:12px 20px calc(24px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--paper) 22%);z-index:2}
 .sh{position:relative;width:100%;max-width:560px;max-height:92dvh;overflow:auto;overscroll-behavior:contain;background:var(--paper);border-radius:24px 24px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(0,0,0,.25)}
 .sh::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:var(--line2);margin:0 auto 12px}
 @media (min-width:700px){dialog.sheet[open]{inset:0;align-items:center}.sh{border-radius:24px;max-height:86vh}.sh::before{display:none}}
@@ -597,7 +598,7 @@ function sheetHTML(){
           <button class="opt" data-a="answer" data-v="nein" aria-pressed="${g.status==='nein'}"><span class="em">💌</span><span>Dieses Jahr leider nicht<small>Schade! Falls sich was ändert: ${m?'Ihr seid':'Du bist'} immer willkommen.</small></span></button>
         </div>
         ${g.status==='ja'?`<div class="blk"><h4>${m?'Wie viele seid ihr?':'Kommt noch jemand mit?'}</h4>${stepper(g,'erw','Erwachsene')}${stepper(g,'kinder','Kinder')}</div>`:''}
-        <div class="blk"><button class="btn wide" data-a="w-next">Weiter</button></div>`;
+        <div class="blk stick"><button class="btn wide" data-a="w-next">Weiter</button></div>`;
     }else if(st==='push'){
       if(pushState==='on'){h+=`<h2 id="sheet-title" class="center" style="padding:0">Du bist auf Stand 🔔</h2><p class="lead center">Du kriegst nur Bescheid, wenn sich am Plan für Heiligabend was tut: wer kommt, wer was mitbringt, ob sich die Uhrzeit ändert oder dir jemand antwortet. Damit am Abend keiner überrascht dasteht. Kein Spam, kein Gequatsche, versprochen. Ausschalten geht trotzdem jederzeit, auch später auf der Startseite.</p>
         <div class="blk"><button class="btn wide" data-a="close">Fertig</button><button class="btn wide ghost" data-a="push-off-w">Benachrichtigungen ausschalten</button></div>`;return h}
