@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="de">
 <head>
-<title>Weihnachten bei Andy, Mel & Connor</title>
+<title>Heiligabend bei Andy, Mel & Connor</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0f3b2b">
-<meta name="description" content="Raclette & Fondue an Heiligabend: unsere Mitbringliste für Weihnachten bei Andy, Mel & Connor: wer kommt, wer bringt was, Ideen und Wünsche.">
+<meta name="theme-color" content="#0c3326">
+<meta name="description" content="Raclette & Fondue an Heiligabend bei Andy, Mel & Connor: wer dabei ist, wer was mitbringt, Wünsche und Rezepte.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -15,333 +15,390 @@
 <meta name="apple-mobile-web-app-title" content="Weihnachten">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Pinyon+Script&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Pinyon+Script&family=Instrument+Sans:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: Nachthimmel-Kopf mit Lichterkette und Schnee, verschneite Kante; darunter "Wer kommt?", die Mitbringliste mit Christbaumkugeln je Kategorie, unten der WhatsApp-Text und ein Weihnachtsgruß.
-   Vorher: darunter "Wer kommt?", dann die Mitbringliste als Ideen-Pinnwand je Kategorie, unten der WhatsApp-Text. */
+/* Aufbau: Kopf wie eine Einladungskarte (Tannengrün, Goldrahmen), darunter drei Bereiche über eine Leiste unten:
+   „Der Abend“ (Begrüßung, dein Beitrag, wo noch Hilfe willkommen ist, Gastgeber-Bereich), „Mitbringen“ (Kategorien), „Gäste“.
+   Einträge und Gäste öffnen ein Blatt von unten. Beim ersten Öffnen führt ein Willkommens-Blatt durch drei Schritte. */
 :root{
-  --bg:#fbf6ee; --surface:#fffdf8; --sunk:#f4ecdf; --ink:#1f2a23; --muted:#6b6254; --line:#ebdfcb; --speck:rgba(167,122,28,.10);
-  --band:#0f3b2b; --band2:#06231a; --band-ink:#fbf3e4; --band-muted:#d4c6a4;
-  --fir:#14523a; --cran:#ad1f37; --on-cran:#fffaf2; --cran-soft:#f9e2e5; --gold:#9c7116; --gold-soft:#f8ecd2; --ok:#2b7a4b; --ok-soft:#e1f1e7;
-  --b1:#c0283f; --b2:#c99a2e; --b3:#1f6b4a; --b4:#7a2a52; --b5:#2c5c8a; --b6:#b5522a;
-  --display:"Young Serif", Georgia, "Times New Roman", serif;
+  --bg:#f6efe2; --paper:#fffaf1; --sunk:#f0e6d4; --ink:#1c2520; --muted:#6a6150; --line:#e5d7be; --line2:#d9c7a6;
+  --fir:#0c3326; --fir-deep:#05190f; --on-fir:#f8f1e1; --on-fir-muted:#cdbf9c;
+  --gold:#9f7a2c; --gold-2:#d9b867; --gold-soft:#f5ead0; --cran:#9b2335; --cran-soft:#f7e3e5;
+  --ok:#2e6c46; --ok-soft:#e2eee5; --shadow:0 1px 0 rgba(120,90,40,.06),0 14px 30px -22px rgba(60,35,10,.45);
+  --display:"Cormorant Garamond", "Iowan Old Style", Georgia, serif;
   --script:"Pinyon Script", "Snell Roundhand", "Apple Chancery", cursive;
   --body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --r:12px;
+  --r:16px; --tabh:64px;
+  color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0b1611; --surface:#12211a; --sunk:#192c22; --ink:#f3ecdf; --muted:#b2a891; --line:#273b30; --speck:rgba(230,191,98,.08);
-  --band:#0a2c1f; --band2:#03130d; --band-ink:#fbf3e4; --band-muted:#cbbd9a;
-  --fir:#86cfa8; --cran:#ef6f83; --on-cran:#1c0a0e; --cran-soft:#3b1a21; --gold:#e6bf62; --gold-soft:#2c2416; --ok:#72cf98; --ok-soft:#183626;
-  --b1:#ef6f83; --b2:#e6bf62; --b3:#6fcf9b; --b4:#d68ab3; --b5:#7fb2e6; --b6:#ec9a6a;
+  --bg:#0a1410; --paper:#111f18; --sunk:#172a20; --ink:#f2ebdc; --muted:#ada38c; --line:#233a2e; --line2:#2f4a3b;
+  --gold:#dcbd6e; --gold-2:#e9cf8a; --gold-soft:#262113; --cran:#e7798a; --cran-soft:#3a1c22;
+  --ok:#83d0a0; --ok-soft:#163327; --shadow:0 1px 0 rgba(0,0,0,.2),0 16px 30px -20px rgba(0,0,0,.7);
   color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0b1611; --surface:#12211a; --sunk:#192c22; --ink:#f3ecdf; --muted:#b2a891; --line:#273b30; --speck:rgba(230,191,98,.08);
-  --band:#0a2c1f; --band2:#03130d; --band-ink:#fbf3e4; --band-muted:#cbbd9a;
-  --fir:#86cfa8; --cran:#ef6f83; --on-cran:#1c0a0e; --cran-soft:#3b1a21; --gold:#e6bf62; --gold-soft:#2c2416; --ok:#72cf98; --ok-soft:#183626;
-  --b1:#ef6f83; --b2:#e6bf62; --b3:#6fcf9b; --b4:#d68ab3; --b5:#7fb2e6; --b6:#ec9a6a;
+  --bg:#0a1410; --paper:#111f18; --sunk:#172a20; --ink:#f2ebdc; --muted:#ada38c; --line:#233a2e; --line2:#2f4a3b;
+  --gold:#dcbd6e; --gold-2:#e9cf8a; --gold-soft:#262113; --cran:#e7798a; --cran-soft:#3a1c22;
+  --ok:#83d0a0; --ok-soft:#163327; --shadow:0 1px 0 rgba(0,0,0,.2),0 16px 30px -20px rgba(0,0,0,.7);
   color-scheme:dark}
 
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
-.wrap{max-width:900px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
-h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
-button,input,select,textarea{font:inherit;color:inherit}
-button{cursor:pointer}
-:focus-visible{outline:2px solid var(--cran);outline-offset:2px}
-
-/* Kopf */
-.band{background:var(--band);color:var(--band-ink)}
-.band .wrap{padding-block:28px 24px;display:grid;gap:18px}
-.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--band-muted);font-weight:600}
-h1{font-size:clamp(30px,6vw,46px);line-height:1.05}
-.facts{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:flex-end}
-.fact{display:grid;gap:2px}
-.fact b{font-family:var(--display);font-weight:400;font-size:28px;line-height:1;font-variant-numeric:tabular-nums}
-.fact span{font-size:13px;color:var(--band-muted)}
-.datum{background:transparent;border:0;border-bottom:1px dashed var(--band-muted);color:var(--band-ink);padding:2px 0;width:min(100%,280px)}
-.datum::placeholder{color:var(--band-muted)}
-
-.status{font-size:13px;padding:10px 14px;border-radius:var(--r);background:var(--sunk);color:var(--muted);margin-top:18px}
-.status[data-kind="warn"]{background:var(--cran-soft);color:var(--ink)}
-
-main{display:grid;gap:34px;padding-block:24px 60px}
-.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;margin-bottom:12px}
-.sec-head h2{font-size:24px}
-.sec-head p{margin:0;color:var(--muted);font-size:14px}
-
-/* Gäste */
-.list{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
-.guest{display:grid;grid-template-columns:1fr auto auto auto 32px;gap:10px;align-items:center;padding:10px 12px;border-top:1px solid var(--line)}
-.guest:first-child{border-top:0}
-.guest .name{min-width:0}
-.txt{width:100%;min-width:0;border:1px solid transparent;background:transparent;border-radius:6px;padding:6px 8px}
-.txt:hover:not(:disabled){border-color:var(--line)}
-.txt:focus{border-color:var(--fir);background:var(--surface);outline:none}
-.step{display:flex;align-items:center;gap:2px}
-.step small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-right:4px}
-.step button{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--sunk);line-height:1}
-.step button:disabled{opacity:.4;cursor:default}
-.step output{min-width:22px;text-align:center;font-variant-numeric:tabular-nums;font-weight:600}
-.x{width:30px;height:30px;border:0;background:transparent;color:var(--muted);border-radius:6px;font-size:18px;flex:none}
-.x:hover{background:var(--cran-soft);color:var(--cran)}
-.steps{display:contents}
-@media (max-width:560px){
-  .guest{grid-template-columns:1fr 32px}
-  .guest .x{grid-column:2;grid-row:1}
-  .guest .steps{display:flex;flex-wrap:wrap;gap:10px 18px;grid-column:1/-1}
-}
-.st{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 8px;font-size:13px;font-weight:600}
-.st.ja{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
-.st.offen{border-color:var(--gold);color:var(--gold)}
-.st.nein{color:var(--muted)}
-.guest.nein .txt{text-decoration:line-through;color:var(--muted)}
-.addrow{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-top:1px solid var(--line);align-items:center}
-.addrow input[type=text],.addrow input:not([type]){flex:1;min-width:160px;border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:7px 10px}
-.addrow label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted);white-space:nowrap}
-.btn{border:1px solid var(--fir);background:var(--fir);color:var(--bg);border-radius:6px;padding:7px 14px;font-weight:600;white-space:nowrap}
-.btn:disabled{opacity:.5;cursor:default}
-
-.hints{margin-top:10px;font-size:13px;color:var(--muted)}
-.hints summary{cursor:pointer;display:inline-flex;gap:6px;align-items:center;padding:4px 0;list-style:none}
-.hints summary::-webkit-details-marker{display:none}
-.hints summary::before{content:"›";display:inline-block;transition:transform .15s}
-.hints[open] summary::before{transform:rotate(90deg)}
-.hints ul{list-style:none;margin:4px 0 0;padding:0 0 0 14px;display:flex;flex-wrap:wrap;gap:4px 16px;font-variant-numeric:tabular-nums}
-.hints li b{font-weight:600;color:var(--ink)}
-.hints p{margin:6px 0 0 14px}
-
-/* Mitbringliste */
-.me{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--gold-soft);border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:14px}
-.me select{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 8px;font-weight:600;max-width:100%}
-.me small{color:var(--muted);flex-basis:100%}
-.meatline{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:14px;color:var(--muted);padding:2px 2px 14px}
-.meatline b{color:var(--ink);font-weight:600}
-.meatline .txt{flex:1;min-width:180px;max-width:360px}
-.filters{display:flex;flex-wrap:wrap;gap:6px}
-.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.cats{display:grid;gap:18px}
-.cat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
-.cat-head{display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:baseline;padding:14px 14px 4px}
-.cat-head h3{font-size:20px}
-.cov{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-.intro{margin:0;padding:0 14px 12px;font-size:14px;color:var(--muted);max-width:60ch}
-
-.item{padding:10px 12px;border-top:1px solid var(--line);display:grid;gap:6px}
-.irow{display:flex;gap:6px;align-items:center}
-.irow .txt{font-weight:600;font-size:16px}
-.meta{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;padding-left:8px}
-.wer{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 8px;font-size:13px;max-width:100%}
-.wer.has{border-color:var(--ok);background:var(--ok-soft);color:var(--ok);font-weight:600}
-.wer.none{border-color:var(--gold);color:var(--gold);font-weight:600}
-.pill{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 10px;font-size:13px;color:var(--muted)}
-.pill:hover{color:var(--ink);border-color:var(--muted)}
-.pill[aria-pressed="true"]{background:var(--cran-soft);border-color:var(--cran);color:var(--cran);font-weight:600}
-.who{font-size:12px;color:var(--muted)}
-.thread{margin-left:8px;border-left:2px solid var(--line);padding:4px 0 2px 12px;display:grid;gap:6px}
-.reply{font-size:14px}
-.reply b{font-weight:600}
-.reply .x{width:22px;height:22px;font-size:14px;vertical-align:middle}
-.rform{display:flex;gap:6px}
-.rform input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:6px 10px}
-.sugg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 12px 12px}
-.sugg span{font-size:12px;color:var(--muted)}
-.sugg button{border:1px dashed var(--muted);background:transparent;border-radius:999px;padding:3px 10px;font-size:13px;color:var(--muted)}
-.sugg button:hover{border-style:solid;color:var(--ink)}
-.empty{padding:2px 14px 10px;font-size:14px;color:var(--muted)}
-
-/* WhatsApp */
-.share{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:10px}
-.share textarea{width:100%;min-height:220px;border:1px solid var(--line);border-radius:6px;background:var(--bg);padding:10px;font-size:13px;line-height:1.5;resize:vertical}
-.share .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.share small{color:var(--muted)}
-
-.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:8px;display:flex;gap:14px;align-items:center;font-size:14px;max-width:calc(100% - 32px);z-index:20}
-.toast button{background:transparent;border:0;color:var(--bg);font-weight:700;text-decoration:underline}
-@media (prefers-reduced-motion:no-preference){.toast{animation:up .18s ease-out}@keyframes up{from{transform:translate(-50%,8px);opacity:0}}}
-/* ---- Weihnachtliches ---- */
-body{background-color:var(--bg);background-image:radial-gradient(var(--speck) 1.2px,transparent 1.6px),radial-gradient(var(--speck) 1px,transparent 1.4px);background-size:34px 34px,22px 22px;background-position:0 0,11px 17px}
-.band{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%,var(--band) 0%,var(--band2) 100%);padding-bottom:18px}
-.band .wrap{position:relative;z-index:2;padding-block:46px 30px}
-.band::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:16px;z-index:3;background:radial-gradient(circle at 12px 0,transparent 11px,var(--bg) 11.5px) repeat-x;background-size:24px 16px}
-#snow{position:fixed;inset:0;width:100vw;height:100vh;z-index:15;pointer-events:none}
-.sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.sky svg{position:absolute;color:var(--gold);opacity:.55}
-@media (prefers-reduced-motion:no-preference){.sky svg{animation:sparkle 3.4s ease-in-out infinite}
-@keyframes sparkle{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:.15;transform:scale(.7)}}}
-#app,.fest{position:relative;z-index:1}
-.band{z-index:1}
-.divider{display:flex;align-items:center;justify-content:center;gap:12px;color:var(--gold);margin-block:-12px}
-.divider::before,.divider::after{content:"";flex:1;max-width:240px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
-.divider::after{background:linear-gradient(270deg,transparent,var(--gold))}
-.divider svg{flex:none}
-.tree{width:86px;height:104px}
-.lights{position:absolute;left:0;right:0;top:0;height:46px;z-index:2;display:flex;justify-content:space-around;padding:0 6px;pointer-events:none}
-.lights::before{content:"";position:absolute;left:-2%;right:-2%;top:-14px;height:26px;border-bottom:1.5px solid rgba(0,0,0,.55);border-radius:0 0 50% 50% / 0 0 100% 100%}
-.bulb{position:relative;width:11px;height:17px;margin-top:10px;border-radius:50% 50% 50% 50% / 40% 40% 60% 60%;background:radial-gradient(circle at 40% 35%,#fff 0 18%,var(--c) 45%);box-shadow:0 0 6px 2px var(--c),0 0 18px 6px var(--c),0 0 34px 10px var(--g);opacity:1}
-.bulb::before{content:"";position:absolute;left:2px;top:-4px;width:5px;height:5px;border-radius:1px;background:#3b3b3b}
-.bulb:nth-child(4n+1){--c:#ff4d63;--g:rgba(255,77,99,.35)}.bulb:nth-child(4n+2){--c:#ffd25c;--g:rgba(255,210,92,.38)}.bulb:nth-child(4n+3){--c:#5ff0a0;--g:rgba(95,240,160,.32)}.bulb:nth-child(4n){--c:#7fbfff;--g:rgba(127,191,255,.35)}
-.bulb:nth-child(odd){margin-top:15px;transform:rotate(8deg)}.bulb:nth-child(even){transform:rotate(-8deg)}
-@media (prefers-reduced-motion:no-preference){.bulb{animation:twinkle 2.6s ease-in-out infinite}.bulb:nth-child(3n){animation-delay:-.9s}.bulb:nth-child(3n+1){animation-delay:-1.7s}
-@keyframes twinkle{0%,100%{opacity:1}50%{opacity:.7;box-shadow:0 0 4px 1px var(--c),0 0 10px 3px var(--c)}}}
-.tradition{font-family:var(--script);font-size:clamp(26px,5vw,34px);line-height:1;color:var(--gold);margin:0}
-:root .band .tradition{color:#e9c771}
-h1{font-size:clamp(34px,7vw,56px);letter-spacing:-.01em;text-shadow:0 2px 18px rgba(0,0,0,.35)}
-h1 .star{display:inline-block;width:.55em;height:.55em;vertical-align:.45em;margin-left:.15em;color:#f2cf6b;filter:drop-shadow(0 0 8px rgba(242,207,107,.7))}
-.fact{background:rgba(255,255,255,.07);border:1px solid rgba(233,199,113,.35);border-radius:10px;padding:10px 14px}
-.fact b{color:#f6d77e}
-.sec-head h2{display:flex;align-items:center;gap:10px}
-.sec-head h2::before{content:"";width:16px;height:16px;flex:none;background:var(--gold);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
-.list,.cat,.share{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(60,30,10,.35)}
-.cat-head h3{display:flex;align-items:center;gap:10px}
-.bauble{width:24px;height:28px;flex:none;color:var(--bc)}
-.btn{background:var(--cran);border-color:var(--cran);color:var(--on-cran)}
-.chip[aria-pressed="true"]{background:var(--cran);border-color:var(--cran);color:var(--on-cran)}
-.me{border:1px dashed var(--gold);background:var(--gold-soft)}
-.wer.none{border-style:dashed}
-.thread{border-left-color:var(--gold)}
-.fest{text-align:center;padding-block:10px 50px;display:grid;gap:6px;justify-items:center}
-.fest p{margin:0}
-.fest .tradition{font-size:clamp(34px,7vw,48px);color:var(--cran)}
-.fest small{color:var(--muted)}
-.fest .sign{font-family:var(--script);font-size:clamp(28px,6vw,36px);line-height:1.1;color:var(--gold);margin-top:4px}
-.ro .x,.ro .sugg,.ro .addrow,.ro .step button,.ro .rform{display:none}
-/* ---- Web-App ---- */
-:root{color-scheme:light}
 html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(rgba(159,122,44,.07) 1px,transparent 1.4px);background-size:26px 26px}
 [hidden]{display:none!important}
-img{max-width:100%}
-.band .wrap{padding-top:calc(46px + env(safe-area-inset-top, 0px))}
-.lights{top:env(safe-area-inset-top, 0px)}
-.fest{padding-bottom:calc(50px + env(safe-area-inset-bottom, 0px))}
-.btn.ghost{background:transparent;color:var(--cran);border-color:var(--cran)}
-.notify{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;align-items:start;background:var(--gold-soft);border:1px solid var(--gold);border-radius:var(--r);padding:14px 16px}
-.notify .bell{width:30px;height:30px;color:var(--gold);margin-top:2px}
-.notify h2{font-size:20px}
-.notify p{margin:4px 0 10px;color:var(--ink);font-size:14px;max-width:62ch}
-.nbtns{display:flex;flex-wrap:wrap;gap:8px}
-.host{font-size:14px;color:var(--muted);border-top:1px dashed var(--line);padding-top:14px}
-.host summary{cursor:pointer;font-weight:600;color:var(--ink)}
-.host p{max-width:62ch}
-.hostform{display:grid;gap:6px}
-.hostform .row{display:flex;flex-wrap:wrap;gap:8px}
-.hostform input{flex:1;min-width:120px;max-width:200px;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 10px}
-.menu{margin:-6px 0 0;font-size:clamp(17px,3.4vw,21px);font-weight:600;letter-spacing:.02em;color:#f6d77e}
-.hostcard .intro{color:var(--ink);font-size:15px}
-.hostnote{padding:0 14px 14px}
-.hostnote .txt{max-width:420px;border-color:var(--line)}
-.pill.rz.has{border-color:var(--gold);color:var(--gold);font-weight:600}
-.recipe{margin-left:8px;border-left:2px solid var(--b6);padding:6px 0 4px 12px}
-.rztext{white-space:pre-wrap;font-size:14px;line-height:1.55;max-width:62ch;margin-bottom:8px}
-.rzform{display:grid;gap:8px}
-.rzform label{font-size:13px;font-weight:600}
-.rzform textarea{width:100%;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:8px 10px;font-size:14px;line-height:1.5;resize:vertical}
-.applink{word-break:break-all;color:var(--cran)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);font-weight:600;margin:0;text-wrap:balance;letter-spacing:.005em}
+p{margin:0}
+.wrap{max-width:640px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---- Vorschau-Hinweis ---- */
+.demo{position:sticky;top:0;z-index:30;background:var(--gold-2);color:#2a2008;font-size:13px;font-weight:600;text-align:center;padding:calc(6px + env(safe-area-inset-top,0px)) 12px 6px}
+
+/* ---- Kopf: Einladungskarte ---- */
+.hero{position:relative;overflow:hidden;color:var(--on-fir);background:radial-gradient(130% 100% at 50% 0%,#14513b 0%,var(--fir) 45%,var(--fir-deep) 100%);padding:calc(30px + env(safe-area-inset-top,0px)) 0 34px}
+.demo~.hero{padding-top:30px}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero .wrap{position:relative;z-index:2}
+.card-frame{position:relative;border:1px solid rgba(217,184,103,.55);border-radius:20px;padding:40px 20px 34px;text-align:center;
+  box-shadow:inset 0 0 0 5px rgba(12,51,38,.0),inset 0 0 0 6px rgba(217,184,103,.22)}
+.orn{position:absolute;left:50%;transform:translateX(-50%);color:var(--gold-2);z-index:1}
+.orn.top{top:12px}.orn.bot{bottom:10px}
+.eyebrow{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--gold-2)}
+.hero h1{font-size:clamp(34px,9vw,50px);line-height:1.02;margin:10px 0 8px;font-weight:600;text-shadow:0 2px 20px rgba(0,0,0,.35)}
+.hero h1 em{font-style:italic;font-weight:500;color:var(--gold-2)}
+.menu{font-family:var(--display);font-style:italic;font-size:21px;color:#ecdcb2}
+.facts{display:flex;justify-content:center;gap:0;margin-top:20px;border-top:1px solid rgba(217,184,103,.28);padding-top:16px}
+.fact{flex:1;min-width:0;display:grid;gap:2px;padding:0 6px}
+.fact+.fact{border-left:1px solid rgba(217,184,103,.22)}
+.fact b{font-family:var(--display);font-weight:600;font-size:27px;line-height:1;color:#f3d888;font-variant-numeric:lining-nums tabular-nums}
+.fact span{font-size:12px;color:var(--on-fir-muted);line-height:1.3}
+.lights{position:absolute;left:0;right:0;top:env(safe-area-inset-top,0px);height:34px;z-index:1;display:flex;justify-content:space-around;pointer-events:none;opacity:.85}
+.demo~.hero .lights{top:0}
+.lights::before{content:"";position:absolute;left:-2%;right:-2%;top:-16px;height:24px;border-bottom:1px solid rgba(0,0,0,.5);border-radius:0 0 50% 50%/0 0 100% 100%}
+.bulb{position:relative;width:7px;height:11px;margin-top:6px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;background:radial-gradient(circle at 40% 35%,#fff 0 18%,var(--c) 50%);box-shadow:0 0 5px 1px var(--c),0 0 16px 4px var(--g)}
+.bulb:nth-child(odd){margin-top:10px}
+.bulb:nth-child(4n+1){--c:#ffcf6b;--g:rgba(255,207,107,.35)}.bulb:nth-child(4n+2){--c:#ff6b78;--g:rgba(255,107,120,.3)}.bulb:nth-child(4n+3){--c:#ffe3a3;--g:rgba(255,227,163,.35)}.bulb:nth-child(4n){--c:#8fe0b0;--g:rgba(143,224,176,.28)}
+@media (prefers-reduced-motion:no-preference){.bulb{animation:tw 3s ease-in-out infinite}.bulb:nth-child(3n){animation-delay:-1s}.bulb:nth-child(3n+1){animation-delay:-2s}
+  @keyframes tw{50%{opacity:.65}}}
+.hero.small{padding:calc(18px + env(safe-area-inset-top,0px)) 0 22px}
+.demo~.hero.small{padding-top:18px}
+.hero.small .card-frame{padding:18px 16px 16px}
+.hero.small .orn{display:none}
+.hero.small h1{font-size:clamp(26px,7vw,34px);margin:6px 0 2px}
+.hero.small .facts,.hero.small .menu{display:none}
+
+/* ---- Inhalt ---- */
+main{padding:22px 0 calc(var(--tabh) + 40px + env(safe-area-inset-bottom,0px));display:grid;gap:26px}
+.status{font-size:14px;padding:12px 14px;border-radius:12px;background:var(--sunk);color:var(--muted)}
+.status[data-kind="warn"]{background:var(--cran-soft);color:var(--ink)}
+.sec{display:grid;gap:12px}
+.sec-h{display:grid;gap:2px}
+.sec-h .k{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--gold)}
+.sec-h h2{font-size:27px;line-height:1.1}
+.sec-h p{color:var(--muted);font-size:14.5px;max-width:52ch}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.pad{padding:18px}
+
+/* Begrüßung */
+.welcome{position:relative;padding:22px 20px 20px;text-align:center;display:grid;gap:10px;justify-items:center}
+.welcome h2{font-size:30px;line-height:1.08}
+.welcome p{color:var(--ink);max-width:44ch;font-size:15.5px}
+.welcome .note{background:var(--gold-soft);border-radius:12px;padding:10px 14px;font-size:14.5px;max-width:44ch}
+.welcome .note b{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.welcome .sign{font-family:var(--script);font-size:34px;max-width:none;white-space:nowrap;line-height:1.1;color:var(--gold);margin-top:2px}
+.welcome .eyebrow{font-size:11.5px;color:var(--gold)}
+.mystatus{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;font-size:14px;color:var(--muted)}
+
+/* Knöpfe */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--fir);background:var(--fir);color:var(--on-fir);border-radius:999px;padding:10px 18px;font-weight:600;font-size:15px;line-height:1.2;white-space:nowrap;transition:transform .12s,background .15s}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn{background:var(--gold-2);border-color:var(--gold-2);color:#1d1606}}
+:root[data-theme="dark"] .btn{background:var(--gold-2);border-color:var(--gold-2);color:#1d1606}
+.btn:active{transform:scale(.97)}
+.btn.gold{background:var(--gold-2);border-color:var(--gold-2);color:#2a2008}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line2)}
+.btn.small{padding:7px 13px;font-size:14px}
+.btn.wide{width:100%}
+.btn:disabled{opacity:.5;cursor:default}
+.link{background:none;border:0;padding:4px 2px;color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+
+/* Zeilen */
+.rows{display:grid}
+.row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line);min-height:62px}
+.row:first-child{border-top:0}
+.row .main{flex:1;min-width:0;display:grid;gap:2px;text-align:left;background:none;border:0;padding:4px 0;color:inherit}
+.row .t{font-weight:600;font-size:16px;line-height:1.3;overflow-wrap:anywhere}
+.row .s{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:2px 10px;align-items:center}
+.row .s .ico{width:14px;height:14px;vertical-align:-2px}
+.row .s span{display:inline-flex;gap:4px;align-items:center}
+.catlbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--gold)}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 11px;font-size:13.5px;font-weight:600;white-space:nowrap;border:1px solid var(--line2);background:transparent;color:var(--muted);line-height:1.2}
+.chip .ico{width:15px;height:15px}
+.chip.ok{border-color:transparent;background:var(--ok-soft);color:var(--ok);max-width:48%}
+.chip.ok .nm{overflow:hidden;text-overflow:ellipsis}
+.chip.me{border-color:transparent;background:var(--gold-soft);color:var(--gold)}
+.chip.take{border:1px solid var(--gold);color:var(--gold);background:transparent}
+.chip.take:hover{background:var(--gold-soft)}
+.chip.like[aria-pressed="true"]{border-color:transparent;background:var(--cran-soft);color:var(--cran)}
+.chip.st-ja{border-color:transparent;background:var(--ok-soft);color:var(--ok)}
+.chip.st-offen{border-style:dashed;color:var(--gold);border-color:var(--gold)}
+.chip.st-nein{color:var(--muted)}
+.empty{padding:16px;color:var(--muted);font-size:14.5px;text-align:center}
+.pop{animation:pop .5s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes pop{0%{transform:scale(.85);opacity:.4}100%{transform:none;opacity:1}}
+
+/* Fortschritt */
+.progress{display:grid;gap:8px;padding:16px 18px}
+.progress .bar{height:6px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.progress .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold-2));transition:width .6s ease}
+.progress .lbl{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--muted)}
+.progress .lbl span:last-child{white-space:nowrap;font-weight:600;color:var(--gold)}
+.progress .lbl b{color:var(--ink);font-weight:600}
+
+/* Kategorien */
+.cat-h{display:flex;gap:12px;align-items:flex-start;padding:18px 18px 6px}
+.cat-h .em{width:40px;height:40px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--gold-soft);color:var(--gold)}
+.cat-h .em .ico{width:22px;height:22px}
+.cat-h h3{font-size:24px;line-height:1.1}
+.cat-h .sub{font-size:13px;color:var(--muted)}
+.cat-intro{padding:2px 18px 12px;color:var(--muted);font-size:14.5px;max-width:56ch}
+.addform{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 14px 14px;border-top:1px solid var(--line)}
+.addform input[type=text]{flex:1 1 180px;min-width:0;border:1px solid var(--line2);background:var(--bg);border-radius:999px;padding:9px 14px}
+.addform input[type=text]:focus{outline:none;border-color:var(--gold)}
+.addform label{display:inline-flex;gap:7px;align-items:center;font-size:14px;color:var(--muted);white-space:nowrap}
+.addform input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold)}
+.sugg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:0 14px 14px}
+.sugg span{font-size:12.5px;color:var(--muted)}
+.sugg button{border:1px dashed var(--line2);background:transparent;border-radius:999px;padding:5px 11px;font-size:13.5px;color:var(--muted)}
+.sugg button:hover{border-style:solid;color:var(--ink)}
+.jump{display:flex;gap:6px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none;margin:0 -16px;padding-left:16px;padding-right:16px}
+.jump::-webkit-scrollbar{display:none}
+.jump a{flex:none;text-decoration:none;color:var(--ink);border:1px solid var(--line2);background:var(--paper);border-radius:999px;padding:7px 13px;font-size:13.5px;font-weight:600}
+.jump a small{color:var(--gold);font-weight:700;margin-left:4px}
+
+/* Benachrichtigungen */
+.bell{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;padding:16px 18px;background:var(--gold-soft);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);border-radius:var(--r)}
+.bell .ico{width:26px;height:26px;color:var(--gold);margin-top:2px}
+.bell h3{font-size:21px;line-height:1.15}
+.bell p{font-size:14.5px;margin:4px 0 10px}
+.bell .row2{display:flex;flex-wrap:wrap;gap:8px}
+
+/* Gastgeber-Bereich */
+.host{border:1px dashed var(--line2);border-radius:var(--r);background:transparent}
+.host summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;gap:10px;align-items:center;font-weight:600}
+.host summary::-webkit-details-marker{display:none}
+.host summary .ico{color:var(--gold)}
+.host summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:1.6px solid var(--muted);border-bottom:1.6px solid var(--muted);transform:rotate(45deg);transition:transform .2s}
+.host[open] summary::after{transform:rotate(225deg)}
+.host .in{padding:0 18px 18px;display:grid;gap:18px}
+.field{display:grid;gap:6px}
+.field>span{font-size:13px;font-weight:600}
+.field small{color:var(--muted);font-size:12.5px}
+.inp{width:100%;min-width:0;border:1px solid var(--line2);background:var(--paper);border-radius:12px;padding:10px 12px}
+.inp:focus{outline:none;border-color:var(--gold)}
+textarea.inp{resize:vertical;line-height:1.5}
+.amounts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr auto;gap:4px 16px;font-size:14px}
+.amounts b{font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.field>.hostsub{font-family:var(--display);font-size:21px;font-weight:600;margin-top:4px}
+
+/* Leiste unten */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:0 12px calc(8px + env(safe-area-inset-bottom,0px));pointer-events:none}
+.tabs nav{pointer-events:auto;max-width:420px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:6px;border-radius:22px;
+  background:color-mix(in srgb,var(--paper) 82%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border:1px solid var(--line);box-shadow:0 12px 30px -12px rgba(30,20,5,.35)}
+.tabs button{position:relative;display:grid;justify-items:center;gap:2px;border:0;background:transparent;border-radius:16px;padding:7px 4px 6px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.tabs button .ico{width:22px;height:22px}
+.tabs button[aria-current="page"]{color:var(--ink);background:var(--gold-soft)}
+.tabs button[aria-current="page"] .ico{color:var(--gold)}
+.tabs .dot{position:absolute;top:4px;right:calc(50% - 20px);min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:var(--cran);color:#fff;font-size:10.5px;line-height:17px;font-weight:700}
+
+/* Blatt von unten */
+dialog.sheet{border:0;padding:0;margin:0;max-width:none;width:100%;max-height:none;background:transparent;color:var(--ink)}
+dialog.sheet::backdrop{background:rgba(5,15,10,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+dialog.sheet[open]{position:fixed;inset:auto 0 0 0;display:flex;justify-content:center}
+.sh{position:relative;width:100%;max-width:560px;max-height:92dvh;overflow:auto;overscroll-behavior:contain;background:var(--paper);border-radius:24px 24px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+.sh::before{content:"";display:block;width:40px;height:5px;border-radius:3px;background:var(--line2);margin:0 auto 12px}
+@media (min-width:700px){dialog.sheet[open]{inset:0;align-items:center}.sh{border-radius:24px;max-height:86vh}.sh::before{display:none}}
+@media (prefers-reduced-motion:no-preference){dialog.sheet[open] .sh{animation:up .32s cubic-bezier(.2,.8,.2,1)}@keyframes up{from{transform:translateY(40px);opacity:0}}}
+.sh .close{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:0;background:var(--sunk);color:var(--muted);display:grid;place-items:center}
+.sh h2{font-size:28px;line-height:1.1;padding-right:40px}
+.sh .lead{color:var(--muted);margin-top:4px;font-size:15px}
+.sh .blk{display:grid;gap:10px;margin-top:20px}
+.sh .blk>h4{margin:0;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.titleinp{font-family:var(--display);font-size:28px;font-weight:600;line-height:1.15;border:1px solid transparent;background:transparent;border-radius:10px;padding:2px 6px;margin-left:-6px;width:calc(100% - 40px)}
+.titleinp:hover{border-color:var(--line)}
+.titleinp:focus{outline:none;border-color:var(--gold);background:var(--bg)}
+.seg{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:center;text-align:left;border:1px solid var(--line2);background:var(--paper);border-radius:14px;padding:14px 16px;font-weight:600;font-size:16px;width:100%}
+.opt small{display:block;font-weight:400;color:var(--muted);font-size:13.5px}
+.opt[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-soft)}
+.opt .em{font-size:22px;line-height:1}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.tile{display:grid;gap:8px;justify-items:center;text-align:center;border:1px solid var(--line2);background:var(--paper);border-radius:16px;padding:16px 10px;font-weight:600;font-size:15px;line-height:1.25}
+.tile[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-soft)}
+.av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:20px;font-weight:700;color:var(--on-fir);background:linear-gradient(145deg,#1b5c43,var(--fir))}
+.steps{display:flex;gap:6px;justify-content:center;margin:2px 0 14px}
+.steps i{width:24px;height:4px;border-radius:2px;background:var(--line2)}
+.steps i.on{background:var(--gold)}
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border:1px solid var(--line);border-radius:14px}
+.stepper .ctl{display:flex;align-items:center;gap:6px}
+.stepper button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line2);background:var(--bg);font-size:18px;line-height:1}
+.stepper button:disabled{opacity:.35}
+.stepper output{min-width:26px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums;font-size:17px}
+.thread{display:grid;gap:10px}
+.msg{background:var(--sunk);border-radius:4px 14px 14px 14px;padding:9px 12px;font-size:14.5px;position:relative}
+.msg b{display:block;font-size:12.5px;color:var(--gold)}
+.msg .x{position:absolute;top:4px;right:4px;border:0;background:transparent;color:var(--muted);width:26px;height:26px;border-radius:50%}
+.msgform{display:flex;gap:8px}
+.msgform input{flex:1;min-width:0}
+.rztext{white-space:pre-wrap;font-size:15px;line-height:1.6;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.likers{font-size:13.5px;color:var(--muted)}
+.danger{color:var(--cran);border-color:transparent;background:transparent;font-weight:600;padding:10px 0;border:0}
+.center{text-align:center}
+.hint{font-size:13.5px;color:var(--muted)}
+.howto{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.howto li{counter-increment:s;display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;font-size:15px}
+.howto li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--gold-soft);color:var(--gold);display:grid;place-items:center;font-weight:700;font-size:14px}
+
+.toast{position:fixed;left:50%;bottom:calc(var(--tabh) + 22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:14px;display:flex;gap:14px;align-items:center;font-size:14.5px;max-width:calc(100% - 32px);z-index:60;box-shadow:0 10px 30px -10px rgba(0,0,0,.5)}
+.toast button{background:transparent;border:0;color:var(--gold-2);font-weight:700}
+@media (prefers-reduced-motion:no-preference){.toast{animation:tin .2s ease-out}@keyframes tin{from{transform:translate(-50%,10px);opacity:0}}
+  .view{animation:vin .28s ease-out}@keyframes vin{from{opacity:0;transform:translateY(6px)}}}
+.foot{text-align:center;display:grid;gap:4px;justify-items:center;padding-top:6px;color:var(--muted);font-size:13.5px}
+.foot .tradition{font-family:var(--script);font-size:38px;line-height:1.05;color:var(--cran)}
 </style>
 </head>
 <body>
-
-<div class="sky" id="sky" aria-hidden="true"></div>
-<canvas id="snow" aria-hidden="true"></canvas>
-<header class="band">
+<div class="demo" id="demo" hidden>Vorschau mit Beispieldaten · nichts wird gespeichert, keine Benachrichtigungen</div>
+<header class="hero" id="hero">
+  <canvas id="snow" aria-hidden="true"></canvas>
   <div class="lights" id="lights" aria-hidden="true"></div>
   <div class="wrap">
-    <p class="tradition">Unsere liebgewordene Tradition</p>
-    <h1>Weihnachten bei Andy, Mel & Connor<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5l2.9 7.1 7.6.5-5.9 4.9 1.9 7.4L12 17.3l-6.5 4.1 1.9-7.4-5.9-4.9 7.6-.5z"/></svg></h1>
-    <p class="menu">Raclette &amp; Fondue an Heiligabend</p>
-    <div class="facts">
-      <div class="fact"><b id="f-days">–</b><span>Tage bis Heiligabend</span></div>
-      <div class="fact"><b id="f-pers">–</b><span id="f-pers-l">Personen zugesagt</span></div>
-      <div class="fact"><b id="f-open">–</b><span>Ideen suchen noch jemanden</span></div>
-      <div class="fact" style="flex:1;min-width:200px"><span>Wann? · tragen Andy & Mel ein</span><input class="datum" id="datum" placeholder="Heiligabend, Uhrzeit folgt" aria-label="Datum und Uhrzeit, tragen Andy & Mel ein"></div>
+    <div class="card-frame">
+      <svg class="orn top" width="22" height="18" viewBox="0 0 24 20" aria-hidden="true"><path fill="currentColor" d="M12 0l2.4 6.6L21 7.6l-5.2 4 1.9 6.9L12 14.6l-5.7 3.9 1.9-6.9-5.2-4 6.6-1z"/></svg>
+      <p class="eyebrow" id="h-eyebrow">Heiligabend</p>
+      <h1>Bei Andy, Mel <em>&amp;</em> Connor</h1>
+      <p class="menu">Raclette &amp; Fondue, wie jedes Jahr</p>
+      <div class="facts">
+        <div class="fact"><b id="f-days">–</b><span id="f-days-l">Tage bis Heiligabend</span></div>
+        <div class="fact"><b id="f-when">–</b><span id="f-when-l">Uhr</span></div>
+        <div class="fact"><b id="f-pers">–</b><span>sind dabei</span></div>
+      </div>
+      <svg class="orn bot" width="40" height="14" viewBox="0 0 40 14" aria-hidden="true"><path d="M2 7h12M26 7h12" stroke="currentColor" stroke-width="1"/><circle cx="20" cy="7" r="3.2" fill="currentColor"/><circle cx="14.5" cy="7" r="1.3" fill="currentColor"/><circle cx="25.5" cy="7" r="1.3" fill="currentColor"/></svg>
     </div>
   </div>
 </header>
 
-<div class="wrap" id="app">
-  <div class="status" id="status">Die Liste wird geladen …</div>
-  <main id="main"></main>
-  <footer class="fest"><svg class="tree" viewBox="0 0 86 104" aria-hidden="true">
-    <path d="M43 0l2.9 7.1 7.6.5-5.9 4.9 1.9 7.4L43 15.8l-6.5 4.1 1.9-7.4-5.9-4.9 7.6-.5z" fill="#f2cf6b"/>
-    <path d="M43 18L22 46h10L14 70h12L6 94h74L60 70h12L54 46h10z" style="fill:var(--b3)"/>
-    <rect x="37" y="94" width="12" height="10" rx="2" fill="#7a4a24"/>
-    <circle cx="34" cy="44" r="3.2" style="fill:var(--b1)"/><circle cx="52" cy="56" r="3.2" style="fill:var(--b2)"/><circle cx="28" cy="70" r="3.2" style="fill:var(--b5)"/>
-    <circle cx="56" cy="80" r="3.2" style="fill:var(--b1)"/><circle cx="40" cy="84" r="3.2" style="fill:var(--b2)"/><circle cx="46" cy="34" r="2.6" style="fill:var(--b4)"/>
-    <path d="M30 52c8 4 20 4 28-1M22 76c12 5 30 5 42-1" stroke="#f2cf6b" stroke-width="1.4" fill="none" stroke-dasharray="2 3"/>
-  </svg><p class="tradition">Frohe Weihnachten</p><small>Wir freuen uns auf einen schönen Abend mit euch allen.</small><p class="sign">Andy, Mel &amp; Connor</p></footer>
+<div class="wrap">
+  <div class="status" id="status" style="margin-top:18px">Einen Moment, die Liste wird geladen …</div>
+  <main id="main" class="view"></main>
 </div>
-<div id="toast-root"></div>
+
+<div class="tabs"><nav id="tabs" aria-label="Bereiche"></nav></div>
+<dialog class="sheet" id="sheet" aria-labelledby="sheet-title"><div class="sh" id="sh"></div></dialog>
+<div id="toast-root" aria-live="polite"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
 <script>
 (function(){
-const CATS=[
- {key:'wuensche',bc:'--b4',label:'Wünsche zum Fleisch',wish:true,intro:'Was möchtet ihr zum Fleisch? Zuckerschoten, Kartöffelchen oder etwas ganz anderes: Tragt eure Wünsche ein, Andy & Mel sehen sie direkt. Mit „Möchte ich auch“ zeigt ihr, was gut ankommt.',sugg:['Zuckerschoten','Kartöffelchen','Champignons']},
- {key:'dips',bc:'--b1',label:'Dips & Soßen fürs Fondue',hint:'Dips & Soßen',g:80,unit:'g',intro:'Ohne Soßen kein Fondue. Welche mögt ihr am liebsten? Ideen rein, „Hab Lust drauf“ drücken, und wer eine macht, trägt sich ein.',sugg:['Knoblauchsoße','Cocktailsoße','Currysoße']},
- {key:'salate',bc:'--b3',label:'Salate',g:100,unit:'g',intro:'Welche Salate mögt ihr? Wenn ihr euch noch bestimmtes Gemüse wünscht, tragt es einfach als Wunsch hier ein. Was ihr mitbringt, sucht ihr euch selbst aus.',sugg:['Grüner Salat','Krautsalat']},
- {key:'brot',bc:'--b6',label:'Fladenbrot & Butter',hint:'Fladenbrot',g:100,unit:'g',intro:'Fladenbrot gehört bei uns immer dazu. Wer bringt es mit? Butter oder Kräuterbutter auch gerne eintragen.',sugg:['Fladenbrot','Kräuterbutter']},
- {key:'getraenke',bc:'--b5',label:'Getränke',g:1.5,unit:'l',intro:'Trag bitte ein, was du an Getränken mitbringst. Wenn du andere Vorschläge hast, antworte einfach darauf.',sugg:[]}
-];
-const DIV=`<div class="divider" aria-hidden="true"><svg width="78" height="26" viewBox="0 0 78 26"><path d="M39 3l1.8 4.6 4.9.3-3.8 3.1 1.2 4.8L39 13.2l-4.1 2.6 1.2-4.8-3.8-3.1 4.9-.3z" fill="currentColor"/><path d="M33 17c-6-5-14-5-20 0 4 0 6 2 7 4 2-2 5-3 8-2-1-1 2-2 5-2z" style="fill:var(--b3)"/><path d="M45 17c6-5 14-5 20 0-4 0-6 2-7 4-2-2-5-3-8-2 1-1-2-2-5-2z" style="fill:var(--b3)"/><circle cx="36" cy="20" r="2.6" style="fill:var(--b1)"/><circle cx="42" cy="20" r="2.6" style="fill:var(--b1)"/><circle cx="39" cy="23" r="2.6" style="fill:var(--b1)"/><circle cx="9" cy="13" r="1.4" fill="currentColor"/><circle cx="69" cy="13" r="1.4" fill="currentColor"/></svg></div>`;
-const BAUBLE=bc=>`<svg class="bauble" style="--bc:var(${bc})" viewBox="0 0 24 28" aria-hidden="true"><path d="M12 0v4" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".6"/><rect x="9" y="3.5" width="6" height="4" rx="1" fill="#b8962e"/><circle cx="12" cy="17" r="10" fill="currentColor"/><path d="M3.5 15.5c5 2.5 12 2.5 17 0" stroke="#fff" stroke-opacity=".35" stroke-width="1.4" fill="none"/><ellipse cx="8.5" cy="13" rx="2.4" ry="3.2" fill="#fff" opacity=".35"/></svg>`;
-const MEAT_G=250, LS='weihnachten-andreas-lokal', ME='weihnachten-andreas-ich';
+'use strict';
+/* ---------- Grundlagen ---------- */
+const DEMO=new URLSearchParams(location.search).has('vorschau');
+const CFG=window.APP_CONFIG||{};
+const ME_KEY=DEMO?'weihnachten-vorschau-ich':'weihnachten-andreas-ich';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-const fmtNum=n=>n.toLocaleString('de-DE',{maximumFractionDigits:1});
-function amount(t,u){if(u==='g')return t>=1000?fmtNum(Math.round(t/100)/10)+' kg':Math.round(t/50)*50+' g';if(u==='l')return fmtNum(Math.round(t*2)/2)+' l';return''}
-function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
-function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}},
+  sget(k){try{return sessionStorage.getItem(k)}catch(e){return null}},sset(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}};
+const fmt=n=>n.toLocaleString('de-DE',{maximumFractionDigits:1});
+function amount(t,u){if(u==='g')return t>=1000?fmt(Math.round(t/100)/10)+' kg':Math.round(t/50)*50+' g';if(u==='l')return fmt(Math.round(t*2)/2)+' l';return''}
+const IC={
+  star:'<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
+  basket:'<path d="M3.5 10h17l-1.7 9.1a1.6 1.6 0 0 1-1.6 1.4H6.8a1.6 1.6 0 0 1-1.6-1.4z"/><path d="M8 10l4-6 4 6M9.5 14v3M14.5 14v3"/>',
+  people:'<circle cx="9" cy="8" r="3.4"/><path d="M2.6 20c.8-3.6 3.2-5.6 6.4-5.6s5.6 2 6.4 5.6M15.8 4.8a3.2 3.2 0 0 1 0 6.2M17.8 14.6c1.9.7 3.1 2.6 3.6 5.4"/>',
+  heart:'<path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/>',
+  chat:'<path d="M4.5 5.5h15v10h-8l-4.5 3.5v-3.5h-2.5z"/>',
+  book:'<path d="M5 4.5h10a2.5 2.5 0 0 1 2.5 2.5v13H7.5A2.5 2.5 0 0 1 5 17.5z"/><path d="M5 17.5A2.5 2.5 0 0 1 7.5 15h10"/>',
+  bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  x:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+  gift:'<path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13"/><path d="M12 7c-1.5-3-5-3.5-5-1.5S10 7 12 7zm0 0c1.5-3 5-3.5 5-1.5S14 7 12 7z"/>',
+  wish:'<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="2.5"/>',
+  dip:'<path d="M4 11h16a8 8 0 0 1-16 0z"/><path d="M9 7c0-1.5 1-2 1-3.5M13 7c0-1.5 1-2 1-3.5"/>',
+  leaf:'<path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15"/><path d="M5 19c3-4 6-7 10-9"/>',
+  bread:'<path d="M4 13c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5v5H4z"/><path d="M9 10l-1.5 3M13 9.5l-1.5 3.5M17 10.5l-1.2 2.5"/>',
+  cup:'<path d="M6 4h12l-1.5 15a1.5 1.5 0 0 1-1.5 1.3H9a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M6.5 9h11"/>',
+  key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l2 2M14 9l2 2"/>',
+  copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/>'
+};
+const ico=(n,c='')=>`<svg class="ico ${c}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
 
-/* ---------- Daten (Supabase) ---------- */
-// Tabellen: info(id,datum,fleisch) · gaeste(id,name,erw,kinder,status,t) · posten(id,kat,name,wer,von,likes,t) · antworten(id,posten,von,inhalt,t)
-const CFG=window.APP_CONFIG||{};
-const COLS=['gaeste','posten','antworten'];
-const data={info:{},gaeste:{},posten:{},antworten:{}};
-let mode='loading', canWrite=true, sb=null, me=lsGet(ME)||'', filter='alle', hintsOpen=false;
-const openThreads=new Set(), openRecipes=new Set(), editRecipes=new Set(), chains={}; let hostOpen=false;
-// Ab dem 27. Dezember gilt die Liste fürs nächste Jahr.
+const CATS=[
+ {key:'wuensche',wish:true,icon:'wish',label:'Wünsche zum Fleisch',sub:'Fürs Pfännchen und zum Fondue',intro:'Was darf ins Pfännchen oder neben das Fleisch? Schreibt eure Wünsche auf, Andy & Mel schauen hier rein. Mit „Möchte ich auch“ seht ihr, was vielen schmeckt.',ph:'Dein Wunsch …',sugg:['Zuckerschoten','Champignons','Kartöffelchen','Mais']},
+ {key:'dips',icon:'dip',label:'Dips & Soßen',sub:'Ohne Soßen kein Fondue',intro:'Wer Lust hat, eine Soße zu machen, trägt sie einfach ein. Gern auch mit Rezept, damit andere sie nachmachen können.',ph:'Soße oder Dip …',g:80,unit:'g',sugg:['Knoblauchsoße','Cocktailsoße','Currysoße','Kräuterquark']},
+ {key:'salate',icon:'leaf',label:'Salate',sub:'Frisch zu Käse und Fleisch',intro:'Ein frischer Salat tut neben Käse und Fleisch richtig gut. Bring einfach mit, was du gern machst.',ph:'Welcher Salat?',g:100,unit:'g',sugg:['Grüner Salat','Gurkensalat','Krautsalat','Nudelsalat']},
+ {key:'brot',icon:'bread',label:'Brot & Butter',sub:'Fladenbrot gehört dazu',intro:'Fladenbrot gehört bei uns einfach dazu. Butter und Kräuterbutter sind auch immer willkommen.',ph:'Brot oder Butter …',g:100,unit:'g',sugg:['Fladenbrot','Baguette','Kräuterbutter']},
+ {key:'getraenke',icon:'cup',label:'Getränke',sub:'Alles ohne Alkohol',intro:'Säfte, Schorlen, Punsch oder Wasser: Trag ein, was du mitbringst, dann steht am Ende nicht alles doppelt auf dem Tisch.',ph:'Welches Getränk?',g:1.5,unit:'l',sugg:['Apfelschorle','Kinderpunsch','Orangensaft','Mineralwasser']}
+];
+const catOf=k=>CATS.find(c=>c.key===k);
+const MEAT_G=250, CHEESE_G=200;
 const nextYear=()=>{const d=new Date();return d.getFullYear()+(d.getMonth()===11&&d.getDate()>26?1:0)};
+
+/* ---------- Zustand ---------- */
+const data={info:{},gaeste:{},posten:{},antworten:{}};
+let mode='loading', sb=null, me=store.get(ME_KEY)||'';
+let tab=['abend','mitbringen','gaeste'].includes(location.hash.slice(1))?location.hash.slice(1):'abend';
+let sheet=null; // {t:'item'|'guest'|'welcome'|'push', id, step}
+let editRecipe=false, hostOpen=false, justTaken=null;
+const chains={};
 
 function list(col){return Object.entries(data[col]).map(([id,d])=>Object.assign({},d,{id})).sort((a,b)=>(a.t||0)-(b.t||0)||a.id.localeCompare(b.id))}
 function guests(){return list('gaeste').map(g=>({...g,name:String(g.name||''),erw:+g.erw||0,kinder:+g.kinder||0,status:['ja','offen','nein'].includes(g.status)?g.status:'offen'}))}
-function items(){return list('posten').filter(p=>CATS.some(c=>c.key===p.kat)).map(p=>({...p,rezept:String(p.rezept||''),name:String(p.name||''),kat:p.kat,wer:String(p.wer||''),von:String(p.von||''),likes:Array.isArray(p.likes)?p.likes.map(String):[]}))}
-function replies(pid){return list('antworten').filter(r=>r.posten===pid)}
-const isWish=p=>p.kat==='wuensche';
+function items(){return list('posten').filter(p=>catOf(p.kat)).map(p=>({...p,name:String(p.name||''),wer:String(p.wer||''),von:String(p.von||''),rezept:String(p.rezept||''),likes:Array.isArray(p.likes)?p.likes.map(String):[]}))}
+const replies=pid=>list('antworten').filter(r=>r.posten===pid);
 const gname=id=>(data.gaeste[id]&&data.gaeste[id].name)||'Jemand';
-const catLabel=k=>(CATS.find(c=>c.key===k)||{}).label||'';
+const short=id=>{const n=gname(id).replace(/\s*\(.*?\)\s*/g,' ').trim();return n||'Jemand'};
+const isWish=p=>p.kat==='wuensche';
+const isPlural=id=>/&|\bund\b/.test(short(id));
+const initials=n=>{const w=String(n).replace(/[^\p{L}\s&]/gu,'').split(/\s|&/).filter(Boolean);return ((w[0]||'?')[0]+(w[1]?w[1][0]:'')).toUpperCase()};
+function counts(gs){const z=gs.filter(g=>g.status==='ja');const e=z.reduce((a,g)=>a+g.erw,0),k=z.reduce((a,g)=>a+g.kinder,0);return{e,k,n:e+k,p:e+k*.5,open:gs.filter(g=>g.status==='offen').length}}
 
+/* ---------- Speichern ---------- */
 function write(col,id,body){
   if(body===null)delete data[col][id]; else data[col][id]=Object.assign({},body,{id});
   render();
   if(mode!=='shared')return;
-  const path=col+'/'+id, row=body===null?null:Object.assign({},body,{id});
+  const path=col+'/'+id,row=body===null?null:Object.assign({},body,{id});
   chains[path]=(chains[path]||Promise.resolve()).then(async()=>{
     const {error}=row===null?await sb.from(col).delete().eq('id',id):await sb.from(col).upsert(row);
     if(error)throw error;
-  }).catch(e=>{console.error(e);toast('Speichern hat nicht geklappt. Prüf die Internetverbindung und versuch es noch einmal.')});
+  }).catch(e=>{console.error(e);toast('Das hat gerade nicht geklappt. Prüf kurz das Internet und versuch es noch einmal.')});
 }
 const setInfo=patch=>write('info','main',Object.assign({datum:'',fleisch:''},data.info.main||{},patch));
-function notify(text){if(mode!=='shared'||!text)return;sb.functions.invoke('notify',{body:{title:'Weihnachten bei Andy, Mel & Connor',body:text,actor:me||''}}).catch(()=>{})}
+function notify(text){if(mode!=='shared'||!text)return;sb.functions.invoke('notify',{body:{title:'Heiligabend bei Andy, Mel & Connor',body:text,actor:me||''}}).catch(()=>{})}
 async function toggleLike(id){
-  const p=data.posten[id];if(!p)return;const l=(p.likes||[]).slice();const i=l.indexOf(me);i>=0?l.splice(i,1):l.push(me);
+  const p=data.posten[id];if(!p||!me)return;const l=(p.likes||[]).slice(),i=l.indexOf(me);i>=0?l.splice(i,1):l.push(me);
   data.posten[id]={...p,likes:l};render();
-  const {error}=await sb.rpc('toggle_like',{p_id:id,g_id:me});if(error){console.error(error);toast('Speichern hat nicht geklappt.')}
+  if(mode!=='shared')return;
+  const {error}=await sb.rpc('toggle_like',{p_id:id,g_id:me});if(error){console.error(error);toast('Das hat gerade nicht geklappt.')}
 }
-
-async function resetYear(form){
-  const ny=nextYear(), v=form.querySelector('input').value.trim();
-  if(v!==String(ny)){toast(`Bitte genau ${ny} eingeben, dann wird die Liste zurückgesetzt.`);return}
-  if(mode!=='shared'){toast('Keine Verbindung. Bitte später noch einmal versuchen.');return}
-  const {error}=await sb.rpc('neues_jahr');
-  if(error){console.error(error);toast('Das Zurücksetzen hat nicht geklappt. Bitte noch einmal versuchen.');return}
-  hostOpen=false; openThreads.clear();
-  data.posten={};data.antworten={};for(const id in data.gaeste)data.gaeste[id]={...data.gaeste[id],status:'offen'};data.info.main={...(data.info.main||{}),datum:'',fleisch:''};
-  render(); scrollTo({top:0,behavior:'smooth'});
-  toast(`Die Liste für Weihnachten ${ny} ist bereit.`);
-  notify(`Die Liste für Weihnachten ${ny} ist bereit. Sagt zu und tragt ein, was ihr mitbringt!`);
+function take(id,on){
+  const p=data.posten[id];if(!p)return;
+  write('posten',id,{...p,wer:on?me:''});
+  if(on){justTaken=id;render();toast(`Danke dir! ${p.name} steht jetzt bei dir.`);notify(`${short(me)} bringt ${p.name} mit. Danke! ✨`)}
+  else toast(`${p.name} ist wieder frei. Kein Problem.`);
+}
+function setMe(id){me=id;store.set(ME_KEY,id);if(pushState==='on'&&swReg)swReg.pushManager.getSubscription().then(s=>s&&saveSub(s)).catch(()=>{})}
+function setStatus(id,st){
+  const g=data.gaeste[id];if(!g||g.status===st)return;
+  write('gaeste',id,{...g,status:st});
+  const n=g.name.replace(/\s*\(.*?\)\s*/g,' ').trim();
+  notify(st==='ja'?`${n} ${/&|und/.test(n)?'sind':'ist'} an Heiligabend dabei 🎄`:st==='nein'?`${n} ${/&|und/.test(n)?'können':'kann'} dieses Jahr leider nicht. Wir denken an euch.`:'');
 }
 
 /* ---------- Push & Installation ---------- */
@@ -351,8 +408,9 @@ const pushOK='serviceWorker' in navigator&&'PushManager' in window&&'Notificatio
 let pushState='checking', swReg=null, installEvt=null;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;render()});
 function b64(s){const p='='.repeat((4-s.length%4)%4),r=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(r,c=>c.charCodeAt(0))}
-async function saveSub(sub){if(!sb)return;const j=sub.toJSON();const {error}=await sb.rpc('push_abo',{p_endpoint:j.endpoint,p_sub:j,p_gast:me||''});if(error)throw error}
+async function saveSub(sub){if(!sb||DEMO)return;const j=sub.toJSON();const {error}=await sb.rpc('push_abo',{p_endpoint:j.endpoint,p_sub:j,p_gast:me||''});if(error)throw error}
 async function initPush(){
+  if(DEMO){pushState=isIOS&&!standalone?'ios-install':'off';render();return}
   if('serviceWorker' in navigator){try{swReg=await navigator.serviceWorker.register('sw.js')}catch(e){console.error(e)}}
   if(!pushOK||!swReg){pushState=isIOS&&!standalone?'ios-install':'unsupported';render();return}
   if(Notification.permission==='denied'){pushState='denied';render();return}
@@ -360,261 +418,384 @@ async function initPush(){
   render();
 }
 async function enablePush(){
-  if(!needMe())return; pushState='busy';render();
+  if(DEMO){toast('In der Vorschau bleiben Benachrichtigungen aus.');pushState='on';render();return true}
+  pushState='busy';render();
   try{
     const perm=await Notification.requestPermission();
-    if(perm!=='granted'){pushState=perm==='denied'?'denied':'off';render();return}
+    if(perm!=='granted'){pushState=perm==='denied'?'denied':'off';render();return false}
     const reg=await navigator.serviceWorker.ready;
     const sub=(await reg.pushManager.getSubscription())||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64(CFG.vapid)});
-    await saveSub(sub);pushState='on';toast('Benachrichtigungen sind an.');
-  }catch(e){console.error(e);pushState='off';toast('Das hat nicht geklappt. Bitte noch einmal versuchen.')}
-  render();
+    await saveSub(sub);pushState='on';toast('Schön! Du bekommst ab jetzt Bescheid.');render();return true;
+  }catch(e){console.error(e);pushState='off';toast('Das hat nicht geklappt. Magst du es gleich noch einmal versuchen?');render();return false}
 }
 async function disablePush(){
-  try{const sub=swReg&&await swReg.pushManager.getSubscription();if(sub){await sb.rpc('push_abmelden',{p_endpoint:sub.endpoint});await sub.unsubscribe()}}catch(e){console.error(e)}
+  if(!DEMO){try{const sub=swReg&&await swReg.pushManager.getSubscription();if(sub){await sb.rpc('push_abmelden',{p_endpoint:sub.endpoint});await sub.unsubscribe()}}catch(e){console.error(e)}}
   pushState='off';toast('Benachrichtigungen sind aus.');render();
 }
-function pushCard(){
-  let body='',btn='';
-  switch(pushState){
-    case 'on':body='Benachrichtigungen sind an. Du erfährst sofort, wenn jemand zusagt, etwas einträgt oder antwortet.';btn='<button class="btn ghost" data-a="pushoff">Ausschalten</button>';break;
-    case 'off':body='Lass dich benachrichtigen, wenn jemand zusagt, eine Idee einträgt, etwas mitbringt oder antwortet.';btn='<button class="btn" data-a="pushon">Benachrichtigungen einschalten</button>';break;
-    case 'busy':body='Einen Moment …';break;
-    case 'denied':body='Benachrichtigungen sind für diese App blockiert. Du kannst sie in den Einstellungen deines Handys wieder erlauben.';break;
-    case 'ios-install':body='So bekommst du Benachrichtigungen auf dem iPhone: Tippe in Safari auf „Teilen“ (das Quadrat mit Pfeil) und dann auf „Zum Home-Bildschirm“. Öffne die App danach über das neue Symbol und schalte hier die Benachrichtigungen ein.';break;
-    case 'unsupported':body='Dieser Browser kann keine Benachrichtigungen empfangen. Öffne den Link am besten in Chrome (Android) oder Safari (iPhone).';break;
-    default:return '';
-  }
-  const inst=installEvt&&!standalone?'<button class="btn ghost" data-a="install">Als App installieren</button>':'';
-  return `<section class="notify"><svg class="bell" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-6V11a7 7 0 0 0-5.5-6.84V3.5a1.5 1.5 0 0 0-3 0v.66A7 7 0 0 0 5 11v5l-2 2v1h18v-1z"/></svg><div><h2>Immer auf dem Laufenden</h2><p>${body}</p>${btn||inst?`<div class="nbtns">${btn}${inst}</div>`:''}</div></section>`;
+const IOS_HOWTO=`<ol class="howto"><li><span>Öffne diesen Link in <b>Safari</b>.</span></li><li><span>Tippe unten auf <b>Teilen</b> (das Quadrat mit dem Pfeil nach oben).</span></li><li><span>Wähle <b>„Zum Home-Bildschirm“</b> und tippe auf <b>Hinzufügen</b>.</span></li><li><span>Öffne die App über das neue Symbol auf deinem Home-Bildschirm und schalte die Benachrichtigungen hier ein.</span></li></ol>`;
+function bellCard(){
+  if(['on','checking','busy','denied','unsupported'].includes(pushState))return'';
+  if(pushState==='ios-install')return `<section class="bell">${ico('bell')}<div><h3>Immer wissen, was sich tut</h3><p>Auf dem iPhone klappen Benachrichtigungen, wenn du die App einmal auf deinen Home-Bildschirm legst. Dauert keine Minute.</p><div class="row2"><button class="btn small" data-a="push-howto">So geht’s</button></div></div></section>`;
+  return `<section class="bell">${ico('bell')}<div><h3>Immer wissen, was sich tut</h3><p>Wir geben dir Bescheid, wenn jemand zusagt, etwas mitbringt oder dir antwortet. Nur zum Fest, versprochen.</p><div class="row2"><button class="btn small" data-a="push-on">Ja, gerne</button>${installEvt&&!standalone?'<button class="btn small ghost" data-a="install">Als App installieren</button>':''}</div></div></section>`;
 }
 
-/* ---------- Rendern ---------- */
-function counts(gs){const z=gs.filter(g=>g.status==='ja'),o=gs.filter(g=>g.status==='offen');const e=z.reduce((a,g)=>a+g.erw,0),k=z.reduce((a,g)=>a+g.kinder,0);return{e,k,n:e+k,p:e+k*.5,on:o.reduce((a,g)=>a+g.erw+g.kinder,0),oh:o.length}}
-function setStatus(m,k){const s=$('#status');if(!m){s.hidden=true;return}s.hidden=false;s.textContent=m;s.dataset.kind=k||''}
+/* ---------- Bausteine ---------- */
+function itemRow(p,showCat){
+  const rs=replies(p.id).length, k=catOf(p.kat), mine=me&&p.wer===me;
+  const sub=[];
+  if(showCat)sub.push(`<span class="catlbl">${esc(k.label)}</span>`);
+  else if(p.von&&data.gaeste[p.von])sub.push(`<span>${isWish(p)?'Wunsch':'Idee'} von ${esc(short(p.von))}</span>`);
+  if(!isWish(p)&&p.likes.length)sub.push(`<span>${ico('heart')} ${p.likes.length}</span>`);
+  if(rs)sub.push(`<span>${ico('chat')} ${rs}</span>`);
+  if(p.rezept)sub.push(`<span>${ico('book')} Rezept</span>`);
+  let side;
+  if(isWish(p)){const on=me&&p.likes.includes(me);side=`<button class="chip like" data-a="like" aria-pressed="${on}">${ico('heart')} ${on?'Ich auch':'Möchte ich auch'}${p.likes.length?' · '+p.likes.length:''}</button>`}
+  else if(mine)side=`<span class="chip me${justTaken===p.id?' pop':''}">${ico('check')} Bringst du</span>`;
+  else if(p.wer)side=`<span class="chip ok" title="${esc(short(p.wer))} bringt es mit">${ico('check')}<span class="nm">${esc(short(p.wer))}</span></span>`;
+  else side=`<button class="chip take" data-a="take">Bring ich mit</button>`;
+  return `<div class="row" data-p="${esc(p.id)}"><button class="main" data-a="open-item" aria-label="${esc(p.name)} öffnen"><span class="t">${esc(p.name)}</span>${sub.length?`<span class="s">${sub.join('')}</span>`:''}</button>${side}</div>`;
+}
+function guestRow(g){
+  const lbl={ja:/&|\bund\b/.test(g.name)?'Sind dabei':'Ist dabei',offen:'Noch offen',nein:'Dieses Jahr nicht'}[g.status];
+  const who=[g.erw?`${g.erw} ${g.erw===1?'Erwachsener':'Erwachsene'}`:'',g.kinder?`${g.kinder} ${g.kinder===1?'Kind':'Kinder'}`:''].filter(Boolean).join(' · ');
+  return `<div class="row" data-g="${esc(g.id)}"><span class="av" aria-hidden="true">${esc(initials(g.name))}</span><button class="main" data-a="open-guest"><span class="t">${esc(g.name||'Ohne Namen')}${g.id===me?' <span class="catlbl">· du</span>':''}</span><span class="s">${who||'&nbsp;'}</span></button><span class="chip st-${g.status}">${lbl}</span></div>`;
+}
 
-function render(){
-  if(mode==='loading')return;
-  const gs=guests(), its=items(), c=counts(gs), info=Object.assign({datum:'',fleisch:''},data.info.main||{});
-  const byId=Object.fromEntries(gs.map(g=>[g.id,g.name||'Ohne Name']));
-  const nm=id=>byId[id]||'Jemand';
-  if(me&&!byId[me])me='';
-  const now=new Date(), xmas=new Date(now.getFullYear()+(now.getMonth()===11&&now.getDate()>26?1:0),11,24);
-  const days=Math.max(0,Math.ceil((xmas-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5));
-  $('#f-days').textContent=days===0?'Heute!':days;
-  $('#f-pers').textContent=c.n;
-  $('#f-pers-l').textContent=c.on?`zugesagt · ${c.on} offen`:'Personen zugesagt';
-  $('#f-open').textContent=its.filter(p=>!p.wer&&!isWish(p)).length;
-  const dt=$('#datum'); if(document.activeElement!==dt)dt.value=info.datum; dt.disabled=!canWrite;
-  const dis=canWrite?'':' disabled';
-
-  let h=pushCard();
-  /* Wer kommt? */
-  h+=`<section><div class="sec-head"><h2>Wer kommt?</h2><p>Zugesagt: ${c.e} Erwachsene · ${c.k} ${c.k===1?'Kind':'Kinder'}${c.oh?` · ${c.oh} noch ohne Antwort`:''}</p></div><div class="list">`;
-  if(!gs.length)h+=`<div class="empty" style="padding:14px">Noch keine Gäste eingetragen.</div>`;
-  for(const g of gs){
-    h+=`<div class="guest ${g.status}" data-g="${esc(g.id)}">
-      <div class="name"><input class="txt" id="g-name-${esc(g.id)}" data-f="gname" value="${esc(g.name)}" placeholder="Name / Familie" aria-label="Name"${dis}></div>
-      <div class="steps">
-      <div class="step"><small>Erw.</small><button data-a="gstep" data-k="erw" data-d="-1" aria-label="Ein Erwachsener weniger"${g.erw<=0?' disabled':''}>−</button><output>${g.erw}</output><button data-a="gstep" data-k="erw" data-d="1" aria-label="Ein Erwachsener mehr">+</button></div>
-      <div class="step"><small>Kinder</small><button data-a="gstep" data-k="kinder" data-d="-1" aria-label="Ein Kind weniger"${g.kinder<=0?' disabled':''}>−</button><output>${g.kinder}</output><button data-a="gstep" data-k="kinder" data-d="1" aria-label="Ein Kind mehr">+</button></div>
-      <select class="st ${g.status}" id="g-st-${esc(g.id)}" data-f="gstatus" aria-label="Zusage"${dis}>${[['ja','Zugesagt'],['offen','Offen'],['nein','Abgesagt']].map(([v,l])=>`<option value="${v}"${g.status===v?' selected':''}>${l}</option>`).join('')}</select>
-      </div>
-      <button class="x" data-a="gdel" aria-label="${esc(g.name)} entfernen" title="Entfernen">×</button></div>`;
-  }
-  h+=`<form class="addrow" data-form="gadd"><input id="g-new" placeholder="Jemanden hinzufügen, z. B. Familie Müller" aria-label="Gast hinzufügen"><button class="btn" type="submit">Hinzufügen</button></form></div>`;
-  if(c.p){
-    const li=[['Fleisch fürs Fondue',c.e?amount(c.e*MEAT_G,'g'):'–'],['Raclettekäse',amount(c.p*200,'g')]].concat(CATS.filter(k=>k.g).map(k=>[k.hint||k.label,amount(c.p*k.g,k.unit)]));
-    h+=`<details class="hints" id="hints"${hintsOpen?' open':''}><summary>Grobe Orientierung für ${c.n} Personen</summary><ul>${li.map(([k,v])=>`<li>${esc(k)} <b>~${v}</b></li>`).join('')}</ul><p>Nur als Hilfe gedacht. Jeder bringt so viel mit, wie er mag.</p></details>`;
+/* ---------- Bereiche ---------- */
+function viewAbend(gs,its,c,info){
+  let h='';
+  const meG=me&&data.gaeste[me]?guests().find(g=>g.id===me):null;
+  const host=meG&&me==='andreas', many=meG&&isPlural(me);
+  const hello=!meG?'Schön, dass du da bist!':host?'Hallo, ihr Gastgeber!':many?`Schön, dass ihr da seid, ${esc(short(me))}!`:`Schön, dass du da bist, ${esc(short(me))}!`;
+  h+=`<section class="panel welcome"><p class="eyebrow">Herzlich willkommen</p><h2>${hello}</h2>
+    <p>Wie jedes Jahr gibt es an Heiligabend Raclette &amp; Fondue. Ums Fleisch kümmern wir uns. Alles andere darf, muss aber nicht: Bringt einfach mit, worauf ihr Lust habt. Hauptsache, wir sitzen zusammen.</p>
+    ${info.fleisch?`<p class="note"><b>Ein Wort von Andy &amp; Mel</b>${esc(info.fleisch)}</p>`:''}
+    <p class="sign">Andy, Mel &amp; Connor</p>`;
+  if(!meG)h+=`<button class="btn gold" data-a="welcome">Los geht’s</button>`;
+  else{
+    const st=host?'Hier seht ihr alles, was eure Gäste planen.':many?{ja:'Ihr seid dabei. Wir freuen uns riesig auf euch!',offen:'Wir würden uns sehr freuen, wenn ihr dabei seid.',nein:'Schade, dass es dieses Jahr nicht klappt. Ihr seid jederzeit herzlich willkommen.'}[meG.status]
+      :{ja:'Du bist dabei. Wir freuen uns riesig auf dich!',offen:'Wir würden uns sehr freuen, wenn du dabei bist.',nein:'Schade, dass es dieses Jahr nicht klappt. Du bist jederzeit herzlich willkommen.'}[meG.status];
+    h+=`<div class="mystatus"><span>${st}</span>${host?'':`<button class="link" data-a="welcome-kommst">${meG.status==='ja'?'Ändern':'Antworten'}</button>`}</div>`;
   }
   h+=`</section>`;
+  h+=bellCard();
 
-  h+=DIV;
-  /* Wer bringt was? */
-  const open=its.filter(p=>!p.wer&&!isWish(p)).length;
-  h+=`<section><div class="sec-head"><h2>Wer bringt was?</h2><div class="filters" role="group" aria-label="Filter">
-    ${[['alle','Alles ('+its.length+')'],['offen','Sucht noch jemanden ('+open+')']].map(([v,l])=>`<button class="chip" data-a="filter" data-v="${v}" aria-pressed="${filter===v}">${l}</button>`).join('')}</div></div>`;
-  h+=`<div class="me"><label for="me">Ich bin</label><select id="me" data-f="me"><option value="">– bitte wählen –</option>${gs.filter(g=>g.status!=='nein').map(g=>`<option value="${esc(g.id)}"${g.id===me?' selected':''}>${esc(g.name||'Ohne Name')}</option>`).join('')}</select>
-    <small>Damit deine Ideen, dein „Hab Lust drauf“, deine Kommentare und Rezepte deinen Namen tragen. Wird nur auf diesem Gerät gemerkt.</small></div>`;
-  h+=`<div class="cats"><div class="cat hostcard"><div class="cat-head"><h3>${BAUBLE('--b2')}Raclette &amp; Fondue</h3></div>
-    <p class="intro">Darum kümmern sich <b>Andy, Mel &amp; Connor</b>: Rind- und Schweinefleisch fürs Fondue, Raclettekäse, Kartoffeln und alles, was ins Pfännchen gehört. Hier müsst ihr nichts mitbringen.</p>
-    <div class="hostnote"><input class="txt" id="fleisch" data-f="fleisch" value="${esc(info.fleisch)}" placeholder="Hinweis von Andy &amp; Mel (optional)" aria-label="Hinweis von Andy und Mel zu Raclette und Fondue"${dis}></div></div>`;
-
-  const werOpts=w=>`<option value="">Sucht noch jemanden</option>`+gs.filter(g=>g.status!=='nein'||g.id===w).map(g=>`<option value="${esc(g.id)}"${g.id===w?' selected':''}>bringt ${esc(g.name||'Ohne Name')}</option>`).join('')+(w&&!byId[w]?`<option value="${esc(w)}" selected>(entfernt)</option>`:'');
-  for(const k of CATS){
-    const all=its.filter(p=>p.kat===k.key), shown=all.filter(p=>filter==='alle'||(!p.wer&&!k.wish));
-    if(filter!=='alle'&&!shown.length)continue;
-    const taken=all.filter(p=>p.wer).length;
-    h+=`<div class="cat"><div class="cat-head"><h3>${BAUBLE(k.bc)}${esc(k.label)}</h3><div class="cov">${all.length?`${taken} von ${all.length} vergeben`:''}</div></div><p class="intro">${esc(k.intro)}</p>`;
-    for(const p of shown){
-      const rs=replies(p.id), liked=me&&p.likes.includes(me), op=openThreads.has(p.id);
-      h+=`<div class="item" data-p="${esc(p.id)}">
-        <div class="irow"><input class="txt" id="p-name-${esc(p.id)}" data-f="pname" value="${esc(p.name)}" aria-label="Was"${dis}><button class="x" data-a="pdel" aria-label="${esc(p.name)} entfernen" title="Entfernen">×</button></div>
-        <div class="meta">
-          ${k.wish?'':`<select class="wer ${p.wer?'has':'none'}" id="p-wer-${esc(p.id)}" data-f="pwer" aria-label="Wer bringt es mit"${dis}>${werOpts(p.wer)}</select>`}
-          <button class="pill" data-a="like" aria-pressed="${liked?'true':'false'}"${dis}>${k.wish?'Möchte ich auch':'Hab Lust drauf'}${p.likes.length?' · '+p.likes.length:''}</button>
-          <button class="pill" data-a="thread" aria-expanded="${op}">${rs.length?`Kommentare · ${rs.length}`:'Kommentieren'}</button>
-          <button class="pill rz${p.rezept?' has':''}" data-a="recipe" aria-expanded="${openRecipes.has(p.id)}">${p.rezept?'Rezept ansehen':'Rezept teilen'}</button>
-          ${p.von?`<span class="who">${k.wish?'Wunsch':'Idee'} von ${esc(nm(p.von))}</span>`:''}
-          ${p.likes.length?`<span class="who">${k.wish?'Möchten auch':'Lust'}: ${p.likes.map(l=>esc(nm(l))).join(', ')}</span>`:''}
-        </div>`;
-      if(openRecipes.has(p.id)){
-        const ed=editRecipes.has(p.id)||!p.rezept;
-        h+=`<div class="recipe">${ed?`<form class="rzform" data-form="rezept"><label for="rz-${esc(p.id)}">Rezept für „${esc(p.name)}“</label><textarea id="rz-${esc(p.id)}" rows="7" placeholder="Zutaten und Zubereitung, so wie ihr es macht …">${esc(p.rezept)}</textarea><div class="nbtns"><button class="btn" type="submit">Rezept speichern</button><button class="btn ghost" type="button" data-a="rzcancel">Abbrechen</button></div></form>`
-          :`<div class="rztext">${esc(p.rezept)}</div><div class="nbtns"><button class="btn ghost" type="button" data-a="rzedit">Rezept bearbeiten</button></div>`}</div>`;
-      }
-      if(op){
-        h+=`<div class="thread">${rs.map(r=>`<div class="reply" data-r="${esc(r.id)}"><b>${esc(nm(r.von))}:</b> ${esc(r.inhalt)} ${canWrite?`<button class="x" data-a="rdel" aria-label="Antwort löschen" title="Löschen">×</button>`:''}</div>`).join('')}
-          ${rs.length?'':'<div class="who">Noch keine Kommentare. Fragen, Meinungen, andere Vorschläge?</div>'}
-          <form class="rform" data-form="reply"><input id="r-new-${esc(p.id)}" placeholder="Frage stellen oder kommentieren …" aria-label="Kommentar schreiben"><button class="btn" type="submit">Senden</button></form></div>`;
-      }
-      h+=`</div>`;
-    }
-    if(!shown.length)h+=`<div class="empty">Noch nichts eingetragen.</div>`;
-    if(filter==='alle'){
-      h+=`<form class="addrow" data-form="padd" data-k="${k.key}"><input id="p-new-${k.key}" placeholder="${k.wish?'Was möchtest du zum Fleisch?':'Idee oder Wunsch eintragen …'}" aria-label="${esc(k.label)}: Eintrag hinzufügen">
-        ${k.wish?'':`<label><input type="checkbox" id="p-mine-${k.key}"${k.mine?' checked':''}> Bringe ich mit</label>`}<button class="btn" type="submit">Eintragen</button></form>`;
-      const names=new Set(all.map(p=>p.name.trim().toLowerCase())), left=k.sugg.filter(s=>!names.has(s.toLowerCase()));
-      if(all.length<3&&left.length)h+=`<div class="sugg"><span>Ideen zum Antippen:</span>${left.map(s=>`<button data-a="sugg" data-k="${k.key}" data-v="${esc(s)}">+ ${esc(s)}</button>`).join('')}</div>`;
-    }
-    h+=`</div>`;
+  /* Dein Beitrag */
+  if(meG){
+    const mine=its.filter(p=>p.wer===me&&!isWish(p));
+    h+=`<section class="sec"><div class="sec-h"><span class="k">Dein Beitrag</span><h2>${mine.length?(many?'Das bringt ihr mit':'Das bringst du mit'):'Noch nichts eingetragen'}</h2>${mine.length?'':`<p>Ganz ohne Druck. Wenn ${many?'ihr mögt, sucht euch':'du magst, such dir'} unten etwas aus oder ${many?'tragt':'trag'} eine eigene Idee ein.</p>`}</div>
+      ${mine.length?`<div class="panel rows">${mine.map(p=>itemRow(p,true)).join('')}</div>`:''}</section>`;
   }
-  h+=`</div></section>`;
 
-  h+=DIV;
-  const ny=nextYear();
-  h+=`<details class="host" id="host"${hostOpen?' open':''}><summary>Für Andy &amp; Mel: Neues Jahr vorbereiten</summary>
-    <p>Nach dem Fest könnt ihr die Liste hier fürs nächste Weihnachten zurücksetzen. Die Gäste bleiben stehen, alle Zusagen gehen auf „Offen“. Ideen, Mitbringsel, Antworten sowie Termin und Fleisch werden gelöscht. Der Link bleibt derselbe. Ihr postet ihn einfach wieder in die WhatsApp-Gruppe.</p>
-    <form class="hostform" data-form="reset"><label for="reset-year">Zum Bestätigen die Jahreszahl ${ny} eingeben</label>
-    <div class="row"><input id="reset-year" inputmode="numeric" autocomplete="off" placeholder="${ny}"><button class="btn" type="submit">Liste für ${ny} vorbereiten</button></div></form></details>`;
+  /* Hilfe willkommen */
+  const open=its.filter(p=>!p.wer&&!isWish(p)), done=its.filter(p=>p.wer&&!isWish(p)).length, total=done+open.length;
+  h+=`<section class="sec"><div class="sec-h"><span class="k">Die Tafel</span><h2>${open.length?'Hier freuen wir uns über Hilfe':'Alles hat jemanden gefunden'}</h2><p>${open.length?'Diese Ideen suchen noch jemanden, der sie mitbringt. Ein Tipp genügt.':'Wunderbar, danke euch allen! Neue Ideen sind trotzdem jederzeit willkommen.'}</p></div>`;
+  if(total)h+=`<div class="panel progress"><div class="lbl"><span><b>${done} von ${total}</b> haben schon jemanden</span><span>${Math.round(done/total*100)} %</span></div><div class="bar"><i style="width:${Math.round(done/total*100)}%"></i></div></div>`;
+  if(open.length)h+=`<div class="panel rows">${open.map(p=>itemRow(p,true)).join('')}</div>`;
+  h+=`<div class="center"><button class="btn ghost" data-a="tab" data-v="mitbringen">${ico('basket')} Alles ansehen und eigene Idee eintragen</button></div></section>`;
 
-  // Fokus und angefangene Eingaben erhalten
-  const a=document.activeElement, keep=a&&a.id&&a.closest('#main')?{id:a.id,v:a.value,s:'selectionStart' in a?[a.selectionStart,a.selectionEnd]:null}:null;
-  const drafts=[...document.querySelectorAll('#main form input[id], #main form textarea[id]')].filter(i=>i.type!=='checkbox'&&i.value).map(i=>[i.id,i.value]);
-  const checks=[...document.querySelectorAll('#main form input[type=checkbox]')].map(i=>[i.id,i.checked]);
-  $('#main').innerHTML=h;
-  for(const [id,v] of drafts){const n=document.getElementById(id);if(n)n.value=v}
-  for(const [id,v] of checks){const n=document.getElementById(id);if(n)n.checked=v}
-  if(keep){const n=document.getElementById(keep.id);if(n){if((n.tagName==='INPUT'&&n.type!=='checkbox')||n.tagName==='TEXTAREA')n.value=keep.v;n.focus({preventScroll:true});if(keep.s&&n.setSelectionRange)try{n.setSelectionRange(keep.s[0],keep.s[1])}catch(e){}}}
+  /* Wünsche kurz */
+  const wishes=its.filter(isWish).sort((a,b)=>b.likes.length-a.likes.length).slice(0,3);
+  if(wishes.length)h+=`<section class="sec"><div class="sec-h"><span class="k">Wünsche zum Fleisch</span><h2>Das wünscht ihr euch</h2></div><div class="panel rows">${wishes.map(p=>itemRow(p,false)).join('')}</div></section>`;
+
+  /* Gastgeber */
+  h+=hostArea(gs,its,c,info);
+  h+=`<footer class="foot"><p class="tradition">Frohe Weihnachten</p><p>Wir freuen uns auf einen schönen Abend mit euch allen.</p></footer>`;
+  return h;
 }
 
-function waText(gs,its,c,info,nm){
-  const L=['🎄 *Weihnachten bei Andy, Mel & Connor*'];
-  if(info.datum)L.push(info.datum);
-  L.push(`Zugesagt: ${c.n} Personen`);
-  const zu=gs.filter(g=>g.status==='ja').map(g=>g.name).filter(Boolean), of=gs.filter(g=>g.status==='offen').map(g=>g.name).filter(Boolean);
-  if(zu.length)L.push('✅ '+zu.join(', '));
-  if(of.length)L.push('⏳ Noch keine Antwort: '+of.join(', '));
-  L.push('',`🥩 *Fleisch fürs Fondue (Rind & Schwein):* Andy, Mel & Connor${info.fleisch?' – '+info.fleisch:''}`);
-  for(const k of CATS){const it=its.filter(p=>p.kat===k.key);if(!it.length)continue;
-    L.push('',`*${k.label}*`);
-    for(const p of it)L.push(`• ${p.name} – ${p.wer?nm(p.wer):'sucht noch jemanden'}${p.likes.length?` (Lust: ${p.likes.map(nm).join(', ')})`:''}`);}
-  L.push('','Tragt gerne selbst ein, was ihr mitbringt, oder schreibt eure Ideen und Wünsche dazu 🙂',location.origin+location.pathname);
+function viewMitbringen(gs,its){
+  let h=`<section class="sec"><div class="sec-h"><span class="k">Mitbringen</span><h2>Was auf den Tisch kommt</h2><p>Ums Fleisch kümmern sich Andy &amp; Mel. Für alles drumherum freuen wir uns über eure Ideen. Jeder bringt mit, worauf er Lust hat.</p></div>
+    <nav class="jump" aria-label="Zu einer Kategorie springen">${CATS.map(k=>{const o=its.filter(p=>p.kat===k.key&&!p.wer&&!k.wish).length;return `<a href="#k-${k.key}" data-a="jump">${esc(k.label)}${o?`<small>${o}</small>`:''}</a>`}).join('')}</nav></section>`;
+  for(const k of CATS){
+    const all=its.filter(p=>p.kat===k.key);
+    if(k.wish)all.sort((a,b)=>b.likes.length-a.likes.length||(a.t||0)-(b.t||0));
+    h+=`<section class="panel" id="k-${k.key}" style="scroll-margin-top:16px"><div class="cat-h"><span class="em">${ico(k.icon)}</span><div><h3>${esc(k.label)}</h3><div class="sub">${esc(k.sub)}</div></div></div><p class="cat-intro">${esc(k.intro)}</p>
+      <div class="rows" style="border-top:1px solid var(--line)">${all.length?all.map(p=>itemRow(p,false)).join(''):`<div class="empty">Noch nichts eingetragen. Magst du den Anfang machen?</div>`}</div>
+      <form class="addform" data-form="add" data-k="${k.key}"><input type="text" id="add-${k.key}" placeholder="${esc(k.ph)}" aria-label="${esc(k.label)}: Eintrag hinzufügen" autocomplete="off" enterkeyhint="done">${k.wish?'':`<label><input type="checkbox" id="mine-${k.key}"> Bring ich mit</label>`}<button class="btn small" type="submit">${ico('plus')} Eintragen</button></form>`;
+    const names=new Set(all.map(p=>p.name.trim().toLowerCase())),left=k.sugg.filter(s=>!names.has(s.toLowerCase()));
+    if(all.length<4&&left.length)h+=`<div class="sugg"><span>Ideen zum Antippen:</span>${left.map(s=>`<button data-a="sugg" data-k="${k.key}" data-v="${esc(s)}">+ ${esc(s)}</button>`).join('')}</div>`;
+    h+=`</section>`;
+  }
+  return h;
+}
+
+function viewGaeste(gs,c){
+  const by=s=>gs.filter(g=>g.status===s);
+  let h=`<section class="sec"><div class="sec-h"><span class="k">Gäste</span><h2>Wer an Heiligabend dabei ist</h2><p>${c.n?`${c.e} ${c.e===1?'Erwachsener':'Erwachsene'}${c.k?` und ${c.k} ${c.k===1?'Kind':'Kinder'}`:''} haben schon zugesagt.`:'Noch hat niemand zugesagt.'} Tippe auf einen Namen, um etwas zu ändern.</p></div>`;
+  for(const [s,t] of [['ja','Sind dabei'],['offen','Wir hoffen, ihr könnt kommen'],['nein','Dieses Jahr leider nicht']]){
+    const l=by(s);if(!l.length)continue;
+    h+=`<div class="sec-h" style="margin-top:4px"><span class="k">${t}</span></div><div class="panel rows">${l.map(guestRow).join('')}</div>`;
+  }
+  h+=`<form class="panel addform" data-form="gadd" style="border-top:1px solid var(--line)"><input type="text" id="g-new" placeholder="Jemand fehlt? Name eintragen" aria-label="Gast hinzufügen" autocomplete="off"><button class="btn small" type="submit">${ico('plus')} Hinzufügen</button></form></section>`;
+  return h;
+}
+
+function hostArea(gs,its,c,info){
+  const ny=nextYear();
+  const li=c.p?[['Fleisch fürs Fondue',c.e?amount(c.e*MEAT_G,'g'):'–'],['Raclettekäse',amount(c.p*CHEESE_G,'g')]].concat(CATS.filter(k=>k.g).map(k=>[k.label,amount(c.p*k.g,k.unit)])):[];
+  return `<details class="host" id="host"${hostOpen?' open':''}><summary>${ico('key')} Für Andy &amp; Mel</summary><div class="in">
+    <label class="field"><span>Wann geht’s los?</span><input class="inp" id="datum" data-f="datum" value="${esc(info.datum)}" placeholder="z. B. 24.12. um 18 Uhr" enterkeyhint="done"><small>Steht oben in der Einladung.</small></label>
+    <label class="field"><span>Ein Wort an alle (optional)</span><textarea class="inp" id="fleisch" data-f="fleisch" rows="2" placeholder="z. B. Bringt gern eure Lieblingssoße mit!">${esc(info.fleisch)}</textarea><small>Erscheint in der Begrüßung. Speichert, sobald du das Feld verlässt.</small></label>
+    ${li.length?`<div class="field"><span>Grobe Mengen für ${c.n} ${c.n===1?'Person':'Personen'}</span><ul class="amounts">${li.map(([k,v])=>`<li>${esc(k)}</li><li><b>~${v}</b></li>`).join('')}</ul><small>Nur zur Orientierung, Kinder zählen halb.</small></div>`:''}
+    <div class="field"><span>Stand in die WhatsApp-Gruppe</span><button class="btn ghost" data-a="copy" type="button">${ico('copy')} Kurzen Stand kopieren</button><small id="copy-hint">Ein freundlicher Text mit Zusagen und dem, was noch gesucht wird. Einfach in die Gruppe einfügen.</small><textarea class="inp" id="wa" rows="8" hidden readonly></textarea></div>
+    <form class="field" data-form="reset"><span class="hostsub">Nach dem Fest: Neues Jahr vorbereiten</span><small>Die Gäste bleiben, alle Zusagen gehen auf „Noch offen“. Mitbringsel, Kommentare, Rezepte, Termin und Hinweis werden gelöscht. Der Link bleibt gleich.</small>
+      <label class="field"><span>Zum Bestätigen ${ny} eingeben</span><span style="display:flex;gap:8px;flex-wrap:wrap"><input class="inp" style="flex:1;min-width:120px;max-width:180px" id="reset-year" inputmode="numeric" autocomplete="off" placeholder="${ny}"><button class="btn small" type="submit">Liste für ${ny} vorbereiten</button></span></label></form>
+  </div></details>`;
+}
+
+function waText(gs,its,c,info){
+  const L=['🎄 *Heiligabend bei Andy, Mel & Connor*','Raclette & Fondue'+(info.datum?' · '+info.datum:'')];
+  const zu=gs.filter(g=>g.status==='ja').map(g=>g.name.replace(/\s*\(.*?\)\s*/g,' ').trim()).filter(Boolean);
+  if(zu.length)L.push('','✨ Schon dabei: '+zu.join(', '));
+  const open=its.filter(p=>!p.wer&&!isWish(p));
+  if(open.length){L.push('','Hier freuen wir uns noch über Hilfe:');for(const p of open)L.push('• '+p.name)}
+  else L.push('','Alles hat schon jemanden gefunden. Danke euch! ❤️');
+  L.push('','Wer mag, trägt sich einfach in der App ein. Ums Fleisch kümmern sich Andy & Mel 🙂',location.origin+location.pathname);
   return L.join('\n');
 }
 
-/* ---------- Eingaben ---------- */
-const gid=el=>el.closest('[data-g]')?.dataset.g, pid=el=>el.closest('[data-p]')?.dataset.p;
-function needMe(){if(me)return true;toast('Wähl zuerst oben bei „Ich bin“ aus, wer du bist.');const s=$('#me');if(s){s.scrollIntoView({block:'center',behavior:'smooth'});s.focus({preventScroll:true})}return false}
-let undo=null;
-
-document.addEventListener('toggle',e=>{if(e.target.id==='hints')hintsOpen=e.target.open;if(e.target.id==='host')hostOpen=e.target.open},true);
-document.addEventListener('change',e=>{
-  const t=e.target,f=t.dataset.f;
-  if(f==='me'){me=t.value;lsSet(ME,me);render();if(pushState==='on'&&swReg)swReg.pushManager.getSubscription().then(s=>s&&saveSub(s)).catch(()=>{});return}
-  if(!canWrite)return;
-  if(t.id==='datum'){const v=t.value.trim();setInfo({datum:v});if(v)notify('Termin: '+v);return}
-  if(f==='fleisch'){const v=t.value.trim();setInfo({fleisch:v});if(v)notify('Zum Fleisch fürs Fondue: '+v);return}
-  if(f==='gname'||f==='gstatus'){const id=gid(t),g=data.gaeste[id];if(!g)return;write('gaeste',id,{...g,[f==='gname'?'name':'status']:f==='gname'?t.value.trim():t.value});
-    if(f==='gstatus'&&t.value!==g.status)notify(t.value==='ja'?`${g.name} hat zugesagt 🎉`:t.value==='nein'?`${g.name} hat abgesagt`:`${g.name}: Zusage noch offen`);return}
-  if(f==='pname'||f==='pwer'){const id=pid(t),p=data.posten[id];if(!p)return;write('posten',id,{...p,[f==='pname'?'name':'wer']:f==='pname'?t.value.trim():t.value});
-    if(f==='pwer'&&t.value)notify(`${gname(t.value)} bringt ${p.name} mit`)}
-});
-document.addEventListener('keydown',e=>{const t=e.target;if(e.key==='Enter'&&t.classList&&(t.classList.contains('txt')||t.id==='datum')){e.preventDefault();t.blur()}});
-document.addEventListener('submit',e=>{
-  e.preventDefault(); if(!canWrite)return;
-  if(e.target.dataset.form==='reset'){resetYear(e.target);return}
-  if(e.target.dataset.form==='rezept'){const id=pid(e.target),p=data.posten[id];if(!p)return;const ta=e.target.querySelector('textarea'),v=ta.value.trim(),neu=!p.rezept;
-    ta.value='';editRecipes.delete(id);if(!v)openRecipes.delete(id);write('posten',id,{...p,rezept:v});
-    if(v)notify(`${me?gname(me):'Jemand'} hat ${neu?'das Rezept':'das Rezept aktualisiert'} für „${p.name}“${neu?' geteilt':''} 📖`);return}
-  const f=e.target, inp=f.querySelector('input:not([type=checkbox])'), v=inp.value.trim(); if(!v)return;
-  if(f.dataset.form==='gadd'){write('gaeste',uid(),{name:v,erw:1,kinder:0,status:'offen',t:Date.now()});notify(`${v} steht neu auf der Gästeliste`)}
-  else if(f.dataset.form==='padd'){
-    const mine=f.querySelector('input[type=checkbox]')?.checked;
-    if(mine&&!needMe())return;
-    write('posten',uid(),{kat:f.dataset.k,name:v,wer:mine?me:'',von:me||'',likes:[],t:Date.now()});
-    notify(f.dataset.k==='wuensche'?`Neuer Wunsch zum Fleisch: ${v}${me?` (von ${gname(me)})`:''}`:mine?`${gname(me)} bringt ${v} mit (${catLabel(f.dataset.k)})`:`Neue Idee bei ${catLabel(f.dataset.k)}: ${v}${me?` (von ${gname(me)})`:''}`);
+/* ---------- Blätter ---------- */
+function sheetHTML(){
+  const gs=guests(), close=`<button class="close" data-a="close" aria-label="Schließen">${ico('x')}</button>`;
+  if(!sheet)return'';
+  if(sheet.t==='welcome'){
+    const st=sheet.step, nr={wer:1,kommst:2,push:3}[st];
+    let h=close+`<div class="steps" aria-hidden="true">${[1,2,3].map(i=>`<i class="${i<=nr?'on':''}"></i>`).join('')}</div>`;
+    if(st==='wer'){
+      h+=`<h2 id="sheet-title" class="center" style="padding:0">Herzlich willkommen 🎄</h2><p class="lead center">Schön, dass du da bist! Wer bist du? Dann wissen alle, von wem Ideen und Kommentare kommen.</p>
+        <div class="blk"><div class="tiles">${gs.map(g=>`<button class="tile" data-a="pick" data-v="${esc(g.id)}" aria-pressed="${g.id===me}"><span class="av" aria-hidden="true">${esc(initials(g.name))}</span>${esc(g.name||'Ohne Namen')}</button>`).join('')}</div></div>
+        <form class="blk" data-form="welcome-new"><h4>Du stehst noch nicht drauf?</h4><div class="msgform"><input class="inp" id="w-new" placeholder="Dein Name" autocomplete="off"><button class="btn small" type="submit">Weiter</button></div></form>
+        <p class="hint center" style="margin-top:16px">Wird nur auf diesem Gerät gemerkt. <button class="link" data-a="close">Erst mal nur umschauen</button></p>`;
+    }else if(st==='kommst'){
+      const g=gs.find(x=>x.id===me);if(!g){sheet.step='wer';return sheetHTML()}
+      const m=isPlural(me);
+      h+=`<h2 id="sheet-title" class="center" style="padding:0">Hallo ${esc(short(me))}!</h2><p class="lead center">${m?'Seid ihr':'Bist du'} an Heiligabend dabei? Jede Antwort ist willkommen, und ${m?'ihr könnt':'du kannst'} sie jederzeit ändern.</p>
+        <div class="blk seg">
+          <button class="opt" data-a="answer" data-v="ja" aria-pressed="${g.status==='ja'}"><span class="em">🎄</span><span>${m?'Ja, wir sind dabei!':'Ja, ich bin dabei!'}<small>Wir freuen uns riesig.</small></span></button>
+          <button class="opt" data-a="answer" data-v="offen" aria-pressed="${g.status==='offen'}"><span class="em">🕯️</span><span>${m?'Wissen wir noch nicht':'Weiß ich noch nicht'}<small>Kein Stress, ${m?'sagt einfach Bescheid, wenn ihr es wisst':'sag einfach Bescheid, wenn du es weißt'}.</small></span></button>
+          <button class="opt" data-a="answer" data-v="nein" aria-pressed="${g.status==='nein'}"><span class="em">💌</span><span>Dieses Jahr leider nicht<small>Schade! ${m?'Ihr seid':'Du bist'} jederzeit herzlich willkommen.</small></span></button>
+        </div>
+        ${g.status==='ja'?`<div class="blk"><h4>Wie viele seid ihr?</h4>${stepper(g,'erw','Erwachsene')}${stepper(g,'kinder','Kinder')}</div>`:''}
+        <div class="blk"><button class="btn wide" data-a="w-next">Weiter</button></div>`;
+    }else if(st==='push'){
+      h+=`<h2 id="sheet-title" class="center" style="padding:0">Sollen wir dir Bescheid geben?</h2><p class="lead center">Wenn jemand zusagt, etwas mitbringt oder dir antwortet, bekommst du eine kurze Nachricht. Nur zum Fest.</p>`;
+      if(pushState==='ios-install')h+=`<div class="blk">${IOS_HOWTO}</div><div class="blk"><button class="btn wide" data-a="close">Alles klar</button></div>`;
+      else if(pushState==='off'||pushState==='busy')h+=`<div class="blk"><button class="btn wide" data-a="push-on-w"${pushState==='busy'?' disabled':''}>${ico('bell')} Ja, gerne</button><button class="btn wide ghost" data-a="close">Lieber nicht</button></div>`;
+      else h+=`<div class="blk"><p class="center">${pushState==='on'?'Benachrichtigungen sind schon an. Perfekt!':pushState==='denied'?'Benachrichtigungen sind auf diesem Gerät blockiert. Du kannst sie in den Einstellungen wieder erlauben.':'Dieser Browser kann leider keine Benachrichtigungen empfangen. Am besten klappt es mit Safari auf dem iPhone oder Chrome auf Android.'}</p><button class="btn wide" data-a="close">Fertig</button></div>`;
+    }
+    return h;
   }
-  else if(f.dataset.form==='reply'){if(!needMe())return;const p=pid(f);write('antworten',uid(),{posten:p,von:me,inhalt:v,t:Date.now()});notify(`${gname(me)} zu „${(data.posten[p]||{}).name||''}“: ${v}`)}
-  inp.value=''; const n=document.getElementById(inp.id); if(n){n.value='';n.focus()}
+  if(sheet.t==='push')return close+`<h2 id="sheet-title">So bekommst du Benachrichtigungen</h2><p class="lead">Auf dem iPhone geht das, sobald die App auf deinem Home-Bildschirm liegt.</p><div class="blk">${IOS_HOWTO}</div><div class="blk"><button class="btn wide" data-a="close">Alles klar</button></div>`;
+  if(sheet.t==='item'){
+    const p=items().find(x=>x.id===sheet.id);if(!p){sheet=null;return''}
+    const k=catOf(p.kat), rs=replies(p.id), mine=me&&p.wer===me, liked=me&&p.likes.includes(me);
+    let h=close+`<p class="catlbl">${esc(k.label)}</p><input class="titleinp" id="it-name" data-f="pname" value="${esc(p.name)}" aria-label="Bezeichnung">`;
+    if(p.von&&data.gaeste[p.von])h+=`<p class="lead">${isWish(p)?'Wunsch':'Idee'} von ${esc(short(p.von))}</p>`;
+    if(!isWish(p)){
+      h+=`<div class="blk"><h4>Wer bringt es mit?</h4>`;
+      if(mine)h+=`<p>${isPlural(me)?'Das bringt ihr mit. Danke euch!':'Das bringst du mit. Danke dir!'} ✨</p><button class="btn ghost" data-a="untake">Doch nicht, wieder freigeben</button>`;
+      else if(p.wer)h+=`<p>${esc(short(p.wer))} bringt es mit.</p>`;
+      else h+=`<p class="hint">Hier freuen wir uns noch über Hilfe.</p><button class="btn gold" data-a="take">${ico('check')} Bring ich mit</button>`;
+      h+=`<label class="field" style="margin-top:6px"><small>Für jemanden anderen eintragen</small><select class="inp" data-f="pwer" id="it-wer"><option value="">Sucht noch jemanden</option>${gs.filter(g=>g.status!=='nein'||g.id===p.wer).map(g=>`<option value="${esc(g.id)}"${g.id===p.wer?' selected':''}>${esc(g.name)}</option>`).join('')}</select></label></div>`;
+    }
+    h+=`<div class="blk"><h4>${isWish(p)?'Möchten auch':'Hab Lust drauf'}</h4><div><button class="chip like" data-a="like" aria-pressed="${!!liked}">${ico('heart')} ${isWish(p)?(liked?'Ich auch':'Möchte ich auch'):(liked?'Ich hab Lust drauf':'Hab Lust drauf')}</button></div>${p.likes.length?`<p class="likers">${p.likes.map(l=>esc(short(l))).join(', ')}</p>`:''}</div>`;
+    h+=`<div class="blk"><h4>Rezept</h4>`;
+    if(p.rezept&&!editRecipe)h+=`<div class="rztext">${esc(p.rezept)}</div><div><button class="link" data-a="rz-edit">Rezept bearbeiten</button></div>`;
+    else if(editRecipe)h+=`<form class="field" data-form="rezept"><textarea class="inp" id="rz" rows="8" placeholder="Zutaten und Zubereitung, so wie du es machst …">${esc(p.rezept)}</textarea><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" type="submit">Rezept speichern</button><button class="btn small ghost" type="button" data-a="rz-cancel">Abbrechen</button></span></form>`;
+    else h+=`<p class="hint">Du machst das selbst? Teil dein Rezept, dann können andere es nachmachen.</p><div><button class="btn small ghost" data-a="rz-edit">${ico('book')} Rezept teilen</button></div>`;
+    h+=`</div><div class="blk"><h4>Kommentare</h4><div class="thread">${rs.map(r=>`<div class="msg" data-r="${esc(r.id)}"><b>${esc(short(r.von))}</b>${esc(r.inhalt)}<button class="x" data-a="rdel" aria-label="Kommentar löschen">${ico('x')}</button></div>`).join('')||'<p class="hint">Noch keine Kommentare. Fragen, Ideen, Vorfreude?</p>'}</div>
+      <form class="msgform" data-form="reply"><input class="inp" id="r-new" placeholder="Schreib etwas …" autocomplete="off" enterkeyhint="send"><button class="btn small" type="submit">Senden</button></form></div>
+      <div class="blk"><button class="danger" data-a="pdel">Eintrag entfernen</button></div>`;
+    return h;
+  }
+  if(sheet.t==='guest'){
+    const g=gs.find(x=>x.id===sheet.id);if(!g){sheet=null;return''}
+    return close+`<p class="catlbl">Gast</p><input class="titleinp" id="g-name" data-f="gname" value="${esc(g.name)}" aria-label="Name">
+      <div class="blk"><h4>Heiligabend</h4><div class="seg">${[['ja','🎄','Ist dabei'],['offen','🕯️','Noch offen'],['nein','💌','Dieses Jahr nicht']].map(([v,e,l])=>`<button class="opt" data-a="gstatus" data-v="${v}" aria-pressed="${g.status===v}"><span class="em">${e}</span><span>${l}</span></button>`).join('')}</div></div>
+      <div class="blk"><h4>Wie viele?</h4>${stepper(g,'erw','Erwachsene')}${stepper(g,'kinder','Kinder')}</div>
+      ${g.id!==me?`<div class="blk"><button class="btn ghost" data-a="iam" data-v="${esc(g.id)}">Das bin ich</button></div>`:''}
+      <div class="blk"><button class="danger" data-a="gdel">Von der Gästeliste nehmen</button></div>`;
+  }
+  return '';
+}
+const stepper=(g,k,l)=>`<div class="stepper" data-g="${esc(g.id)}"><span>${l}</span><span class="ctl"><button data-a="gstep" data-k="${k}" data-d="-1" aria-label="${l}: eins weniger"${g[k]<=0?' disabled':''}>−</button><output>${g[k]}</output><button data-a="gstep" data-k="${k}" data-d="1" aria-label="${l}: eins mehr">+</button></span></div>`;
+
+const dlg=$('#sheet');
+function openSheet(s){sheet=s;editRecipe=false;paint($('#sh'),sheetHTML());if(!dlg.open){dlg.showModal();document.documentElement.style.overflow='hidden'}$('#sh').scrollTop=0;
+  const f=$('#sh .close');if(f)f.focus({preventScroll:true})}
+function closeSheet(){if(dlg.open)dlg.close()}
+dlg.addEventListener('close',()=>{sheet=null;editRecipe=false;document.documentElement.style.overflow='';render()});
+dlg.addEventListener('click',e=>{if(e.target===dlg)closeSheet()});
+
+/* ---------- Zeichnen ---------- */
+function paint(el,html){
+  const a=document.activeElement, keep=a&&a.id&&el.contains(a)?{id:a.id,v:a.value,s:'selectionStart' in a?[a.selectionStart,a.selectionEnd]:null}:null;
+  const drafts=[...el.querySelectorAll('form input[id], form textarea[id]')].filter(i=>i.type!=='checkbox'&&i.value).map(i=>[i.id,i.value]);
+  const checks=[...el.querySelectorAll('form input[type=checkbox]')].map(i=>[i.id,i.checked]);
+  const st=el.scrollTop;
+  el.innerHTML=html;
+  for(const [id,v] of drafts){const n=document.getElementById(id);if(n)n.value=v}
+  for(const [id,v] of checks){const n=document.getElementById(id);if(n)n.checked=v}
+  el.scrollTop=st;
+  if(keep){const n=document.getElementById(keep.id);if(n){if(n.tagName==='TEXTAREA'||(n.tagName==='INPUT'&&n.type!=='checkbox'))n.value=keep.v;n.focus({preventScroll:true});if(keep.s&&n.setSelectionRange)try{n.setSelectionRange(keep.s[0],keep.s[1])}catch(e){}}}
+}
+let lastTab=null;
+function render(){
+  if(mode==='loading')return;
+  const gs=guests(), its=items(), c=counts(gs), info=Object.assign({datum:'',fleisch:''},data.info.main||{});
+  if(me&&!data.gaeste[me]){me='';}
+  /* Kopf */
+  const now=new Date(), y=now.getFullYear()+(now.getMonth()===11&&now.getDate()>26?1:0), xmas=new Date(y,11,24);
+  const days=Math.max(0,Math.round((xmas-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5));
+  $('#h-eyebrow').textContent='Heiligabend '+y;
+  $('#f-days').textContent=days===0?'Heute':days; $('#f-days-l').textContent=days===0?'ist Heiligabend!':days===1?'Tag bis Heiligabend':'Tage bis Heiligabend';
+  const tm=(info.datum.match(/(\d{1,2})[:.](\d{2})\s*(?:uhr)?\s*$/i)||info.datum.match(/(\d{1,2})\s*uhr/i));
+  $('#f-when').textContent=tm?(tm[2]?`${tm[1]}:${tm[2]}`:`${tm[1]}:00`):'24.12.'; $('#f-when-l').textContent=tm?'Uhr geht’s los':'Uhrzeit folgt';
+  $('#f-pers').textContent=c.n;
+  $('#hero').classList.toggle('small',tab!=='abend');
+  /* Leiste */
+  const openN=its.filter(p=>!p.wer&&!isWish(p)).length;
+  $('#tabs').innerHTML=[['abend','star','Der Abend'],['mitbringen','basket','Mitbringen'],['gaeste','people','Gäste']].map(([v,i,l])=>`<button data-a="tab" data-v="${v}"${tab===v?' aria-current="page"':''}>${ico(i)}${l}${v==='mitbringen'&&openN?`<span class="dot" aria-label="${openN} suchen noch jemanden">${openN}</span>`:''}</button>`).join('');
+  /* Inhalt */
+  const html=tab==='mitbringen'?viewMitbringen(gs,its):tab==='gaeste'?viewGaeste(gs,c):viewAbend(gs,its,c,info);
+  const m=$('#main');
+  if(lastTab!==tab){m.classList.remove('view');void m.offsetWidth;m.classList.add('view');lastTab=tab}
+  paint(m,html);
+  if(sheet&&dlg.open)paint($('#sh'),sheetHTML());
+  justTaken=null;
+}
+addEventListener('hashchange',()=>{const t=location.hash.slice(1);if(['abend','mitbringen','gaeste'].includes(t)&&t!==tab){tab=t;render();scrollTo({top:0})}});
+function go(t){if(t===tab)return;tab=t;history.replaceState(null,'',location.search+(t==='abend'?'':'#'+t)||location.pathname);render();scrollTo({top:0})}
+
+/* ---------- Eingaben ---------- */
+function needMe(){if(me)return true;openSheet({t:'welcome',step:'wer'});toast('Sag uns kurz, wer du bist, dann geht’s weiter.');return false}
+let undo=null;
+document.addEventListener('toggle',e=>{if(e.target.id==='host')hostOpen=e.target.open},true);
+document.addEventListener('change',e=>{
+  const t=e.target,f=t.dataset.f; if(!f)return;
+  if(f==='datum'){const v=t.value.trim();if(v===(data.info.main||{}).datum)return;setInfo({datum:v});if(v)notify('Heiligabend: '+v+'. Wir freuen uns auf euch!');return}
+  if(f==='fleisch'){const v=t.value.trim();if(v===(data.info.main||{}).fleisch)return;setInfo({fleisch:v});if(v)notify('Andy & Mel: '+v);return}
+  if(f==='pname'||f==='pwer'){const p=data.posten[sheet&&sheet.id];if(!p)return;const v=f==='pname'?t.value.trim():t.value;if(f==='pname'&&!v){t.value=p.name;return}
+    write('posten',p.id,{...p,[f==='pname'?'name':'wer']:v});if(f==='pwer'&&v)notify(`${short(v)} bringt ${p.name} mit. Danke! ✨`);return}
+  if(f==='gname'){const g=data.gaeste[sheet&&sheet.id];if(!g)return;const v=t.value.trim();if(!v){t.value=g.name;return}write('gaeste',g.id,{...g,name:v});return}
+});
+document.addEventListener('keydown',e=>{const t=e.target;if(e.key==='Enter'&&(t.classList.contains('titleinp')||t.id==='datum')){e.preventDefault();t.blur()}});
+document.addEventListener('submit',e=>{
+  e.preventDefault();const f=e.target,form=f.dataset.form;
+  if(form==='reset'){resetYear(f);return}
+  if(form==='rezept'){const p=data.posten[sheet&&sheet.id];if(!p)return;const v=f.querySelector('textarea').value.trim(),neu=!p.rezept;editRecipe=false;write('posten',p.id,{...p,rezept:v});
+    if(v){toast('Danke fürs Teilen!');notify(`${me?short(me):'Jemand'} hat ${neu?'ein Rezept':'das Rezept'} für „${p.name}“ ${neu?'geteilt':'aktualisiert'} 📖`)}return}
+  const inp=f.querySelector('input:not([type=checkbox])'),v=inp?inp.value.trim():'';if(!v)return;
+  if(form==='add'){
+    const k=f.dataset.k,mine=f.querySelector('input[type=checkbox]')?.checked;
+    if(mine&&!needMe())return;
+    const id=uid();write('posten',id,{kat:k,name:v,wer:mine?me:'',von:me||'',likes:[],rezept:'',t:Date.now()});
+    if(mine)justTaken=id;
+    toast(mine?`Danke dir! ${v} steht jetzt bei dir.`:'Danke für die Idee!');
+    notify(k==='wuensche'?`Neuer Wunsch zum Fleisch: ${v}${me?` (von ${short(me)})`:''}`:mine?`${short(me)} bringt ${v} mit. Danke! ✨`:`Neue Idee bei ${catOf(k).label}: ${v}${me?` (von ${short(me)})`:''}`);
+    const cb=f.querySelector('input[type=checkbox]');if(cb)cb.checked=false;
+  }else if(form==='gadd'){write('gaeste',uid(),{name:v,erw:1,kinder:0,status:'offen',t:Date.now()});toast(`${v} steht jetzt auf der Gästeliste.`)}
+  else if(form==='welcome-new'){const id=uid();write('gaeste',id,{name:v,erw:1,kinder:0,status:'offen',t:Date.now()});setMe(id);sheet.step='kommst';render()}
+  else if(form==='reply'){if(!needMe())return;const p=data.posten[sheet&&sheet.id];if(!p)return;write('antworten',uid(),{posten:p.id,von:me,inhalt:v,t:Date.now()});notify(`${short(me)} zu „${p.name}“: ${v}`)}
+  inp.value='';const n=document.getElementById(inp.id);if(n){n.value='';if(form!=='welcome-new')n.focus()}
 });
 document.addEventListener('click',e=>{
-  const b=e.target.closest('[data-a]'); if(!b)return; const a=b.dataset.a;
-  if(a==='filter'){filter=b.dataset.v;render();return}
-  if(a==='recipe'){const id=pid(b);if(openRecipes.has(id)){openRecipes.delete(id);editRecipes.delete(id)}else openRecipes.add(id);render();const n=document.getElementById('rz-'+id);if(n)n.focus();return}
-  if(a==='rzedit'){const id=pid(b);editRecipes.add(id);render();const n=document.getElementById('rz-'+id);if(n)n.focus();return}
-  if(a==='rzcancel'){const id=pid(b);editRecipes.delete(id);if(!(data.posten[id]||{}).rezept)openRecipes.delete(id);render();return}
-  if(a==='thread'){const id=pid(b);openThreads.has(id)?openThreads.delete(id):openThreads.add(id);render();if(openThreads.has(id)){const n=document.getElementById('r-new-'+id);if(n)n.focus()}return}
-  if(a==='copy'){const ta=$('#wa'),hint=$('#copy-hint');const fb=()=>{ta.focus();ta.select();hint.textContent='Text ist markiert. Jetzt kopieren (⌘C / Strg+C oder lange drücken).'};
-    try{navigator.clipboard.writeText(ta.value).then(()=>{hint.textContent='Kopiert. Jetzt in der WhatsApp-Gruppe einfügen.'},fb)}catch(err){fb()}return}
-  if(a==='pushon'){enablePush();return}
-  if(a==='pushoff'){disablePush();return}
-  if(a==='install'){if(installEvt){installEvt.prompt();installEvt.userChoice.finally(()=>{installEvt=null;render()})}return}
-  if(a==='gstep'){const id=gid(b),g=data.gaeste[id];if(g){const k=b.dataset.k;write('gaeste',id,{...g,[k]:Math.max(0,(+g[k]||0)+(+b.dataset.d))})}}
-  else if(a==='gdel'){const id=gid(b),g=data.gaeste[id];if(!g)return;undo=['gaeste',id,g];write('gaeste',id,null);toast(`${g.name||'Gast'} entfernt.`,true)}
-  else if(a==='pdel'){const id=pid(b),p=data.posten[id];if(!p)return;undo=['posten',id,p];write('posten',id,null);toast(`${p.name||'Eintrag'} entfernt.`,true)}
-  else if(a==='rdel'){const id=b.closest('[data-r]').dataset.r,r=data.antworten[id];if(!r)return;undo=['antworten',id,r];write('antworten',id,null);toast('Antwort gelöscht.',true)}
-  else if(a==='like'){if(!needMe())return;toggleLike(pid(b))}
-  else if(a==='sugg'){write('posten',uid(),{kat:b.dataset.k,name:b.dataset.v,wer:'',von:me||'',likes:[],t:Date.now()});notify(b.dataset.k==='wuensche'?`Neuer Wunsch zum Fleisch: ${b.dataset.v}${me?` (von ${gname(me)})`:''}`:`Neue Idee bei ${catLabel(b.dataset.k)}: ${b.dataset.v}`)}
+  const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
+  const pid=b.closest('[data-p]')?.dataset.p||(sheet&&sheet.t==='item'?sheet.id:null);
+  const gid=b.closest('[data-g]')?.dataset.g||(sheet&&sheet.t==='guest'?sheet.id:null);
+  switch(a){
+    case 'tab':go(b.dataset.v);return;
+    case 'jump':{e.preventDefault();const t=document.querySelector(b.getAttribute('href'));if(t)t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});return}
+    case 'close':closeSheet();return;
+    case 'welcome':openSheet({t:'welcome',step:me?'kommst':'wer'});return;
+    case 'welcome-kommst':openSheet({t:'welcome',step:'kommst'});return;
+    case 'pick':setMe(b.dataset.v);sheet.step='kommst';render();return;
+    case 'iam':setMe(b.dataset.v);toast(`Hallo ${short(b.dataset.v)}! Schön, dass du da bist.`);render();return;
+    case 'answer':{setStatus(me,b.dataset.v);return}
+    case 'w-next':{sheet.step=pushState==='on'?null:'push';if(!sheet.step){closeSheet();toast('Schön, dass du da bist!')}else render();return}
+    case 'push-on':enablePush();return;
+    case 'push-on-w':enablePush().then(ok=>{if(ok)closeSheet()});return;
+    case 'push-off':disablePush();return;
+    case 'push-howto':openSheet({t:'push'});return;
+    case 'install':if(installEvt){installEvt.prompt();installEvt.userChoice.finally(()=>{installEvt=null;render()})}return;
+    case 'open-item':openSheet({t:'item',id:pid});return;
+    case 'open-guest':openSheet({t:'guest',id:gid});return;
+    case 'take':if(!needMe())return;take(pid,true);return;
+    case 'untake':take(pid,false);return;
+    case 'like':if(!needMe())return;toggleLike(pid);return;
+    case 'rz-edit':editRecipe=true;render();{const n=$('#rz');if(n)n.focus()}return;
+    case 'rz-cancel':editRecipe=false;render();return;
+    case 'sugg':{const k=b.dataset.k,v=b.dataset.v;write('posten',uid(),{kat:k,name:v,wer:'',von:me||'',likes:[],rezept:'',t:Date.now()});toast('Danke für die Idee!');notify(k==='wuensche'?`Neuer Wunsch zum Fleisch: ${v}`:`Neue Idee bei ${catOf(k).label}: ${v}`);return}
+    case 'pdel':{const p=data.posten[pid];if(!p)return;undo=['posten',pid,p];closeSheet();write('posten',pid,null);toast(`„${p.name}“ entfernt.`,true);return}
+    case 'rdel':{const id=b.closest('[data-r]').dataset.r,r=data.antworten[id];if(!r)return;undo=['antworten',id,r];write('antworten',id,null);toast('Kommentar gelöscht.',true);return}
+    case 'gstatus':setStatus(gid,b.dataset.v);return;
+    case 'gstep':{const g=data.gaeste[gid];if(g){const k=b.dataset.k;write('gaeste',gid,{...g,[k]:Math.max(0,(+g[k]||0)+(+b.dataset.d))})}return}
+    case 'gdel':{const g=data.gaeste[gid];if(!g)return;undo=['gaeste',gid,g];closeSheet();write('gaeste',gid,null);toast(`${g.name||'Gast'} ist nicht mehr auf der Liste.`,true);return}
+    case 'copy':{const gs=guests(),its=items(),txt=waText(gs,its,counts(gs),Object.assign({datum:'',fleisch:''},data.info.main||{})),ta=$('#wa'),hint=$('#copy-hint');ta.value=txt;
+      const fb=()=>{ta.hidden=false;ta.focus();ta.select();hint.textContent='Der Text ist markiert. Jetzt kopieren (lange drücken oder ⌘C) und in die Gruppe einfügen.'};
+      try{navigator.clipboard.writeText(txt).then(()=>{hint.textContent='Kopiert! Jetzt einfach in die WhatsApp-Gruppe einfügen.';toast('Text kopiert.')},fb)}catch(err){fb()}return}
+  }
 });
+
+async function resetYear(form){
+  const ny=nextYear(),v=form.querySelector('input').value.trim();
+  if(v!==String(ny)){toast(`Bitte genau ${ny} eingeben, dann wird die Liste zurückgesetzt.`);return}
+  if(mode==='shared'){const {error}=await sb.rpc('neues_jahr');if(error){console.error(error);toast('Das Zurücksetzen hat nicht geklappt. Bitte noch einmal versuchen.');return}}
+  hostOpen=false;data.posten={};data.antworten={};for(const id in data.gaeste)data.gaeste[id]={...data.gaeste[id],status:'offen'};data.info.main={...(data.info.main||{}),datum:'',fleisch:''};
+  render();scrollTo({top:0,behavior:'smooth'});toast(`Die Liste für Weihnachten ${ny} ist bereit.`);
+  notify(`Weihnachten ${ny} rückt näher! Die Liste ist bereit. Wir freuen uns auf euch.`);
+}
 
 let toastT;
 function toast(msg,withUndo){
-  const r=$('#toast-root'); clearTimeout(toastT);
+  const r=$('#toast-root');clearTimeout(toastT);
   r.innerHTML=`<div class="toast" role="status"><span></span>${withUndo?'<button type="button">Rückgängig</button>':''}</div>`;
   r.querySelector('span').textContent=msg;
-  const u=r.querySelector('button'); if(u)u.onclick=()=>{if(undo){write(undo[0],undo[1],undo[2]);undo=null}r.innerHTML=''};
-  toastT=setTimeout(()=>{r.innerHTML=''},5000);
+  const u=r.querySelector('button');if(u)u.onclick=()=>{if(undo){write(undo[0],undo[1],undo[2]);undo=null}r.innerHTML=''};
+  toastT=setTimeout(()=>{r.innerHTML=''},4500);
 }
 
-/* ---------- Lichterkette & Schnee ---------- */
+/* ---------- Lichter & Schnee (nur im Kopf) ---------- */
 (function(){
-  const L=document.getElementById('lights');
-  const fill=()=>{const n=Math.max(8,Math.min(40,Math.round(L.clientWidth/42)));if(L.childElementCount!==n)L.innerHTML='<i class="bulb"></i>'.repeat(n)};
-  fill(); addEventListener('resize',fill);
-  const sky=document.getElementById('sky');
-  const STAR='<path fill="currentColor" d="M12 0l2.4 9.6L24 12l-9.6 2.4L12 24l-2.4-9.6L0 12l9.6-2.4z"/>';
-  let seed=7; const rnd=()=>(seed=(seed*9301+49297)%233280)/233280;
-  sky.innerHTML=Array.from({length:22},()=>{const z=8+rnd()*14;return `<svg viewBox="0 0 24 24" width="${z}" height="${z}" style="left:${(rnd()*96+1).toFixed(1)}%;top:${(rnd()*96+2).toFixed(1)}%;animation-delay:-${(rnd()*3.4).toFixed(2)}s">${STAR}</svg>`}).join('');
-  const cv=document.getElementById('snow'), ctx=cv.getContext&&cv.getContext('2d'); if(!ctx)return;
-  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let W=0,H=0,flakes=[],raf=0;
-  function size(){const d=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0);
-    const n=Math.min(150,Math.round(W*H/7500));
-    flakes=Array.from({length:n},()=>{const r=.8+Math.random()*2.2;return{x:Math.random()*W,y:Math.random()*H,r,s:.3+r*.28,w:Math.random()*6.28,c:r>2.4&&Math.random()<.5,a:Math.random()*6.28}});draw()}
-  function draw(){
-    ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.strokeStyle='#fff';ctx.shadowColor='rgba(60,85,110,.55)';ctx.shadowBlur=3;ctx.lineCap='round';
-    for(const f of flakes){ctx.globalAlpha=.55+f.r/7;
-      if(f.c){const L=f.r*2.2;ctx.lineWidth=1.1;ctx.beginPath();for(let i=0;i<3;i++){const t=f.a+i*1.0472,dx=Math.cos(t)*L,dy=Math.sin(t)*L;ctx.moveTo(f.x-dx,f.y-dy);ctx.lineTo(f.x+dx,f.y+dy)}ctx.stroke()}
-      else{ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.283);ctx.fill()}}
-    ctx.globalAlpha=1;ctx.shadowBlur=0}
-  function tick(){for(const f of flakes){f.y+=f.s;f.w+=.012;f.a+=.006;f.x+=Math.sin(f.w)*.4;if(f.y>H+6){f.y=-6;f.x=Math.random()*W}}draw();raf=requestAnimationFrame(tick)}
-  size(); addEventListener('resize',size);
+  const L=$('#lights');const fill=()=>{const n=Math.max(10,Math.min(36,Math.round(L.clientWidth/34)));if(L.childElementCount!==n)L.innerHTML='<i class="bulb"></i>'.repeat(n)};fill();addEventListener('resize',fill);
+  const cv=$('#snow'),ctx=cv.getContext&&cv.getContext('2d');if(!ctx)return;
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;let W=0,H=0,fl=[],raf=0;
+  function size(){const d=Math.min(2,devicePixelRatio||1),r=cv.getBoundingClientRect();W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0);
+    fl=Array.from({length:Math.min(60,Math.round(W*H/6000))},()=>({x:Math.random()*W,y:Math.random()*H,r:.6+Math.random()*1.6,s:.15+Math.random()*.35,w:Math.random()*6.28}));draw()}
+  function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';for(const f of fl){ctx.globalAlpha=.25+f.r/4;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.283);ctx.fill()}ctx.globalAlpha=1}
+  function tick(){for(const f of fl){f.y+=f.s;f.w+=.01;f.x+=Math.sin(f.w)*.25;if(f.y>H+4){f.y=-4;f.x=Math.random()*W}}draw();raf=requestAnimationFrame(tick)}
+  size();addEventListener('resize',size);new ResizeObserver(size).observe($('#hero'));
   if(!still){raf=requestAnimationFrame(tick);document.addEventListener('visibilitychange',()=>{cancelAnimationFrame(raf);if(!document.hidden)raf=requestAnimationFrame(tick)})}
 })();
+
+/* ---------- Vorschau-Daten ---------- */
+function demoData(){
+  const t0=1794170000000;let i=0;const T=()=>t0+(i++)*60000;
+  const G=[['andreas','Andy, Mel & Connor (Gastgeber)',2,1,'ja'],['wir','Stephan & Lewis',2,0,'ja'],['alex','Alex & Sarah',2,0,'ja'],['eva','Eva',1,0,'ja'],['rita','Bernhard & Rita',2,0,'offen'],['lucy1','Lucy 🤍',1,0,'offen']];
+  G.forEach(([id,name,erw,kinder,status],n)=>data.gaeste[id]={id,name,erw,kinder,status,t:n+1});
+  const P=[['wuensche','Zuckerschoten','','andreas',['wir','eva','alex']],['wuensche','Champignons','','alex',['wir']],['wuensche','Kartöffelchen','','eva',[]],
+    ['dips','Dattel-Dip','andreas','andreas',['wir','alex']],['dips','Knoblauchsoße','','wir',['eva','alex','andreas']],['dips','Cocktailsoße','alex','alex',[]],
+    ['salate','Gurkensalat','','andreas',[]],['salate','Tzatziki','wir','andreas',['eva']],['salate','Grüner Salat','eva','eva',[]],
+    ['brot','Fladenbrot vom Nimet','','andreas',['alex']],['brot','Andys Kräuterbutter','andreas','andreas',['wir','eva']],['brot','Baguette','eva','andreas',[]],
+    ['getraenke','Softgetränke','alex','alex',[]],['getraenke','Kinderpunsch','','andreas',['andreas']]];
+  P.forEach(([kat,name,wer,von,likes],n)=>{const id='d'+n;data.posten[id]={id,kat,name,wer,von,likes,rezept:'',t:T()}});
+  data.posten.d10.rezept='250 g weiche Butter\n1 Bund Petersilie, fein gehackt\n2 Knoblauchzehen, gepresst\n1 TL Zitronensaft\nSalz und Pfeffer\n\nAlles verrühren, in Frischhaltefolie zur Rolle formen und kalt stellen.';
+  data.antworten.a1={id:'a1',posten:'d10',von:'wir',inhalt:'Was heißt denn Andys Kräuterbutter? 😄',t:T()};
+  data.antworten.a2={id:'a2',posten:'d10',von:'andreas',inhalt:'Geheimrezept! Steht jetzt aber unter Rezept.',t:T()};
+  data.info.main={id:'main',datum:'24.12.2026 19:00',fleisch:''};
+}
 
 /* ---------- Start ---------- */
 (async function(){
   initPush();
-  if(!window.supabase||!CFG.url){setStatus('Die App ist gerade nicht erreichbar. Bitte lade die Seite neu.','warn');return}
+  if(DEMO){$('#demo').hidden=false;demoData();mode='demo';$('#status').hidden=true;render();if(!me||new URLSearchParams(location.search).has('neu')){me='';openSheet({t:'welcome',step:'wer'})}return}
+  if(!window.supabase||!CFG.url){$('#status').textContent='Die App ist gerade nicht erreichbar. Bitte lade die Seite neu.';$('#status').dataset.kind='warn';return}
   sb=window.supabase.createClient(CFG.url,CFG.key);
-  async function load(){
-    const rs=await Promise.all(['info',...COLS].map(c=>sb.from(c).select('*')));
-    rs.forEach(r=>{if(r.error)throw r.error});
-    ['info',...COLS].forEach((c,i)=>{data[c]=Object.fromEntries(rs[i].data.map(r=>[r.id,r]))});
-  }
-  try{await load();mode='shared';setStatus('');render()}
-  catch(e){console.error(e);setStatus('Die Liste ist gerade nicht erreichbar. Prüf die Internetverbindung und lade die Seite neu.','warn');return}
+  async function load(){const cols=['info','gaeste','posten','antworten'];const rs=await Promise.all(cols.map(c=>sb.from(c).select('*')));rs.forEach(r=>{if(r.error)throw r.error});cols.forEach((c,i)=>{data[c]=Object.fromEntries(rs[i].data.map(r=>[r.id,r]))})}
+  try{await load();mode='shared';$('#status').hidden=true;render()}
+  catch(e){console.error(e);$('#status').textContent='Die Liste ist gerade nicht erreichbar. Prüf kurz das Internet und lade die Seite neu.';$('#status').dataset.kind='warn';return}
+  if(!me&&!store.sget('weihnachten-umschauen')){store.sset('weihnachten-umschauen','1');openSheet({t:'welcome',step:'wer'})}
   sb.channel('weihnachten').on('postgres_changes',{event:'*',schema:'public'},pl=>{
     const col=pl.table;if(!(col in data))return;
     if(pl.eventType==='DELETE'){if(pl.old&&pl.old.id)delete data[col][pl.old.id]}else data[col][pl.new.id]=pl.new;
