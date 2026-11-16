@@ -381,6 +381,8 @@ const replies=pid=>list('antworten').filter(r=>r.posten===pid);
 const gname=id=>(data.gaeste[id]&&data.gaeste[id].name)||'Jemand';
 const short=id=>{const n=gname(id).replace(/\s*\(.*?\)\s*/g,' ').trim();return n||'Jemand'};
 const isWish=p=>p.kat==='wuensche';
+const ADMINS=['andreas','wir'];
+const isAdmin=()=>ADMINS.includes(me);
 const isPlural=id=>/&|\bund\b/.test(short(id));
 const initials=n=>{const w=String(n).replace(/[^\p{L}\s&]/gu,'').split(/\s|&/).filter(Boolean);return ((w[0]||'?')[0]+(w[1]?w[1][0]:'')).toUpperCase()};
 function counts(gs){const z=gs.filter(g=>g.status==='ja');const e=z.reduce((a,g)=>a+g.erw,0),k=z.reduce((a,g)=>a+g.kinder,0);return{e,k,n:e+k,p:e+k*.5,open:gs.filter(g=>g.status==='offen').length}}
@@ -462,8 +464,9 @@ function itemRow(p,showCat){
   if(p.rezept)sub.push(`<span>${ico('book')} Rezept</span>`);
   let side;
   if(isWish(p)){const on=me&&p.likes.includes(me);side=`<button class="chip like" data-a="like" aria-pressed="${on}">${ico('heart')} ${on?'Ich auch':'Möchte ich auch'}${p.likes.length?' · '+p.likes.length:''}</button>`}
-  else if(mine)side=`<span class="chip me${justTaken===p.id?' pop':''}">${ico('check')} ${isPlural(me)?'Bringt ihr':'Bringst du'}</span>`;
-  else if(p.wer)side=`<span class="chip ok" title="${esc(short(p.wer))} bringt es mit">${ico('check')}<span class="nm">${esc(short(p.wer))}</span></span>`;
+  else if(mine)side=`<button class="chip me${justTaken===p.id?' pop':''}" data-a="${isAdmin()?'assign':'open-item'}" aria-label="Du bringst ${esc(p.name)} mit. Antippen zum Ändern">${ico('check')} ${isPlural(me)?'Bringt ihr':'Bringst du'}</button>`;
+  else if(p.wer)side=`<button class="chip ok" data-a="${isAdmin()?'assign':'open-item'}" title="${esc(short(p.wer))} bringt es mit" aria-label="${esc(short(p.wer))} bringt ${esc(p.name)} mit. Antippen zum Ändern">${ico('check')}<span class="nm">${esc(short(p.wer))}</span></button>`;
+  else if(isAdmin())side=`<button class="chip take" data-a="assign">Wer bringt’s?</button>`;
   else side=`<button class="chip take" data-a="take">Bring ich mit</button>`;
   return `<div class="row" data-p="${esc(p.id)}"><button class="main" data-a="open-item" aria-label="${esc(p.name)} öffnen"><span class="t">${esc(p.name)}</span>${sub.length?`<span class="s">${sub.join('')}</span>`:''}</button>${side}</div>`;
 }
@@ -531,7 +534,7 @@ function guide(meG,its){
   </section>`;
 }
 function viewMitbringen(gs,its){
-  let h=`<section class="sec"><div class="sec-h"><span class="k">Mitbringen</span><h2>Was auf den Tisch kommt</h2><p>Ums Fleisch kümmern wir uns gern. Für alles drumherum freuen wir uns über eure Ideen. Jeder bringt mit, worauf er Lust hat.</p></div>
+  let h=`<section class="sec"><div class="sec-h"><span class="k">Mitbringen</span><h2>Was auf den Tisch kommt</h2><p>Ums Fleisch kümmern wir uns gern. Für alles drumherum freuen wir uns über eure Ideen. Jeder bringt mit, worauf er Lust hat. Keine Lust aufs Eintragen? Schreib einfach Andy, Mel oder Stephan, die tragen’s für dich ein.</p></div>
     <nav class="jump" aria-label="Zu einer Kategorie springen">${CATS.map(k=>{const o=its.filter(p=>p.kat===k.key&&!p.wer&&!k.wish).length;return `<a href="#k-${k.key}" data-a="jump">${esc(k.label)}${o?`<small>${o}</small>`:''}</a>`}).join('')}</nav></section>`;
   for(const k of CATS){
     const all=its.filter(p=>p.kat===k.key);
@@ -615,6 +618,16 @@ function sheetHTML(){
     return h;
   }
   if(sheet.t==='push')return close+`<h2 id="sheet-title">So bekommst du Benachrichtigungen</h2><p class="lead">Auf dem iPhone klappt das, sobald die App auf deinem Home-Bildschirm liegt.</p><div class="blk">${IOS_HOWTO}</div><div class="blk"><button class="btn wide" data-a="close">Alles klar</button></div>`;
+  if(sheet.t==='assign'){
+    const p=items().find(x=>x.id===sheet.id);if(!p){sheet=null;return''}
+    const opt=(v,em,l,sub)=>`<button class="opt" data-a="assign-to" data-v="${esc(v)}" aria-pressed="${p.wer===v}"><span class="em">${em}</span><span>${l}${sub?`<small>${sub}</small>`:''}</span></button>`;
+    let h=close+`<p class="catlbl">${esc(catOf(p.kat).label)}</p><h2 id="sheet-title">${esc(p.name)}</h2><p class="lead">Wer bringt’s mit? Du kannst das hier für jeden eintragen, zum Beispiel wenn dir jemand geschrieben hat.</p><div class="blk seg">`;
+    h+=opt(me,'🙋',isPlural(me)?'Bringen wir mit':'Bring ich mit','');
+    for(const g of gs.filter(g=>g.id!==me&&(g.status!=='nein'||g.id===p.wer)))h+=opt(g.id,'🎁',`Bringt ${esc(short(g.id))}`,'');
+    h+=opt('','🕯️','Noch offen','Wieder freigeben, sucht jemanden');
+    h+=`</div><div class="blk"><button class="btn ghost wide" data-a="open-item-from-assign">Details, Kommentare und Rezept</button></div>`;
+    return h;
+  }
   if(sheet.t==='item'){
     const p=items().find(x=>x.id===sheet.id);if(!p){sheet=null;return''}
     const k=catOf(p.kat), rs=replies(p.id), mine=me&&p.wer===me, liked=me&&p.likes.includes(me);
@@ -753,8 +766,14 @@ document.addEventListener('click',e=>{
     case 'push-howto':openSheet({t:'push'});return;
     case 'install':if(installEvt){installEvt.prompt();installEvt.userChoice.finally(()=>{installEvt=null;render()})}return;
     case 'open-item':openSheet({t:'item',id:pid});return;
+    case 'open-item-from-assign':openSheet({t:'item',id:sheet.id});return;
     case 'open-guest':openSheet({t:'guest',id:gid});return;
     case 'take':if(!needMe())return;take(pid,true);return;
+    case 'assign':openSheet({t:'assign',id:pid});return;
+    case 'assign-to':{const p=data.posten[sheet&&sheet.id];if(!p)return;const v=b.dataset.v;closeSheet();if(v===p.wer)return;
+      write('posten',p.id,{...p,wer:v});
+      if(v){toast(v===me?`Danke dir! ${p.name} steht jetzt bei dir.`:`Erledigt! ${p.name} steht jetzt bei ${short(v)}.`);notify(`${short(v)} ${isPlural(v)?'bringen':'bringt'} ${p.name} mit${v!==me&&me?` (eingetragen von ${short(me)})`:''}. Danke! ✨`)}
+      else{toast(`${p.name} ist wieder frei.`);notify(`${p.name} ist wieder frei. Wer mag es mitbringen?`)}return}
     case 'untake':take(pid,false);return;
     case 'like':if(!needMe())return;toggleLike(pid);return;
     case 'rz-edit':editRecipe=true;render();{const n=$('#rz');if(n)n.focus()}return;
