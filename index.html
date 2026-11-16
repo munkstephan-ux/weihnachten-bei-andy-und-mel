@@ -457,7 +457,7 @@ function itemRow(p,showCat){
   if(p.rezept)sub.push(`<span>${ico('book')} Rezept</span>`);
   let side;
   if(isWish(p)){const on=me&&p.likes.includes(me);side=`<button class="chip like" data-a="like" aria-pressed="${on}">${ico('heart')} ${on?'Ich auch':'Möchte ich auch'}${p.likes.length?' · '+p.likes.length:''}</button>`}
-  else if(mine)side=`<span class="chip me${justTaken===p.id?' pop':''}">${ico('check')} Bringst du</span>`;
+  else if(mine)side=`<span class="chip me${justTaken===p.id?' pop':''}">${ico('check')} ${isPlural(me)?'Bringt ihr':'Bringst du'}</span>`;
   else if(p.wer)side=`<span class="chip ok" title="${esc(short(p.wer))} bringt es mit">${ico('check')}<span class="nm">${esc(short(p.wer))}</span></span>`;
   else side=`<button class="chip take" data-a="take">Bring ich mit</button>`;
   return `<div class="row" data-p="${esc(p.id)}"><button class="main" data-a="open-item" aria-label="${esc(p.name)} öffnen"><span class="t">${esc(p.name)}</span>${sub.length?`<span class="s">${sub.join('')}</span>`:''}</button>${side}</div>`;
