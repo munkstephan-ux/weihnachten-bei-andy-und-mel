@@ -402,7 +402,7 @@ function take(id,on){
   const p=data.posten[id];if(!p)return;
   write('posten',id,{...p,wer:on?me:''});
   if(on){justTaken=id;render();toast(`Danke dir! ${p.name} steht jetzt bei dir.`);notify(`${short(me)} bringt ${p.name} mit. Danke! ✨`)}
-  else toast(`${p.name} ist wieder frei. Kein Ding.`);
+  else{toast(`Kein Ding, ${p.name} ist wieder frei.`);notify(`${p.name} ist wieder frei. Wer mag es mitbringen?`)}
 }
 function setMe(id){me=id;store.set(ME_KEY,id);if(pushState==='on'&&swReg)swReg.pushManager.getSubscription().then(s=>s&&saveSub(s)).catch(()=>{})}
 function setStatus(id,st){
@@ -436,7 +436,7 @@ async function enablePush(){
     if(perm!=='granted'){pushState=perm==='denied'?'denied':'off';render();return false}
     const reg=await navigator.serviceWorker.ready;
     const sub=(await reg.pushManager.getSubscription())||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64(CFG.vapid)});
-    await saveSub(sub);pushState='on';toast('Benachrichtigungen sind an. Ausschalten geht jederzeit.');render();return true;
+    await saveSub(sub);pushState='on';toast('Benachrichtigungen sind an. Du bist auf Stand.');render();return true;
   }catch(e){console.error(e);pushState='off';toast('Hat nicht geklappt. Versuch’s gleich nochmal.');render();return false}
 }
 async function disablePush(){
@@ -521,7 +521,7 @@ function guide(meG,its){
   return `<section class="panel guide"><p class="eyebrow" style="color:var(--gold)">So einfach geht’s</p><h3>Drei kleine Schritte</h3><p>Alles freiwillig, nichts muss. Hilft uns aber beim Planen.</p>
     ${st(s1,1,m?'Sagt Bescheid, ob ihr kommt':'Sag Bescheid, ob du kommst',meG?(meG.status==='ja'?(m?'Ihr seid dabei. Wie schön!':'Du bist dabei. Wie schön!'):meG.status==='nein'?'Danke, dass du Bescheid gesagt hast.':'Ja, nein oder weiß noch nicht, alles okay.'):'Ja, nein oder weiß noch nicht, alles okay.','welcome','Antworten')}
     ${st(s2,2,m?'Sucht euch etwas aus':'Such dir etwas aus','Salat, Soße, Brot, Getränke oder was ganz Eigenes.','tab-mitbringen','Ansehen')}
-    ${st(s3,3,m?'Bleibt auf dem Laufenden':'Bleib auf dem Laufenden',pushState==='on'?'Benachrichtigungen sind an.':'Kurz Bescheid, wenn sich was tut. Nur rund ums Fest.','guide-push','Einschalten')}
+    ${st(s3,3,m?'Bleibt auf Stand':'Bleib auf Stand',pushState==='on'?'Benachrichtigungen sind an.':'Nur wenn sich am Plan was ändert. Kein Spam.','guide-push','Einschalten')}
   </section>`;
 }
 function viewMitbringen(gs,its){
@@ -592,16 +592,16 @@ function sheetHTML(){
       const m=isPlural(me);
       h+=`<h2 id="sheet-title" class="center" style="padding:0">Hallo ${esc(short(me))}!</h2><p class="lead center">${m?'Seid ihr':'Bist du'} an Heiligabend dabei? Egal wie, alles gut. Ändern ${m?'könnt ihr':'kannst du'}’s jederzeit.</p>
         <div class="blk seg">
-          <button class="opt" data-a="answer" data-v="ja" aria-pressed="${g.status==='ja'}"><span class="em">🎄</span><span>${m?'Ja, wir sind dabei!':'Ja, ich bin dabei!'}<small>Wir freuen uns riesig! Und wir halten ${m?'euch':'dich'} auf dem Laufenden.</small></span></button>
+          <button class="opt" data-a="answer" data-v="ja" aria-pressed="${g.status==='ja'}"><span class="em">🎄</span><span>${m?'Ja, wir sind dabei!':'Ja, ich bin dabei!'}<small>Wir freuen uns riesig! Und wir halten ${m?'euch':'dich'} auf Stand.</small></span></button>
           <button class="opt" data-a="answer" data-v="offen" aria-pressed="${g.status==='offen'}"><span class="em">🕯️</span><span>${m?'Wissen wir noch nicht':'Weiß ich noch nicht'}<small>Kein Stress, ${m?'sagt einfach Bescheid, wenn ihr’s wisst':'sag einfach Bescheid, wenn du’s weißt'}.</small></span></button>
           <button class="opt" data-a="answer" data-v="nein" aria-pressed="${g.status==='nein'}"><span class="em">💌</span><span>Dieses Jahr leider nicht<small>Schade! Falls sich was ändert: ${m?'Ihr seid':'Du bist'} immer willkommen.</small></span></button>
         </div>
         ${g.status==='ja'?`<div class="blk"><h4>${m?'Wie viele seid ihr?':'Kommt noch jemand mit?'}</h4>${stepper(g,'erw','Erwachsene')}${stepper(g,'kinder','Kinder')}</div>`:''}
         <div class="blk"><button class="btn wide" data-a="w-next">Weiter</button></div>`;
     }else if(st==='push'){
-      if(pushState==='on'){h+=`<h2 id="sheet-title" class="center" style="padding:0">Du bekommst Bescheid 🔔</h2><p class="lead center">Wenn jemand zusagt, was mitbringt oder dir antwortet, kriegst du kurz Bescheid. Nur rund ums Fest. Nervt dich das, schalt’s einfach aus. Geht auch später noch auf der Startseite.</p>
+      if(pushState==='on'){h+=`<h2 id="sheet-title" class="center" style="padding:0">Du bist auf Stand 🔔</h2><p class="lead center">Du kriegst nur Bescheid, wenn sich am Plan für Heiligabend was tut: wer kommt, wer was mitbringt, ob sich die Uhrzeit ändert oder dir jemand antwortet. Damit am Abend keiner überrascht dasteht. Kein Spam, kein Gequatsche, versprochen. Ausschalten geht trotzdem jederzeit, auch später auf der Startseite.</p>
         <div class="blk"><button class="btn wide" data-a="close">Fertig</button><button class="btn wide ghost" data-a="push-off-w">Benachrichtigungen ausschalten</button></div>`;return h}
-      h+=`<h2 id="sheet-title" class="center" style="padding:0">Sollen wir dir Bescheid geben?</h2><p class="lead center">Wenn jemand zusagt, was mitbringt oder dir antwortet, kriegst du kurz Bescheid. Nur rund ums Fest, versprochen.</p>`;
+      h+=`<h2 id="sheet-title" class="center" style="padding:0">Sollen wir dir Bescheid geben?</h2><p class="lead center">Damit du immer weißt, was an Heiligabend läuft: wer kommt, wer was mitbringt, ob sich die Uhrzeit ändert. Nur das, was wichtig ist. Kein Spam, kein Gequatsche.</p>`;
       if(pushState==='ios-install')h+=`<div class="blk">${IOS_HOWTO}</div><div class="blk"><button class="btn wide" data-a="close">Alles klar</button></div>`;
       else if(pushState==='off'||pushState==='busy')h+=`<div class="blk"><button class="btn wide" data-a="push-on-w"${pushState==='busy'?' disabled':''}>${ico('bell')} Ja, gerne</button><button class="btn wide ghost" data-a="close">Lieber nicht</button></div>`;
       else h+=`<div class="blk"><p class="center">${pushState==='on'?'Benachrichtigungen sind schon an. Perfekt!':pushState==='denied'?'Auf deinem Handy sind die Mitteilungen für die App gesperrt. In den Einstellungen kannst du sie wieder erlauben.':'Dein Browser kann leider keine Benachrichtigungen. Am besten klappt’s mit Safari auf dem iPhone oder Chrome auf Android.'}</p><button class="btn wide" data-a="close">Fertig</button></div>`;
@@ -707,7 +707,7 @@ document.addEventListener('submit',e=>{
   e.preventDefault();const f=e.target,form=f.dataset.form;
   if(form==='reset'){resetYear(f);return}
   if(form==='rezept'){const p=data.posten[sheet&&sheet.id];if(!p)return;const v=f.querySelector('textarea').value.trim(),neu=!p.rezept;editRecipe=false;write('posten',p.id,{...p,rezept:v});
-    if(v){toast('Danke fürs Teilen!');notify(`${me?short(me):'Jemand'} hat ${neu?'ein Rezept':'das Rezept'} für „${p.name}“ ${neu?'geteilt':'aktualisiert'} 📖`)}return}
+    if(v)toast('Danke fürs Teilen!');return}
   const inp=f.querySelector('input:not([type=checkbox])'),v=inp?inp.value.trim():'';if(!v)return;
   if(form==='add'){
     const k=f.dataset.k,mine=f.querySelector('input[type=checkbox]')?.checked;
