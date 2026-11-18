@@ -105,7 +105,7 @@ h1,h2,h3,p,.t{overflow-wrap:anywhere}
 .sec{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 .sec-h{display:grid;gap:4px}
 .sec-h .k{font-family:var(--display);font-style:italic;font-size:18px;font-weight:500;color:var(--gold)}
-.sec-h h2{font-size:30px;line-height:1.08;letter-spacing:-.015em}
+.sec-h h2{font-size:30px;line-height:1.08;letter-spacing:-.015em;font-variant-numeric:lining-nums}
 .sec-h p{color:var(--muted);font-size:15px;max-width:54ch}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
 .pad{padding:18px}
@@ -236,6 +236,45 @@ button.chip:active{transform:scale(.95)}
 .shop-grid .rule{grid-column:1/-1;height:1px;background:var(--line2);margin:2px 0}
 .shop-grid .sum.v{color:var(--gold-2);font-family:var(--display);font-size:26px;font-variant-numeric:lining-nums tabular-nums}
 .shop .hint b{color:var(--ink)}
+
+/* Was sich getan hat */
+.news{display:grid;padding:4px 0}
+.ev{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;text-align:left;width:100%;background:none;border:0;border-top:1px solid var(--line);padding:13px 16px;color:inherit;font-size:15px;line-height:1.4}
+.ev:first-child{border-top:0}
+button.ev:active{background:var(--panel-2)}
+.ev .ei{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--panel-2);color:var(--muted);position:relative}
+.ev .ei .ico{width:17px;height:17px}
+.ev.new .ei{background:var(--gold-soft);color:var(--gold)}
+.ev.new .ei::after{content:"";position:absolute;top:0;right:0;width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px var(--panel)}
+.ev b{font-weight:600;color:var(--ink)}
+.ev .et{color:#d6ccb5}
+.ev small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+
+/* Die gedeckte Tafel */
+.tafel{padding:10px 6px;overflow:hidden}
+.tafel svg{display:block;width:100%;height:auto;max-width:440px;margin:0 auto}
+.tafel .tl{fill:var(--muted);font:500 10.5px var(--body);text-anchor:middle}
+.tafel .nm{fill:#d6ccb5;font:600 12.5px var(--body)}
+.tafel .plate{fill:#f3eadb;stroke:rgba(226,182,92,.7);stroke-width:1.2}
+.tafel .plate-in{fill:none;stroke:rgba(30,42,36,.18)}
+.tafel .cut{stroke:rgba(243,234,219,.55);stroke-width:1.6;stroke-linecap:round}
+.tafel .seat.me .plate{fill:#f0d08a;stroke:#fff}
+.tafel .seat.me .nm{fill:var(--gold-2);font-weight:700}
+.tafel .dish{cursor:pointer}
+.tafel .bowl{fill:rgba(226,182,92,.22);stroke:var(--gold);stroke-width:1.3}
+.tafel .bowl-in{fill:rgba(226,182,92,.35)}
+.tafel .dish .tl{fill:#e9dfc8}
+.tafel .dish.open .bowl{fill:none;stroke:var(--muted);stroke-dasharray:3 3}
+.tafel .dish.open .bowl-in{fill:none}
+.tafel .dish.open .tl{fill:var(--muted)}
+
+/* Tischkarte: Erledigtes */
+.pc-done{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:12px 0 4px}
+.pc-done button{display:inline-flex;align-items:center;gap:6px;border:0;background:rgba(47,107,71,.1);color:#2f6b47;border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:600;max-width:100%}
+.pc-done button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-done .ico{width:15px;height:15px;stroke-width:2.2;flex:none}
+.pc-push{text-align:center;color:var(--linen-muted);font-size:13.5px;margin-top:8px}
+.pc-push .link{color:var(--berry)}
 
 /* Gastgeber-Bereich */
 .host{border:1px dashed var(--line2);border-radius:var(--r);background:transparent}
@@ -484,6 +523,9 @@ function setPref(gid,person,k,v){
 
 /* ---------- Speichern ---------- */
 function write(col,id,body){
+  /* Für „Was sich getan hat“: Zusage oder „wer bringt’s“ geändert → Zeitpunkt merken */
+  const old=data[col]&&data[col][id];
+  if(body&&((col==='gaeste'&&(!old||old.status!==body.status))||(col==='posten'&&old&&old.wer!==body.wer)))body={...body,geaendert:Date.now()};
   if(body===null)delete data[col][id]; else data[col][id]=Object.assign({},body,{id});
   render();
   if(mode!=='shared')return;
@@ -577,46 +619,117 @@ function viewAbend(gs,its,c,info){
   let h='';
   const meG=me&&data.gaeste[me]?gs.find(g=>g.id===me):null;
   h+=placeCard(meG,its);
+  h+=newsFeed(gs,its);
+  h+=tafel(gs,its);
 
   /* Ein Wort von uns */
   h+=`<section class="panel word"><p>${info.fleisch?esc(info.fleisch):'Wie jedes Jahr gibt’s an Heiligabend Raclette, heißen Stein und Fondue. Ums Fleisch kümmern wir uns. Alles andere kann, muss aber nicht: Bringt einfach mit, worauf ihr Lust habt. Hauptsache, wir sitzen alle zusammen.'}</p><p class="sign">Andy, Mel &amp; Connor</p></section>`;
   if(afterParty()&&its.length)h+=`<section class="panel thanks"><h2>Was für ein schöner Abend ❤️</h2><p>Danke an alle, die gekocht, mitgebracht und mitgefeiert haben. Wir freuen uns schon aufs nächste Jahr.</p></section>`;
 
   /* Was noch fehlt */
-  const open=its.filter(p=>!p.wer&&!isWish(p)), done=its.filter(p=>p.wer&&!isWish(p)).length, total=done+open.length;
-  h+=`<section class="sec"><div class="sec-h"><span class="k">Die Tafel</span><h2>${!total?'Noch ist der Tisch leer':open.length?'Da freuen wir uns noch über Hilfe':'Alles ist vergeben'}</h2><p>${!total?'Magst du anfangen? Trag ein, was du mitbringen würdest, oder einfach eine Idee.':open.length?'Das hier hat noch keiner. Ein Tipp auf „Bring ich mit“ reicht.':'Klasse, danke euch! Neue Ideen gehen trotzdem immer.'}</p></div>`;
-  if(total)h+=`<div class="panel progress"><div class="lbl"><span><b>${done} von ${total}</b> haben schon jemanden</span><span>${Math.round(done/total*100)} %</span></div><div class="bar"><i style="width:${Math.round(done/total*100)}%"></i></div></div>`;
-  if(open.length)h+=`<div class="panel rows">${open.map(p=>itemRow(p,true)).join('')}</div>`;
-  h+=`<div class="center"><button class="btn ghost" data-a="tab" data-v="mitbringen">${ico('basket')} Alles ansehen oder eigene Idee eintragen</button></div></section>`;
+  const open=its.filter(p=>!p.wer&&!isWish(p));
+  if(open.length)h+=`<section class="sec"><div class="sec-h"><span class="k">Noch frei</span><h2>Da freuen wir uns noch über Hilfe</h2><p>Das hier hat noch keiner. Ein Tipp auf „Bring ich mit“ reicht.</p></div><div class="panel rows">${open.map(p=>itemRow(p,true)).join('')}</div></section>`;
+  h+=`<div class="center"><button class="btn ghost" data-a="tab" data-v="mitbringen">${ico('basket')} Alles ansehen oder eigene Idee eintragen</button></div>`;
 
   if(isAdmin())h+=hostArea(gs,its,c,info);
   h+=`<footer class="foot"><p class="tradition">Frohe Weihnachten</p><p>Wir freuen uns auf einen schönen Abend mit euch!</p></footer>`;
   return h;
 }
 
-/* Deine Tischkarte: wer du bist und was bei dir noch offen ist. Ersetzt Begrüßung, drei Schritte und „Dein Beitrag“. */
+/* ---------- Was sich getan hat ----------
+   Aus dem, was in der Liste steht: Zusagen, wer was mitbringt, Wünsche, Kommentare, Fleisch-Wahl.
+   Eigenes wird ausgelassen. „Neu“ ist alles seit deinem letzten Besuch (merkt sich das Handy). */
+const SEEN_KEY=DEMO?'weihnachten-vorschau-gesehen':'weihnachten-gesehen';
+const prevSeen=+store.get(SEEN_KEY)||(DEMO?Date.now()-20*36e5:0);
+const markSeen=()=>store.set(SEEN_KEY,String(Date.now()));
+addEventListener('pagehide',markSeen);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)markSeen()});
+function rel(t){const m=Math.round((Date.now()-t)/6e4);if(m<2)return'gerade eben';if(m<60)return`vor ${m} Min.`;const h=Math.round(m/60);if(h<24)return`vor ${h} Std.`;const d=Math.round(h/24);return d===1?'gestern':`vor ${d} Tagen`}
+function events(gs,its){
+  const E=[], pl=id=>isPlural(id), mineP=myPerson();
+  for(const g of gs)if(g.geaendert&&g.id!==me&&g.status!=='offen')E.push({t:+g.geaendert,i:'star',x:g.status==='ja'?`<b>${esc(short(g.id))}</b> ${pl(g.id)?'sind':'ist'} an Heiligabend dabei`:`<b>${esc(short(g.id))}</b> ${pl(g.id)?'können':'kann'} dieses Jahr leider nicht`});
+  for(const p of its){
+    if(!isWish(p)&&p.wer&&p.geaendert&&p.wer!==me)E.push({t:+p.geaendert,i:'basket',p:p.id,x:`<b>${esc(short(p.wer))}</b> ${pl(p.wer)?'bringen':'bringt'} ${esc(p.name)} mit`});
+    else if(isWish(p)&&p.t&&p.von&&p.von!==me)E.push({t:+p.t,i:'wish',p:p.id,x:`<b>${esc(short(p.von))}</b> ${pl(p.von)?'wünschen':'wünscht'} sich ${esc(p.name)}`});
+    else if(!isWish(p)&&!p.wer&&p.t&&p.von!==me)E.push({t:+p.t,i:'basket',p:p.id,x:`Neu auf der Liste: <b>${esc(p.name)}</b>, sucht noch jemanden`});
+  }
+  for(const r of list('antworten'))if(r.von!==me&&data.posten[r.posten]){const tx=String(r.inhalt||'');E.push({t:+r.t,i:'chat',p:r.posten,x:`<b>${esc(short(r.von))}</b> zu ${esc(data.posten[r.posten].name)}: „${esc(tx.length>70?tx.slice(0,68)+'…':tx)}“`})}
+  for(const f of Object.values(data.fleisch))if(f.t&&!(f.gast===me&&f.person===mineP)&&data.gaeste[f.gast])E.push({t:+f.t,i:'flame',x:`<b>${esc(f.person)}</b> hat das Fleisch gewählt`});
+  return E.filter(e=>e.t>0).sort((a,b)=>b.t-a.t);
+}
+function newsFeed(gs,its){
+  const E=events(gs,its);if(!E.length)return'';
+  const neu=prevSeen?E.filter(e=>e.t>prevSeen).length:0, show=E.slice(0,Math.max(5,Math.min(neu,10)));
+  const head=neu?`${neu} ${neu===1?'Neuigkeit':'Neuigkeiten'} seit deinem letzten Besuch`:prevSeen?'Seit deinem letzten Besuch ist es ruhig':'Das ist zuletzt passiert';
+  return `<section class="sec"><div class="sec-h"><span class="k">Was sich getan hat</span><h2>${head}</h2>${!neu&&prevSeen?'<p>Das war zuletzt los:</p>':''}</div>
+    <div class="panel news">${show.map(e=>`<${e.p?`button data-a="open-item" data-p="${esc(e.p)}"`:'div'} class="ev${prevSeen&&e.t>prevSeen?' new':''}"><span class="ei">${ico(e.i)}</span><span class="et">${e.x}<small>${rel(e.t)}</small></span></${e.p?'button':'div'}>`).join('')}</div></section>`;
+}
+
+/* ---------- Die gedeckte Tafel ----------
+   Ein Tisch von oben: ein Gedeck für jede Person, die zugesagt hat, in der Mitte Raclette, heißer Stein und Fondue,
+   drumherum die Schüsseln. Was schon jemand mitbringt, steht in Gold; was noch frei ist, gestrichelt. */
+function tafel(gs,its){
+  const seats=[];
+  for(const g of gs.filter(g=>g.status==='ja')){
+    const ps=people(g);ps.forEach(p=>seats.push({name:p.name,kid:p.kid,gid:g.id}));
+    const na=ps.filter(p=>!p.kid).length,nk=ps.length-na;
+    for(let i=na;i<g.erw;i++)seats.push({name:'Gast',kid:false,gid:g.id});
+    for(let i=nk;i<g.kinder;i++)seats.push({name:'Kind',kid:true,gid:g.id});
+  }
+  const dishes=its.filter(p=>!isWish(p)).sort((a,b)=>(b.wer?1:0)-(a.wer?1:0)||(a.t||0)-(b.t||0));
+  const n=seats.length, taken=dishes.filter(p=>p.wer).length;
+  const W=360, L=60, R=300, nL=Math.ceil(n/2), nR=n-nL;
+  const devTop=44, dishTop=devTop+118, rows=Math.ceil(dishes.length/2);
+  const H=Math.max(60+Math.max(nL,1)*68, dishTop+rows*62+34);
+  const wrap=(t,k)=>{const w=String(t).split(/\s+/),L2=[''];for(const x of w){const c=L2[L2.length-1];if(!c||(c+' '+x).length<=k)L2[L2.length-1]=c?c+' '+x:x;else if(L2.length<2)L2.push(x);else{L2[1]=cut(L2[1]+' '+x,k);break}}return L2.map(l=>cut(l,k))};
+  const cut=(s,k)=>s.length>k?s.slice(0,k-1)+'…':s;
+  const mine=s=>s.gid===me&&(!myPerson()||s.name===myPerson());
+  let svg=`<defs><linearGradient id="cloth" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#173a2f"/><stop offset="1" stop-color="#10291f"/></linearGradient></defs>
+    <rect x="${L}" y="10" width="${R-L}" height="${H-20}" rx="28" fill="url(#cloth)" stroke="rgba(226,182,92,.45)"/>
+    <rect x="${L+8}" y="18" width="${R-L-16}" height="${H-36}" rx="22" fill="none" stroke="rgba(226,182,92,.12)"/>
+    <rect x="${W/2-74}" y="24" width="148" height="${H-48}" rx="12" fill="rgba(226,182,92,.045)" stroke="rgba(226,182,92,.22)" stroke-dasharray="2 5"/>`;
+  const candle=(x,y)=>`<g transform="translate(${x} ${y})"><rect x="-3" y="-2" width="6" height="12" rx="1.5" fill="#f3eadb"/><path d="M0 -12c3 4 3 7 0 9c-3-2-3-5 0-9z" fill="#f0d08a"/><circle cx="0" cy="-6" r="9" fill="rgba(240,208,138,.18)"/></g>`;
+  svg+=candle(W/2,devTop-20)+candle(W/2,H-24);
+  /* Raclette-Gerät mit Pfännchen */
+  svg+=`<g transform="translate(${W/2} ${devTop+10})"><rect x="-52" y="-14" width="104" height="28" rx="7" fill="#0b1f18" stroke="rgba(226,182,92,.55)"/>${[...Array(6)].map((_,i)=>`<rect x="${-46+i*16}" y="-8" width="12" height="16" rx="2.5" fill="#26463a" stroke="rgba(226,182,92,.35)"/>`).join('')}<text y="28" class="tl">Raclette</text></g>`;
+  /* heißer Stein und Fondue */
+  svg+=`<g transform="translate(${W/2-30} ${devTop+66})"><rect x="-24" y="-12" width="48" height="24" rx="4" fill="#3a3a36" stroke="rgba(226,182,92,.4)"/><path d="M-16 -4h32M-16 2h32" stroke="rgba(255,255,255,.12)"/><text y="26" class="tl">Stein</text></g>
+    <g transform="translate(${W/2+32} ${devTop+66})"><circle r="15" fill="#5b2a22" stroke="rgba(226,182,92,.5)"/><circle r="9" fill="#7a3a2c"/><path d="M4 -6l12 -14M-3 -7l4 -17" stroke="rgba(226,182,92,.6)" stroke-width="1.4"/><text y="30" class="tl">Fondue</text></g>`;
+  /* Schüsseln */
+  dishes.forEach((p,i)=>{const cx=W/2+(i%2?38:-38),cy=dishTop+Math.floor(i/2)*62+14,ls=wrap(p.name,13);
+    svg+=`<g class="dish${p.wer?'':' open'}" data-a="open-item" data-p="${esc(p.id)}" transform="translate(${cx} ${cy})"><title>${esc(p.name)}${p.wer?' – bringt '+esc(short(p.wer)):' – noch frei'}</title><circle r="14" class="bowl"/><circle r="8" class="bowl-in"/><text y="27" class="tl">${ls.map((l,j)=>`<tspan x="0" dy="${j?12:0}">${esc(l)}</tspan>`).join('')}</text></g>`});
+  /* Gedecke */
+  seats.forEach((s,i)=>{const left=i<nL,k=left?i:i-nL,cnt=left?nL:nR,sp=(H-40)/Math.max(cnt,1),cy=20+sp*(k+.5),px=left?L+24:R-24,tx=left?L-10:R+10,m=mine(s),r=s.kid?11:14;
+    svg+=`<g class="seat${m?' me':''}"><circle cx="${px}" cy="${cy}" r="${r}" class="plate"/><circle cx="${px}" cy="${cy}" r="${r-5}" class="plate-in"/><path d="M${px-r-5} ${cy-8}v16M${px+r+5} ${cy-8}v16" class="cut"/><text x="${tx}" y="${cy+4}" text-anchor="${left?'end':'start'}" class="nm">${esc(cut(s.name,9))}</text></g>`});
+  const sum=!n?'Noch hat niemand zugesagt. Der Tisch wartet.':`${n} ${n===1?'Platz ist':'Plätze sind'} gedeckt${dishes.length?`, ${taken} von ${dishes.length} Schüsseln stehen schon`:''}.`;
+  return `<section class="sec"><div class="sec-h"><span class="k">Die Tafel</span><h2>So sieht unser Tisch gerade aus</h2><p>${sum}${dishes.length-taken?' Gestrichelt ist, was noch jemanden sucht. Tipp drauf, wenn du magst.':''}</p></div>
+    <div class="panel tafel"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(sum)}">${svg}</svg></div></section>`;
+}
+
+/* Deine Tischkarte: wer du bist und was bei dir noch offen ist. Offenes oben, Erledigtes klein darunter. */
 let arrived=false;
 function placeCard(meG,its){
   const cls='placecard'+(!arrived&&!store.sget('weihnachten-karte')?' arrive':'')+(glowCard?' glow':'');
   arrived=true;store.sset('weihnachten-karte','1');
   if(!meG)return `<section class="${cls}"><p class="pc-k">Heiligabend ${nextYear()}</p><p class="pc-name" style="font-size:clamp(34px,10vw,46px)">Dein Platz am Tisch</p><p class="pc-lead">Schön, dass du da bist! Sag uns kurz, wer du bist. Dann siehst du hier, was bei dir ansteht.</p><div class="pc-cta"><button class="btn" data-a="welcome">Los geht’s</button></div></section>`;
-  const host=me==='andreas', many=isPlural(me), who=myName(), person=myPerson();
-  const line=(done,icon,t,sub,act,v)=>`<button class="pc-line${done?' done':''}" data-a="${act}"${v?` data-v="${v}"`:''}><span class="n">${ico(done?'check':icon)}</span><span><b>${t}</b><small>${sub}</small></span><span class="go">${ico('chev')}</span></button>`;
-  let L='';
-  if(needsPerson())L+=line(false,'people','Wer von euch bist du?',`Tipp kurz an, ob du ${myPeople().map(p=>esc(p.name)).join(' oder ')} bist.`,'person-pick');
-  if(!host){
-    const st=meG.status;
-    L+=line(st!=='offen','star',st==='ja'?(many?'Ihr seid dabei':'Du bist dabei'):st==='nein'?'Dieses Jahr nicht':(many?'Seid ihr dabei?':'Bist du dabei?'),
-      st==='ja'?`${meG.erw+meG.kinder} ${meG.erw+meG.kinder===1?'Platz':'Plätze'} am Tisch. Wir freuen uns!`:st==='nein'?'Schade! Wenn sich was ändert, sag einfach Bescheid.':'Ja, nein oder weiß noch nicht, alles okay.','welcome-kommst');
-  }
+  const host=me==='andreas', many=isPlural(me), person=myPerson();
+  const T=[];
+  if(needsPerson())T.push({done:false,i:'people',t:'Wer von euch bist du?',s:`Tipp kurz an, ob du ${myPeople().map(p=>esc(p.name)).join(' oder ')} bist.`,a:'person-pick',short:'Name'});
+  if(!host){const st=meG.status;
+    T.push({done:st!=='offen',i:'star',t:st==='ja'?(many?'Ihr seid dabei':'Du bist dabei'):st==='nein'?'Dieses Jahr nicht':(many?'Seid ihr dabei?':'Bist du dabei?'),s:st==='offen'?'Ja, nein oder weiß noch nicht, alles okay.':'',a:'welcome-kommst',short:st==='ja'?'Dabei':'Abgesagt'})}
   if(person&&(host||meG.status==='ja')){const pr=prefOf(me,person);
-    L+=line(!!pr,'flame',pr?'Dein Fleisch':'Wie magst du dein Fleisch?',pr?`${MEAT_TXT.menge[pr.menge]}, ${MEAT_TXT.sorte[pr.sorte]}, ${MEAT_TXT.art[pr.art]}`:'Zehn Sekunden, damit wir genau richtig einkaufen.','tab','fleisch')}
+    T.push({done:!!pr,i:'flame',t:'Wie magst du dein Fleisch?',s:'Zehn Sekunden, damit wir genau richtig einkaufen.',a:'tab',v:'fleisch',short:pr?`Fleisch: ${MEAT_TXT.menge[pr.menge]}`:''})}
   if(!host&&meG.status!=='nein'){const mine=its.filter(p=>p.wer===me&&!isWish(p));
-    L+=line(mine.length>0,'basket',mine.length?(many?'Ihr bringt mit':'Du bringst mit'):'Magst du was mitbringen?',mine.length?mine.map(p=>esc(p.name)).join(', '):'Salat, Soße, Brot, Getränke oder was ganz Eigenes.','tab','mitbringen')}
-  if(host)L+=line(true,'star','Ihr seid die Gastgeber','Unten findet ihr euren Bereich, im Fleisch-Tab den Einkaufszettel.','tab','fleisch');
-  if(pushState==='off'||pushState==='ios-install')L+=line(false,'bell','Auf Stand bleiben','Nur wenn sich am Plan was ändert. Kein Spam.','guide-push');
-  return `<section class="${cls}"><p class="pc-k">Heiligabend ${nextYear()}, ${person||!many?'dein':'euer'} Platz</p><p class="pc-name">${esc(who)}</p><div class="pc-lines">${L}</div>
-    ${pushState==='on'?`<p class="hint center" style="color:var(--linen-muted);margin-top:8px">Benachrichtigungen sind an. <button class="link" style="color:var(--berry)" data-a="push-off">Ausschalten</button></p>`:''}</section>`;
+    T.push({done:mine.length>0,opt:true,i:'basket',t:'Magst du was mitbringen?',s:'Kein Muss. Salat, Soße, Brot, Getränke oder was ganz Eigenes.',a:'tab',v:'mitbringen',short:mine.length?`${many?'Ihr bringt':'Du bringst'} ${mine.map(p=>esc(p.name)).join(', ')}`:''})}
+  if(pushState==='off'||pushState==='ios-install')T.push({done:false,opt:true,i:'bell',t:'Auf Stand bleiben',s:'Nur wenn sich am Plan was ändert. Kein Spam.',a:'guide-push'});
+  const open=T.filter(x=>!x.done), done=T.filter(x=>x.done), must=open.filter(x=>!x.opt);
+  const line=x=>`<button class="pc-line" data-a="${x.a}"${x.v?` data-v="${x.v}"`:''}><span class="n">${ico(x.i)}</span><span><b>${x.t}</b><small>${x.s}</small></span><span class="go">${ico('chev')}</span></button>`;
+  const lead=host?'Hier seht ihr, was sich tut. Unten euer Bereich, im Fleisch-Tab der Einkaufszettel.':!must.length?(open.length?'Alles Wichtige ist erledigt. Der Rest ist freiwillig.':'Alles erledigt. Jetzt heißt’s nur noch: freuen.'):'';
+  return `<section class="${cls}"><p class="pc-k">Heiligabend ${nextYear()}, ${person||!many?'dein':'euer'} Platz</p><p class="pc-name">${esc(myName())}</p>
+    ${lead?`<p class="pc-lead">${lead}</p>`:''}
+    ${open.length?`<div class="pc-lines">${open.map(line).join('')}</div>`:''}
+    ${done.length?`<div class="pc-done">${done.map(x=>`<button data-a="${x.a}"${x.v?` data-v="${x.v}"`:''}>${ico('check')}<span>${x.short||x.t}</span></button>`).join('')}</div>`:''}
+    ${pushState==='on'?`<p class="pc-push">Benachrichtigungen sind an. <button class="link" data-a="push-off">Ausschalten</button></p>`:''}</section>`;
 }
 
 /* Fleisch: eigene Vorlieben, Haushalt, (Admins) alle Gäste und Einkaufszettel, Wünsche */
@@ -975,8 +1088,11 @@ function demoData(){
   data.antworten.a1={id:'a1',posten:'d10',von:'wir',inhalt:'Was heißt denn Andys Kräuterbutter? 😄',t:T()};
   data.antworten.a2={id:'a2',posten:'d10',von:'andreas',inhalt:'Geheimrezept! Steht jetzt aber unter Rezept.',t:T()};
   data.info.main={id:'main',datum:'24.12.2026 19:00',fleisch:''};
+  const ago=h=>Date.now()-h*36e5;
+  Object.assign(data.gaeste.alex,{geaendert:ago(3)});Object.assign(data.gaeste.eva,{geaendert:ago(30)});Object.assign(data.gaeste.andreas,{geaendert:ago(70)});
+  data.posten.d5.geaendert=ago(2);data.posten.d12.geaendert=ago(5);data.posten.d11.geaendert=ago(26);data.posten.d1.t=ago(9);data.antworten.a2.t=ago(1);data.antworten.a1.t=ago(4);
   [['andreas','Andy','viel','rind','stein'],['andreas','Mel','wenig','beides','beides'],['andreas','Connor','normal','schwein','fondue'],['wir','Stephan','viel','schwein','stein'],['alex','Alex','viel','rind','fondue'],['eva','Eva','wenig','rind','beides']]
-    .forEach(([gast,person,menge,sorte,art])=>{const id=meatId(gast,person);data.fleisch[id]={id,gast,person,menge,sorte,art,t:T()}});
+    .forEach(([gast,person,menge,sorte,art],n)=>{const id=meatId(gast,person);data.fleisch[id]={id,gast,person,menge,sorte,art,t:ago(8+n*11)}});
   if(new URLSearchParams(location.search).has('leer')){data.posten={};data.antworten={};for(const id in data.gaeste)data.gaeste[id].status='offen';data.info.main.datum=''}
 }
 

@@ -15,3 +15,7 @@ create policy "alle lesen fleisch" on public.fleisch for select to anon, authent
 create policy "alle schreiben fleisch" on public.fleisch for all to anon, authenticated using (true) with check (true);
 
 alter publication supabase_realtime add table public.fleisch;
+
+-- „Was sich getan hat“: wann ein Gast oder Eintrag zuletzt geändert wurde (Zusage, wer bringt’s).
+alter table public.gaeste add column if not exists geaendert bigint not null default 0;
+alter table public.posten add column if not exists geaendert bigint not null default 0;
