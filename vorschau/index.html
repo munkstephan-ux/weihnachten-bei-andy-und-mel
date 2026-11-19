@@ -266,6 +266,19 @@ button.ev:active{background:var(--panel-2)}
 .tafel .dish.open .bowl-in{fill:none}
 .tafel .dish.open .tl{fill:var(--muted)}
 
+/* Sitzordnung */
+.tafel .seat.edit{cursor:pointer}
+.tafel .seat .hit{fill:transparent}
+.tafel .seat.empty .plate{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-dasharray:3 3}
+.tafel .seat.empty .plate-in,.tafel .seat.empty .cut{display:none}
+.tafel .seat.empty .nm{fill:var(--muted);font-style:italic;font-weight:400}
+.tafel .seat.pick .plate{stroke:var(--rose);stroke-width:3.5;stroke-dasharray:none}
+.tafel .seat.pick .nm{fill:var(--rose);font-weight:700}
+.tafel.editing{box-shadow:inset 0 0 0 1px var(--line2);border-radius:var(--r)}
+.seat-ctl{display:flex;flex-wrap:wrap;gap:8px 10px;justify-content:center;align-items:center}
+.pc-seat{display:flex;gap:8px;align-items:flex-start;justify-content:center;text-align:center;text-wrap:balance;margin:-6px auto 12px;max-width:36ch;color:var(--linen-ink);font-size:14.5px;line-height:1.4;text-decoration:none}
+.pc-seat .ico{width:17px;height:17px;color:var(--berry);margin-top:1px}
+
 /* Tischkarte: Erledigtes */
 .pc-done{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:12px 0 4px;border-top:1px solid rgba(29,20,32,.1)}
 .pc-done button{display:inline-flex;align-items:center;gap:6px;border:0;background:rgba(163,23,47,.07);color:var(--berry);border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:600;max-width:100%}
@@ -535,7 +548,7 @@ function write(col,id,body){
     if(error)throw error;
   }).catch(e=>{console.error(e);toast('Hat gerade nicht geklappt. Check kurz dein Internet und versuch’s nochmal.')});
 }
-const setInfo=patch=>write('info','main',Object.assign({datum:'',fleisch:''},data.info.main||{},patch));
+const setInfo=patch=>write('info','main',Object.assign({datum:'',fleisch:'',sitzplan:''},data.info.main||{},patch));
 function notify(text){if(mode!=='shared'||!text||STUMM)return;sb.functions.invoke('notify',{body:{title:'Heiligabend bei Andy, Mel & Connor',body:text,actor:me||''}}).catch(()=>{})}
 async function toggleLike(id){
   const p=data.posten[id];if(!p||!me)return;const l=(p.likes||[]).slice(),i=l.indexOf(me);i>=0?l.splice(i,1):l.push(me);
@@ -665,45 +678,89 @@ function newsFeed(gs,its){
     <div class="panel news">${show.map(e=>`<${e.p?`button data-a="open-item" data-p="${esc(e.p)}"`:'div'} class="ev${prevSeen&&e.t>prevSeen?' new':''}"><span class="ei">${ico(e.i)}</span><span class="et">${e.x}<small>${rel(e.t)}</small></span></${e.p?'button':'div'}>`).join('')}</div></section>`;
 }
 
+/* ---------- Sitzordnung ----------
+   Plätze: K1 Kopfende oben, L1…Lk linke Seite, R1…Rk rechte Seite, K2 Kopfende unten. Gegenüber sitzen Li und Ri.
+   Die Gastgeber legen die Ordnung fest (Platz antippen, zweiten Platz antippen: tauschen). Gespeichert in info.sitzplan
+   als JSON {Platz: Person}. Wer dort noch nicht steht (neu zugesagt), rückt automatisch auf den nächsten freien Platz. */
+let seatEdit=false, seatPick=null;
+function diners(gs){
+  const out=[];
+  for(const g of gs.filter(g=>g.status==='ja')){
+    const ps=people(g);ps.forEach(p=>out.push({key:g.id+'|'+p.name,name:p.name,kid:p.kid,gid:g.id}));
+    const na=ps.filter(p=>!p.kid).length,nk=ps.length-na;
+    for(let i=na;i<g.erw;i++)out.push({key:g.id+'|#e'+i,name:'Gast',kid:false,gid:g.id});
+    for(let i=nk;i<g.kinder;i++)out.push({key:g.id+'|#k'+i,name:'Kind',kid:true,gid:g.id});
+  }
+  return out;
+}
+function savedPlan(){try{const p=JSON.parse((data.info.main||{}).sitzplan||'{}');return p&&typeof p==='object'&&!Array.isArray(p)?p:{}}catch(e){return{}}}
+function seating(gs){
+  const ds=diners(gs), byKey=Object.fromEntries(ds.map(d=>[d.key,d])), saved=savedPlan(), set=Object.keys(saved).length>0, at={}, used=new Set();
+  for(const [slot,key] of Object.entries(saved))if(/^(K[12]|[LR]\d{1,2})$/.test(slot)&&byKey[key]&&!used.has(key)){at[slot]=byKey[key];used.add(key)}
+  let k=Math.max(1,Math.ceil(ds.length/2));
+  for(const s of Object.keys(at)){const m=s.match(/^[LR](\d+)$/);if(m)k=Math.max(k,+m[1])}
+  const free=[];
+  if(set)for(let i=1;i<=k;i++)free.push('L'+i,'R'+i);
+  else{for(let i=1;i<=k;i++)free.push('L'+i);for(let i=1;i<=k;i++)free.push('R'+i)}
+  for(const d of ds.filter(d=>!used.has(d.key))){let s=free.find(x=>!at[x]);if(!s){k++;free.push('L'+k,'R'+k);s='L'+k}at[s]=d}
+  return{at,k,set};
+}
+function seatText(S,key){
+  const slot=Object.keys(S.at).find(s=>S.at[s].key===key);if(!slot)return'';
+  const nm=s=>S.at[s]?S.at[s].name:null, list=a=>a.length>1?a.slice(0,-1).join(', ')+' und '+a[a.length-1]:a[0];
+  if(slot[0]==='K'){const nb=(slot==='K1'?['L1','R1']:['L'+S.k,'R'+S.k]).map(nm).filter(Boolean);return`Du sitzt am Kopfende${nb.length?`, neben ${list(nb)}`:''}.`}
+  const side=slot[0],i=+slot.slice(1),nb=[side+(i-1),side+(i+1)].map(nm).filter(Boolean),opp=nm((side==='L'?'R':'L')+i);
+  return(nb.length===2?`Du sitzt zwischen ${nb[0]} und ${nb[1]}`:nb.length?`Du sitzt neben ${nb[0]}`:'Das ist dein Platz')+(opp?`, gegenüber von ${opp}.`:'.');
+}
+function mySeatText(gs){const p=myPerson();if(!me||!p)return'';const S=seating(gs);return S.set?seatText(S,me+'|'+p):''}
+function swapSeats(a,b){
+  const S=seating(guests()), plan={};
+  for(const [s,d] of Object.entries(S.at))plan[s]=d.key;
+  const x=plan[a],y=plan[b];delete plan[a];delete plan[b];if(y)plan[a]=y;if(x)plan[b]=x;
+  setInfo({sitzplan:JSON.stringify(plan)});
+}
+
 /* ---------- Die gedeckte Tafel ----------
    Ein Tisch von oben: ein Gedeck für jede Person, die zugesagt hat, in der Mitte Raclette, heißer Stein und Fondue,
-   drumherum die Schüsseln. Was schon jemand mitbringt, steht in Gold; was noch frei ist, gestrichelt. */
+   drumherum die Schüsseln. Was schon jemand mitbringt, ist gefüllt; was noch frei ist, gestrichelt.
+   Gegenüberliegende Plätze stehen auf einer Höhe, die Kopfenden erscheinen, sobald dort jemand sitzt (oder beim Festlegen). */
 function tafel(gs,its){
-  const seats=[];
-  for(const g of gs.filter(g=>g.status==='ja')){
-    const ps=people(g);ps.forEach(p=>seats.push({name:p.name,kid:p.kid,gid:g.id}));
-    const na=ps.filter(p=>!p.kid).length,nk=ps.length-na;
-    for(let i=na;i<g.erw;i++)seats.push({name:'Gast',kid:false,gid:g.id});
-    for(let i=nk;i<g.kinder;i++)seats.push({name:'Kind',kid:true,gid:g.id});
-  }
+  const S=seating(gs), edit=seatEdit&&isAdmin(), n=Object.keys(S.at).length;
   const dishes=its.filter(p=>!isWish(p)).sort((a,b)=>(b.wer?1:0)-(a.wer?1:0)||(a.t||0)-(b.t||0));
-  const n=seats.length, taken=dishes.filter(p=>p.wer).length;
-  const W=360, L=60, R=300, nL=Math.ceil(n/2), nR=n-nL;
-  const devTop=44, dishTop=devTop+118, rows=Math.ceil(dishes.length/2);
-  const H=Math.max(60+Math.max(nL,1)*68, dishTop+rows*62+34);
+  const taken=dishes.filter(p=>p.wer).length, rows=S.k+(edit?1:0), heads=edit||!!(S.at.K1||S.at.K2), hd=heads?54:0;
+  const W=360, L=60, R=300;
+  const devTop=44, dishTop=devTop+118, drows=Math.ceil(dishes.length/2);
+  const H=Math.max(60+rows*68, dishTop+drows*62+34);
   const wrap=(t,k)=>{const w=String(t).split(/\s+/),L2=[''];for(const x of w){const c=L2[L2.length-1];if(!c||(c+' '+x).length<=k)L2[L2.length-1]=c?c+' '+x:x;else if(L2.length<2)L2.push(x);else{L2[1]=cut(L2[1]+' '+x,k);break}}return L2.map(l=>cut(l,k))};
   const cut=(s,k)=>s.length>k?s.slice(0,k-1)+'…':s;
-  const mine=s=>s.gid===me&&(!myPerson()||s.name===myPerson());
-  let svg=`<defs><linearGradient id="cloth" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f1a2c"/><stop offset="1" stop-color="#3a0f1e"/></linearGradient></defs>
+  const myKey=me&&myPerson()?me+'|'+myPerson():null;
+  const mine=d=>d&&(myKey?d.key===myKey:d.gid===me);
+  let svg=`<defs><linearGradient id="cloth" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f1a2c"/><stop offset="1" stop-color="#3a0f1e"/></linearGradient></defs><g transform="translate(0 ${hd})">
     <rect x="${L}" y="10" width="${R-L}" height="${H-20}" rx="28" fill="url(#cloth)" stroke="rgba(245,226,232,.45)"/>
     <rect x="${L+8}" y="18" width="${R-L-16}" height="${H-36}" rx="22" fill="none" stroke="rgba(245,226,232,.12)"/>
     <rect x="${W/2-74}" y="24" width="148" height="${H-48}" rx="12" fill="rgba(245,226,232,.045)" stroke="rgba(245,226,232,.22)" stroke-dasharray="2 5"/>`;
   const candle=(x,y)=>`<g transform="translate(${x} ${y})"><rect x="-3" y="-2" width="6" height="12" rx="1.5" fill="#fbfaf7"/><path d="M0 -12c3 4 3 7 0 9c-3-2-3-5 0-9z" fill="#f0d08a"/><circle cx="0" cy="-6" r="9" fill="rgba(240,208,138,.18)"/></g>`;
-  svg+=candle(W/2,devTop-20)+candle(W/2,H-24);
-  /* Raclette-Gerät mit Pfännchen */
+  svg+=heads?candle(W/2-50,devTop-20)+candle(W/2+50,devTop-20)+candle(W/2-50,H-24)+candle(W/2+50,H-24):candle(W/2,devTop-20)+candle(W/2,H-24);
   svg+=`<g transform="translate(${W/2} ${devTop+10})"><rect x="-52" y="-14" width="104" height="28" rx="7" fill="#2a0814" stroke="rgba(245,226,232,.55)"/>${[...Array(6)].map((_,i)=>`<rect x="${-46+i*16}" y="-8" width="12" height="16" rx="2.5" fill="#5a2236" stroke="rgba(245,226,232,.35)"/>`).join('')}<text y="28" class="tl">Raclette</text></g>`;
-  /* heißer Stein und Fondue */
   svg+=`<g transform="translate(${W/2-30} ${devTop+66})"><rect x="-24" y="-12" width="48" height="24" rx="4" fill="#3a3a36" stroke="rgba(245,226,232,.4)"/><path d="M-16 -4h32M-16 2h32" stroke="rgba(255,255,255,.12)"/><text y="26" class="tl">Stein</text></g>
     <g transform="translate(${W/2+32} ${devTop+66})"><circle r="15" fill="#5b2a22" stroke="rgba(245,226,232,.5)"/><circle r="9" fill="#7a3a2c"/><path d="M4 -6l12 -14M-3 -7l4 -17" stroke="rgba(245,226,232,.6)" stroke-width="1.4"/><text y="30" class="tl">Fondue</text></g>`;
-  /* Schüsseln */
   dishes.forEach((p,i)=>{const cx=W/2+(i%2?38:-38),cy=dishTop+Math.floor(i/2)*62+14,ls=wrap(p.name,13);
     svg+=`<g class="dish${p.wer?'':' open'}" data-a="open-item" data-p="${esc(p.id)}" transform="translate(${cx} ${cy})"><title>${esc(p.name)}${p.wer?' – bringt '+esc(short(p.wer)):' – noch frei'}</title><circle r="14" class="bowl"/><circle r="8" class="bowl-in"/><text y="27" class="tl">${ls.map((l,j)=>`<tspan x="0" dy="${j?12:0}">${esc(l)}</tspan>`).join('')}</text></g>`});
-  /* Gedecke */
-  seats.forEach((s,i)=>{const left=i<nL,k=left?i:i-nL,cnt=left?nL:nR,sp=(H-40)/Math.max(cnt,1),cy=20+sp*(k+.5),px=left?L+24:R-24,tx=left?L-10:R+10,m=mine(s),r=s.kid?11:14;
-    svg+=`<g class="seat${m?' me':''}"><circle cx="${px}" cy="${cy}" r="${r}" class="plate"/><circle cx="${px}" cy="${cy}" r="${r-5}" class="plate-in"/><path d="M${px-r-5} ${cy-8}v16M${px+r+5} ${cy-8}v16" class="cut"/><text x="${tx}" y="${cy+4}" text-anchor="${left?'end':'start'}" class="nm">${esc(cut(s.name,9))}</text></g>`});
+  /* Gedecke: Seiten im Raster (gegenüber = gleiche Höhe), Kopfenden außerhalb der Gruppe */
+  const sp=(H-40)/rows;
+  const seat=(slot,px,cy,tx,ty,anchor)=>{const d=S.at[slot];if(!d&&!edit)return'';const r=d&&d.kid?11:14,cls='seat'+(mine(d)?' me':'')+(d?'':' empty')+(seatPick===slot?' pick':'')+(edit?' edit':'');
+    const lbl=d?cut(d.name,9):'frei';
+    return `<g class="${cls}"${edit?` data-a="seat" data-s="${slot}" role="button" aria-label="${d?esc(d.name):'Freier Platz'}"`:''}>${edit?(anchor==='end'?`<rect x="${tx-64}" y="${cy-24}" width="${px+24-(tx-64)}" height="48" class="hit"/>`:anchor==='start'?`<rect x="${px-24}" y="${cy-24}" width="${tx+64-(px-24)}" height="48" class="hit"/>`:`<rect x="${px-46}" y="${Math.min(ty,cy)-16}" width="92" height="${Math.abs(ty-cy)+40}" class="hit"/>`):''}<circle cx="${px}" cy="${cy}" r="${r}" class="plate"/><circle cx="${px}" cy="${cy}" r="${r-5}" class="plate-in"/>${slot[0]!=='K'?`<path d="M${px-r-5} ${cy-8}v16M${px+r+5} ${cy-8}v16" class="cut"/>`:''}<text x="${tx}" y="${ty}" text-anchor="${anchor}" class="nm">${esc(lbl)}</text></g>`};
+  for(let i=1;i<=rows;i++){const cy=20+sp*(i-.5);svg+=seat('L'+i,L+24,cy,L-10,cy+4,'end')+seat('R'+i,R-24,cy,R+10,cy+4,'start')}
+  svg+='</g>';
+  if(heads)svg+=seat('K1',W/2,hd+4,W/2,hd-20,'middle')+seat('K2',W/2,hd+H-4,W/2,hd+H+30,'middle');
   const sum=!n?'Noch hat niemand zugesagt. Der Tisch wartet.':`${n} ${n===1?'Platz ist':'Plätze sind'} gedeckt${dishes.length?`, ${taken} von ${dishes.length} Schüsseln stehen schon`:''}.`;
-  return `<section class="sec"><div class="sec-h"><span class="k">Die Tafel</span><h2>So sieht unser Tisch gerade aus</h2><p>${sum}${dishes.length-taken?' Gestrichelt ist, was noch jemanden sucht. Tipp drauf, wenn du magst.':''}</p></div>
-    <div class="panel tafel"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(sum)}">${svg}</svg></div></section>`;
+  const lead=edit?'Tipp auf einen Platz und dann auf einen zweiten: Die beiden tauschen. Auch freie Plätze und die Kopfenden gehen. Alles wird sofort gespeichert.'
+    :`${sum}${S.set?' Die Sitzordnung steht, dein Platz ist hell.':''}${dishes.length-taken?' Gestrichelt ist, was noch jemanden sucht. Tipp drauf, wenn du magst.':''}`;
+  const ctl=!isAdmin()||!n?'':edit?`<div class="seat-ctl"><button class="btn" data-a="seat-done">Fertig</button><button class="btn ghost" data-a="seat-done" data-v="notify">Fertig und allen Bescheid geben</button>${S.set?'<button class="link" data-a="seat-auto">Wieder automatisch verteilen</button>':''}</div>`
+    :`<div class="seat-ctl"><button class="btn ghost small" data-a="seat-edit">${ico('people')} Sitzordnung festlegen</button></div>`;
+  return `<section class="sec" id="tafel"><div class="sec-h"><span class="k">Die Tafel</span><h2>${edit?'Wer sitzt wo?':'So sieht unser Tisch gerade aus'}</h2><p>${lead}</p></div>
+    <div class="panel tafel${edit?' editing':''}"><svg viewBox="0 0 ${W} ${H+2*hd}" role="img" aria-label="${esc(sum)}">${svg}</svg></div>${ctl}</section>`;
 }
 
 /* Deine Tischkarte: wer du bist und was bei dir noch offen ist. Offenes oben, Erledigtes klein darunter. */
@@ -712,7 +769,7 @@ function placeCard(meG,its){
   const cls='placecard'+(!arrived&&!store.sget('weihnachten-karte')?' arrive':'')+(glowCard?' glow':'');
   arrived=true;store.sset('weihnachten-karte','1');
   if(!meG)return `<section class="${cls}"><p class="pc-k">Heiligabend ${nextYear()}</p><p class="pc-name" style="font-size:clamp(34px,10vw,46px)">Dein Platz am Tisch</p><p class="pc-lead">Schön, dass du da bist! Sag uns kurz, wer du bist. Dann siehst du hier, was bei dir ansteht.</p><div class="pc-cta"><button class="btn" data-a="welcome">Los geht’s</button></div></section>`;
-  const host=me==='andreas', many=isPlural(me), person=myPerson();
+  const host=me==='andreas', many=isPlural(me), person=myPerson(), seatLine=mySeatText(guests());
   const T=[];
   if(needsPerson())T.push({done:false,i:'people',t:'Wer von euch bist du?',s:`Tipp kurz an, ob du ${myPeople().map(p=>esc(p.name)).join(' oder ')} bist.`,a:'person-pick',short:'Name'});
   if(!host){const st=meG.status;
@@ -725,7 +782,7 @@ function placeCard(meG,its){
   const open=T.filter(x=>!x.done), done=T.filter(x=>x.done), must=open.filter(x=>!x.opt);
   const line=x=>`<button class="pc-line" data-a="${x.a}"${x.v?` data-v="${x.v}"`:''}><span class="n">${ico(x.i)}</span><span><b>${x.t}</b><small>${x.s}</small></span><span class="go">${ico('chev')}</span></button>`;
   const lead=host?'Hier seht ihr, was sich tut. Unten euer Bereich, im Fleisch-Tab der Einkaufszettel.':!must.length?(open.length?'Alles Wichtige ist erledigt. Der Rest ist freiwillig.':'Alles erledigt. Jetzt heißt’s nur noch: freuen.'):'';
-  return `<section class="${cls}"><p class="pc-k">Heiligabend ${nextYear()}, ${person||!many?'dein':'euer'} Platz</p><p class="pc-name">${esc(myName())}</p>
+  return `<section class="${cls}"><p class="pc-k">Heiligabend ${nextYear()}, ${person||!many?'dein':'euer'} Platz</p><p class="pc-name">${esc(myName())}</p>${seatLine?`<a class="pc-seat" href="#tafel" data-a="jump">${ico('people')}<span>${esc(seatLine)}</span></a>`:''}
     ${lead?`<p class="pc-lead">${lead}</p>`:''}
     ${open.length?`<div class="pc-lines">${open.map(line).join('')}</div>`:''}
     ${done.length?`<div class="pc-done">${done.map(x=>`<button data-a="${x.a}"${x.v?` data-v="${x.v}"`:''}>${ico('check')}<span>${x.short||x.t}</span></button>`).join('')}</div>`:''}
@@ -1003,6 +1060,10 @@ document.addEventListener('click',e=>{
     case 'pick':setMe(b.dataset.v);sheet.step=myPeople().length>1?'person':'kommst';render();return;
     case 'pick-person':setPerson(b.dataset.v);sheet.step='kommst';render();return;
     case 'person-pick':openSheet({t:'welcome',step:'person'});return;
+    case 'seat-edit':if(!isAdmin())return;seatEdit=true;seatPick=null;render();return;
+    case 'seat':{if(!seatEdit||!isAdmin())return;const s=b.dataset.s;if(!seatPick||seatPick===s){seatPick=seatPick===s?null:s;render();return}const a1=seatPick;seatPick=null;swapSeats(a1,s);return}
+    case 'seat-auto':if(!isAdmin())return;seatPick=null;setInfo({sitzplan:''});toast('Alle wieder automatisch verteilt.');return;
+    case 'seat-done':{seatEdit=false;seatPick=null;render();if(b.dataset.v==='notify'&&Object.keys(savedPlan()).length){notify('Die Sitzordnung steht. Schau mal, wo du an Heiligabend sitzt 🍽️');toast('Gespeichert. Alle bekommen Bescheid.')}else toast('Sitzordnung gespeichert.');const t=document.getElementById('tafel');if(t)t.scrollIntoView({block:'start'});return}
     case 'iam-person':setPerson(b.dataset.v);toast(`Hallo ${b.dataset.v}!`);render();return;
     case 'meat':{const gid=b.dataset.gid,person=b.dataset.person;if(!canEditMeat(gid,person))return;setPref(gid,person,b.dataset.k,b.dataset.v);return}
     case 'open-meat':openSheet({t:'meat',gid:b.dataset.gid,person:b.dataset.person});return;
