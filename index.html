@@ -231,6 +231,11 @@ button.chip:active{transform:scale(.95)}
 .shop-grid .rule{grid-column:1/-1;height:1px;background:var(--line2);margin:2px 0}
 .shop-grid .sum.v{color:var(--gold-2);font-family:var(--display);font-size:26px;font-variant-numeric:lining-nums tabular-nums}
 .shop .hint b{color:var(--ink)}
+.bilanz{display:grid;gap:10px;border-top:1px solid var(--line2);padding-top:14px}
+.bil-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bil-row label{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
+.bil-row .kg{display:flex;align-items:center;gap:6px;color:var(--ink);font-weight:600}
+.bilanz .btn{justify-self:start}
 
 /* Was sich getan hat */
 .news{display:grid;padding:4px 0}
@@ -393,7 +398,6 @@ dialog.sheet[open]{position:fixed;inset:auto 0 0 0;display:flex;justify-content:
       <svg class="orn" width="54" height="10" viewBox="0 0 54 10" aria-hidden="true"><path d="M0 5h20M34 5h20" stroke="currentColor"/><path d="M27 1l4 4-4 4-4-4z" fill="currentColor"/></svg>
       <div class="courses">
         <p class="course">Raclette<small>mit Kartoffeln und Käse</small></p>
-        <p class="course">Heißer Stein<small>Rind und Schwein, dünn geschnitten</small></p>
         <p class="course">Fondue<small>und alles, was ihr Gutes mitbringt</small></p>
       </div>
       <div class="facts">
@@ -464,14 +468,18 @@ const CATS=[
 ];
 const catOf=k=>CATS.find(c=>c.key===k);
 const CHEESE_G=200;
-/* Fleisch: 200 g pro Erwachsenem für den ganzen Abend (Stein und Fondue zusammen), Kinder halb.
-   Jede Person sagt selbst, wie viel (wenig/normal/viel), welche Sorte und wofür. Wer nichts sagt, zählt als normal/beides/beides. */
-const MEAT={base:200,menge:{wenig:.5,normal:1,viel:1.5},sorte:{rind:.7,beides:.5,schwein:.3},art:{stein:.8,beides:.6,fondue:.35}};
+/* Fleisch: Grundmenge pro Erwachsenem für den ganzen Abend (Raclette und Fondue zusammen), Kinder halb.
+   Startwert 200 g. Sobald die Gastgeber nach dem Abend eintragen, was gekauft und was übrig war (info.fleischbilanz),
+   rechnet die App mit dem, was wirklich gegessen wurde (Schnitt der letzten drei Jahre).
+   Jede Person sagt selbst, wie viel (wenig/normal/viel), welche Sorte und wo ihr Fleisch vor allem landet.
+   Der Wert 'stein' heißt in der Datenbank weiter so, bedeutet aber „vor allem Raclette“ (Grill, Stein und Pfännchen gehören zum Raclette).
+   Wer nichts sagt, zählt als normal/beides/beides. */
+const MEAT={base:200,menge:{wenig:.5,normal:1,viel:1.5},sorte:{rind:.7,beides:.5,schwein:.3},art:{stein:.8,beides:.5,fondue:.2}};
 const MEAT_Q=[
   ['menge','Wie viel Fleisch?',[['wenig','Wenig'],['normal','Normal'],['viel','Viel']],''],
   ['sorte','Rind oder Schwein?',[['rind','Rind'],['beides','Beides'],['schwein','Schwein']],''],
-  ['art','Heißer Stein oder Fondue?',[['stein','Stein'],['beides','Beides'],['fondue','Fondue']],'Auf den Stein kommt dünn geschnittenes Fleisch, ins Fondue gewürfeltes.']];
-const MEAT_TXT={menge:{wenig:'isst wenig',normal:'isst normal',viel:'isst viel'},sorte:{rind:'lieber Rind',beides:'Rind und Schwein',schwein:'lieber Schwein'},art:{stein:'am liebsten Stein',beides:'Stein und Fondue',fondue:'am liebsten Fondue'}};
+  ['art','Wo landet dein Fleisch vor allem?',[['stein','Raclette'],['beides','Beides'],['fondue','Fondue']],'']];
+const MEAT_TXT={menge:{wenig:'isst wenig',normal:'isst normal',viel:'isst viel'},sorte:{rind:'lieber Rind',beides:'Rind und Schwein',schwein:'lieber Schwein'},art:{stein:'vor allem Raclette',beides:'Raclette und Fondue gleich',fondue:'vor allem Fondue'}};
 const nextYear=()=>{const d=new Date();return d.getFullYear()+(d.getMonth()===11&&d.getDate()>26?1:0)};
 const afterParty=()=>{const d=new Date();return d.getMonth()===11&&d.getDate()>=25};
 
@@ -515,9 +523,19 @@ function myPerson(){const ps=myPeople();if(ps.length===1)return ps[0].name;retur
 const needsPerson=()=>!!me&&myPeople().length>1&&!myPerson();
 const myName=()=>myPerson()||short(me);
 const canEditMeat=(gid,person)=>isAdmin()||(gid===me&&person===myPerson());
+/* Fleischbilanz: [{j:Jahr,k:gekauft g,u:übrig g,e:Esser-Einheiten}] */
+function bilanz(){try{const b=JSON.parse((data.info.main||{}).fleischbilanz||'[]');return Array.isArray(b)?b.filter(x=>x&&x.j&&x.k>0&&x.e>0):[]}catch(e){return[]}}
+const partyYear=()=>{const d=new Date();return d.getMonth()===11?d.getFullYear():d.getFullYear()-1};
+const bilanzTime=()=>{const d=new Date();return (d.getMonth()===11&&d.getDate()>=24)||d.getMonth()===0};
+function meatBase(){
+  const b=bilanz().sort((a,c)=>c.j-a.j).slice(0,3);
+  if(!b.length)return{g:MEAT.base,from:[]};
+  const g=b.reduce((n,x)=>n+(x.k-x.u)/x.e,0)/b.length;
+  return{g:Math.min(400,Math.max(80,Math.round(g/10)*10)),from:b.map(x=>x.j).sort()};
+}
 function meatCalc(gs){
-  const st={r:0,s:0},fo={r:0,s:0};let chosen=0,total=0;
-  const add=(f,art,sorte)=>{const g=MEAT.base*f,stein=g*MEAT.art[art],fond=g-stein,r=MEAT.sorte[sorte];st.r+=stein*r;st.s+=stein*(1-r);fo.r+=fond*r;fo.s+=fond*(1-r)};
+  const st={r:0,s:0},fo={r:0,s:0},base=meatBase().g;let chosen=0,total=0,units=0;
+  const add=(f,art,sorte)=>{units+=f;const g=base*f,stein=g*MEAT.art[art],fond=g-stein,r=MEAT.sorte[sorte];st.r+=stein*r;st.s+=stein*(1-r);fo.r+=fond*r;fo.s+=fond*(1-r)};
   for(const g of gs.filter(g=>g.status==='ja')){
     const ps=people(g);
     for(const p of ps){total++;const pr=prefOf(g.id,p.name);if(pr)chosen++;add((MEAT.menge[pr&&pr.menge]||1)*(p.kid?.5:1),(pr&&MEAT.art[pr.art]!=null)?pr.art:'beides',(pr&&MEAT.sorte[pr.sorte]!=null)?pr.sorte:'beides')}
@@ -525,7 +543,7 @@ function meatCalc(gs){
     for(let i=na;i<g.erw;i++){total++;add(1,'beides','beides')}
     for(let i=nk;i<g.kinder;i++){total++;add(.5,'beides','beides')}
   }
-  return{st,fo,chosen,total,sum:st.r+st.s+fo.r+fo.s};
+  return{st,fo,chosen,total,units,base,sum:st.r+st.s+fo.r+fo.s};
 }
 function setPref(gid,person,k,v){
   const old=prefOf(gid,person)||{menge:'normal',sorte:'beides',art:'beides'};
@@ -546,7 +564,7 @@ function write(col,id,body){
     if(error)throw error;
   }).catch(e=>{console.error(e);toast('Hat gerade nicht geklappt. Check kurz dein Internet und versuch’s nochmal.')});
 }
-const setInfo=patch=>write('info','main',Object.assign({datum:'',fleisch:'',sitzplan:''},data.info.main||{},patch));
+const setInfo=patch=>write('info','main',Object.assign({datum:'',fleisch:'',sitzplan:'',fleischbilanz:''},data.info.main||{},patch));
 function notify(text){if(mode!=='shared'||!text||STUMM)return;sb.functions.invoke('notify',{body:{title:'Heiligabend bei Andy, Mel & Connor',body:text,actor:me||''}}).catch(()=>{})}
 async function toggleLike(id){
   const p=data.posten[id];if(!p||!me)return;const l=(p.likes||[]).slice(),i=l.indexOf(me);i>=0?l.splice(i,1):l.push(me);
@@ -634,7 +652,7 @@ function viewAbend(gs,its,c,info){
   h+=tafel(gs,its);
 
   /* Ein Wort von uns */
-  h+=`<section class="panel word"><p>${info.fleisch?esc(info.fleisch):'Wie jedes Jahr gibt’s an Heiligabend Raclette, heißen Stein und Fondue. Ums Fleisch kümmern wir uns. Alles andere kann, muss aber nicht: Bringt einfach mit, worauf ihr Lust habt. Hauptsache, wir sitzen alle zusammen.'}</p><p class="sign">Andy, Mel &amp; Connor</p></section>`;
+  h+=`<section class="panel word"><p>${info.fleisch?esc(info.fleisch):'Wie jedes Jahr gibt’s an Heiligabend Raclette und Fondue. Ums Fleisch kümmern wir uns. Alles andere kann, muss aber nicht: Bringt einfach mit, worauf ihr Lust habt. Hauptsache, wir sitzen alle zusammen.'}</p><p class="sign">Andy, Mel &amp; Connor</p></section>`;
   if(afterParty()&&its.length)h+=`<section class="panel thanks"><h2>Was für ein schöner Abend ❤️</h2><p>Danke an alle, die gekocht, mitgebracht und mitgefeiert haben. Wir freuen uns schon aufs nächste Jahr.</p></section>`;
 
   /* Was noch fehlt */
@@ -719,7 +737,7 @@ function swapSeats(a,b){
 }
 
 /* ---------- Die gedeckte Tafel ----------
-   Ein Tisch von oben: ein Gedeck für jede Person, die zugesagt hat, in der Mitte Raclette, heißer Stein und Fondue,
+   Ein Tisch von oben: ein Gedeck für jede Person, die zugesagt hat, in der Mitte Raclette (mit Stein und Pfännchen) und Fondue,
    drumherum die Schüsseln. Was schon jemand mitbringt, ist gefüllt; was noch frei ist, gestrichelt.
    Gegenüberliegende Plätze stehen auf einer Höhe, die Kopfenden erscheinen, sobald dort jemand sitzt (oder beim Festlegen). */
 function tafel(gs,its){
@@ -739,9 +757,9 @@ function tafel(gs,its){
     <rect x="${W/2-74}" y="24" width="148" height="${H-48}" rx="12" fill="rgba(245,226,232,.045)" stroke="rgba(245,226,232,.22)" stroke-dasharray="2 5"/>`;
   const candle=(x,y)=>`<g transform="translate(${x} ${y})"><rect x="-3" y="-2" width="6" height="12" rx="1.5" fill="#fbfaf7"/><path d="M0 -12c3 4 3 7 0 9c-3-2-3-5 0-9z" fill="#f0d08a"/><circle cx="0" cy="-6" r="9" fill="rgba(240,208,138,.18)"/></g>`;
   svg+=heads?candle(W/2-50,devTop-20)+candle(W/2+50,devTop-20)+candle(W/2-50,H-24)+candle(W/2+50,H-24):candle(W/2,devTop-20)+candle(W/2,H-24);
-  svg+=`<g transform="translate(${W/2} ${devTop+10})"><rect x="-52" y="-14" width="104" height="28" rx="7" fill="#2a0814" stroke="rgba(245,226,232,.55)"/>${[...Array(6)].map((_,i)=>`<rect x="${-46+i*16}" y="-8" width="12" height="16" rx="2.5" fill="#5a2236" stroke="rgba(245,226,232,.35)"/>`).join('')}<text y="28" class="tl">Raclette</text></g>`;
-  svg+=`<g transform="translate(${W/2-30} ${devTop+66})"><rect x="-24" y="-12" width="48" height="24" rx="4" fill="#3a3a36" stroke="rgba(245,226,232,.4)"/><path d="M-16 -4h32M-16 2h32" stroke="rgba(255,255,255,.12)"/><text y="26" class="tl">Stein</text></g>
-    <g transform="translate(${W/2+32} ${devTop+66})"><circle r="15" fill="#5b2a22" stroke="rgba(245,226,232,.5)"/><circle r="9" fill="#7a3a2c"/><path d="M4 -6l12 -14M-3 -7l4 -17" stroke="rgba(245,226,232,.6)" stroke-width="1.4"/><text y="30" class="tl">Fondue</text></g>`;
+  /* Raclette von oben: Stein und Grill obenauf, darunter schauen die Pfännchen raus. Daneben kein extra Gerät. */
+  svg+=`<g transform="translate(${W/2} ${devTop+14})"><rect x="-56" y="-20" width="112" height="40" rx="8" fill="#2a0814" stroke="rgba(245,226,232,.55)"/><rect x="-48" y="-14" width="44" height="15" rx="3" fill="#3a3a36" stroke="rgba(245,226,232,.4)"/><path d="M4 -10.5h44M4 -6.5h44M4 -2.5h44" stroke="rgba(245,226,232,.3)"/><rect x="4" y="-14" width="44" height="15" rx="3" fill="none" stroke="rgba(245,226,232,.4)"/>${[...Array(6)].map((_,i)=>`<rect x="${-48+i*16.4}" y="5" width="13" height="10" rx="2.5" fill="#5a2236" stroke="rgba(245,226,232,.35)"/>`).join('')}<text y="36" class="tl">Raclette</text></g>
+    <g transform="translate(${W/2} ${devTop+82})"><circle r="15" fill="#5b2a22" stroke="rgba(245,226,232,.5)"/><circle r="9" fill="#7a3a2c"/><path d="M4 -6l10 -10M-3 -7l3 -12" stroke="rgba(245,226,232,.6)" stroke-width="1.4"/><text y="30" class="tl">Fondue</text></g>`;
   dishes.forEach((p,i)=>{const cx=W/2+(i%2?38:-38),cy=dishTop+Math.floor(i/2)*62+14,ls=wrap(p.name,13);
     svg+=`<g class="dish${p.wer?'':' open'}" data-a="open-item" data-p="${esc(p.id)}" transform="translate(${cx} ${cy})"><title>${esc(p.name)}${p.wer?' – bringt '+esc(short(p.wer)):' – noch frei'}</title><circle r="14" class="bowl"/><circle r="8" class="bowl-in"/><text y="27" class="tl">${ls.map((l,j)=>`<tspan x="0" dy="${j?12:0}">${esc(l)}</tspan>`).join('')}</text></g>`});
   /* Gedecke: Seiten im Raster (gegenüber = gleiche Höhe), Kopfenden außerhalb der Gruppe */
@@ -807,16 +825,40 @@ function viewFleisch(gs,its){
     const c=meatCalc(gs), kg=v=>amount(v,'g');
     h+=`<section class="panel shop"><div class="sec-h"><span class="k">Nur für uns Gastgeber</span><h3>Einkaufszettel Fleisch</h3></div>
       ${c.total?`<div class="shop-grid"><span class="hd"></span><span class="hd">Rind</span><span class="hd">Schwein</span>
-        <span class="l">Heißer Stein<small>dünn geschnitten</small></span><span class="v">${kg(c.st.r)}</span><span class="v">${kg(c.st.s)}</span>
-        <span class="l">Fondue<small>gewürfelt</small></span><span class="v">${kg(c.fo.r)}</span><span class="v">${kg(c.fo.s)}</span>
+        <span class="l">Raclette</span><span class="v">${kg(c.st.r)}</span><span class="v">${kg(c.st.s)}</span>
+        <span class="l">Fondue</span><span class="v">${kg(c.fo.r)}</span><span class="v">${kg(c.fo.s)}</span>
         <span class="rule"></span><span class="l sum">Zusammen</span><span class="v sum" style="grid-column:span 2">~${kg(c.sum)}</span></div>
-      <p class="hint"><b>${c.chosen} von ${c.total}</b> haben schon gewählt. Wer noch nicht gewählt hat, zählt als normal, Kinder halb. Gerundet auf 50 g.</p>`:'<p class="hint">Sobald jemand zusagt, steht hier, wie viel ihr kaufen müsst.</p>'}</section>`;
+      <p class="hint"><b>${c.chosen} von ${c.total}</b> haben schon gewählt. Wer noch nicht gewählt hat, zählt als normal, Kinder halb. Gerundet auf 50 g.</p>`:'<p class="hint">Sobald jemand zusagt, steht hier, wie viel ihr kaufen müsst.</p>'}
+      ${meatBaseLine()}${bilanzTime()?bilanzForm(c):''}</section>`;
     const all=gs.filter(g=>g.status==='ja').flatMap(g=>people(g).map(p=>({g,p}))).filter(x=>!(x.g.id===me&&x.p.name===person));
     if(all.length)h+=`<section class="sec"><div class="sec-h"><span class="k">Alle Gäste</span><h2>Wer was mag</h2><p>Tipp auf einen Namen, wenn dir jemand Bescheid gesagt hat. Das kann nur ihr Gastgeber.</p></div><div class="panel rows">${all.map(({g,p})=>{const pr=prefOf(g.id,p.name);
       return `<div class="row"><span class="av" aria-hidden="true">${esc(initials(p.name))}</span><button class="main" data-a="open-meat" data-gid="${esc(g.id)}" data-person="${esc(p.name)}"><span class="t">${esc(p.name)}${p.kid?' <span class="catlbl">Kind</span>':''}</span><span class="s">${pr?`${MEAT_TXT.menge[pr.menge]}, ${MEAT_TXT.sorte[pr.sorte]}, ${MEAT_TXT.art[pr.art]}`:'Noch nicht gewählt'}</span></button><span class="chip ${pr?'st-ja':'st-offen'}">${pr?'Gewählt':'Offen'}</span></div>`}).join('')}</div></section>`;
   }
   h+=catPanel(catOf('wuensche'),its,gs);
   return h;
+}
+
+function meatBaseLine(){
+  const mb=meatBase(),yrs=mb.from;
+  return `<p class="hint">Gerechnet mit <b>${mb.g} g pro Person</b> für den ganzen Abend. ${yrs.length?`So viel wurde ${yrs.length>1?'im Schnitt '+yrs.join(', ').replace(/, (\d+)$/,' und $1'):yrs[0]} wirklich gegessen.`:'Das ist erst mal geschätzt. Tragt nach dem Abend ein, was übrig war, dann rechnet die App nächstes Jahr mit dem, was ihr wirklich esst.'}</p>`;
+}
+function bilanzForm(c){
+  const j=partyYear(),x=bilanz().find(b=>b.j===j),kgv=g=>fmt(Math.round(g/100)/10);
+  let h=`<form class="field bilanz" data-form="bilanz"><span class="hostsub">Nach dem Abend</span>`;
+  h+=x?`<p class="hint">${j}: <b>${kgv(x.k)} kg</b> gekauft, <b>${kgv(x.u)} kg</b> übrig. Gegessen wurden also ${kgv(x.k-x.u)} kg, das sind <b>${Math.round((x.k-x.u)/x.e/10)*10} g pro Person</b>. Damit rechnet die App nächstes Jahr.</p>`
+    :`<p class="hint">Wie viel Fleisch habt ihr gekauft, und wie viel ist übrig? Am besten eintragen, bevor ihr die Liste fürs nächste Jahr vorbereitet.</p>`;
+  h+=`<span class="bil-row"><label><span>Gekauft</span><span class="kg"><input class="inp" id="bil-k" inputmode="decimal" autocomplete="off" placeholder="${kgv(c.sum)}" value="${x?kgv(x.k):''}">kg</span></label><label><span>Übrig</span><span class="kg"><input class="inp" id="bil-u" inputmode="decimal" autocomplete="off" placeholder="0" value="${x?kgv(x.u):''}">kg</span></label></span>
+    <button class="btn small" type="submit">${x?'Ändern':'Speichern'}</button></form>`;
+  return h;
+}
+function saveBilanz(f){
+  const n=id=>{const v=f.querySelector('#'+id).value.trim().replace(',','.');return v===''?0:parseFloat(v)},k=n('bil-k'),u=n('bil-u');
+  if(!(k>0)||!(u>=0)||u>=k){toast('Bitte eintragen, wie viel Kilo gekauft wurden. Übrig muss weniger sein.');return}
+  const c=meatCalc(guests()),j=partyYear(),old=bilanz().find(b=>b.j===j);
+  if(!old&&!c.units){toast('Es hat niemand zugesagt, also gibt’s nichts zu rechnen.');return}
+  const e=old?old.e:Math.round(c.units*100)/100;
+  setInfo({fleischbilanz:JSON.stringify(bilanz().filter(b=>b.j!==j).concat({j,k:Math.round(k*1000),u:Math.round(u*1000),e}))});
+  toast('Gespeichert. Nächstes Jahr rechnet die App damit.');
 }
 
 function catPanel(k,its,gs){
@@ -856,7 +898,7 @@ function hostArea(gs,its,c,info){
     <label class="field"><span>Ein Wort an alle (optional)</span><textarea class="inp" id="fleisch" data-f="fleisch" rows="2" placeholder="z. B. Bringt gern eure Lieblingssoße mit!">${esc(info.fleisch)}</textarea><small>Ersetzt den Begrüßungstext unter der Tischkarte. Speichert, sobald du das Feld verlässt.</small></label>
     ${li.length?`<div class="field"><span>Grobe Mengen für ${c.n} ${c.n===1?'Person':'Personen'}</span><ul class="amounts">${li.map(([k,v])=>`<li>${esc(k)}</li><li><b>~${v}</b></li>`).join('')}</ul><small>Nur zur Orientierung, Kinder zählen halb. Das Fleisch steht im Fleisch-Tab, gerechnet aus den Vorlieben.</small></div>`:''}
     <div class="field"><span>Stand in die WhatsApp-Gruppe</span><button class="btn ghost" data-a="copy" type="button">${ico('copy')} Kurzen Stand kopieren</button><small id="copy-hint">Kurzer Text mit Zusagen und dem, was noch fehlt. Einfach in die Gruppe kopieren.</small><textarea class="inp" id="wa" rows="8" hidden readonly></textarea></div>
-    <form class="field" data-form="reset"><span class="hostsub">Nach dem Fest: Neues Jahr vorbereiten</span><small>Die Gäste bleiben, alle Zusagen gehen auf „Noch offen“. Mitbringsel, Kommentare, Rezepte, Termin und Hinweis werden gelöscht. Der Link bleibt gleich.</small>
+    <form class="field" data-form="reset"><span class="hostsub">Nach dem Fest: Neues Jahr vorbereiten</span><small>Die Gäste bleiben, alle Zusagen gehen auf „Noch offen“. Mitbringsel, Kommentare, Rezepte, Termin und Hinweis werden gelöscht. Der Link bleibt gleich.${bilanzTime()&&!bilanz().some(b=>b.j===partyYear())?' Tragt vorher im Fleisch-Tab ein, wie viel Fleisch übrig ist, damit die App fürs nächste Jahr dazulernt.':''}</small>
       <label class="field"><span>Zum Bestätigen ${ny} eingeben</span><span style="display:flex;gap:8px;flex-wrap:wrap"><input class="inp" style="flex:1;min-width:120px;max-width:180px" id="reset-year" inputmode="numeric" autocomplete="off" placeholder="${ny}"><button class="btn small" type="submit">Liste für ${ny} vorbereiten</button></span></label></form>
   </div></details>`;
 }
@@ -1026,6 +1068,7 @@ document.addEventListener('keydown',e=>{const t=e.target;if(e.key==='Enter'&&(t.
 document.addEventListener('submit',e=>{
   e.preventDefault();const f=e.target,form=f.dataset.form;
   if(form==='reset'){resetYear(f);return}
+  if(form==='bilanz'){saveBilanz(f);return}
   if(form==='rezept'){const p=data.posten[sheet&&sheet.id];if(!p)return;const v=f.querySelector('textarea').value.trim(),neu=!p.rezept;editRecipe=false;write('posten',p.id,{...p,rezept:v});
     if(v)toast('Danke fürs Teilen!');return}
   const inp=f.querySelector('input:not([type=checkbox])'),v=inp?inp.value.trim():'';if(!v)return;
