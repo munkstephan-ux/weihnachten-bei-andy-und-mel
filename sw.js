@@ -1,4 +1,4 @@
-// Stand 2026-11-20: Film-Look. (Eine Änderung hier lässt Handys den Service Worker neu holen.)
+// Stand 2026-11-21: rollende Tageszahl, gezeichneter Haken. (Eine Änderung hier lässt Handys den Service Worker neu holen.)
 // Service Worker: empfängt Push-Nachrichten und öffnet die App beim Antippen.
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
