@@ -518,6 +518,12 @@ main[data-tab=abend] .kino{height:100svh;min-height:30rem}
   background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--text);text-shadow:0 0 60px rgba(240,170,90,.18)}
 .kino .zahl{text-box-trim:trim-start;text-box-edge:cap alphabetic;line-height:1;margin-top:.5rem}
 .kino .zahl.wort{font-size:min(20vw,5.5rem);line-height:1}
+/* Tageszahl rollt einmal am Tag: alte Ziffer geht nach oben, neue kommt von unten.
+   Bewusst nur Inline-Spans: eigene Kästchen bringen Safaris Zuschnitt (text-box-trim) der großen Zahl durcheinander. */
+.ziffer,.ziffer .neu{position:relative}
+.ziffer .alt{position:absolute;left:0;top:0;opacity:0;pointer-events:none}
+/* Beim Einpassen zählt nur die fertige Zahl, nicht die gerade rollende Ziffer (!important schlägt die Animation) */
+.kino.messen .ziffer .neu{top:0!important}.kino.messen .ziffer .alt{display:none!important}
 .kino .unter{font-family:var(--serif);font-style:italic;font-size:1.375rem;line-height:1.25;color:var(--warm);margin:.5rem 0 0}
 .kino .wann-k{margin:.3rem 0 0;font-size:.9375rem;color:var(--leise)}
 .kino.knapp .wann-k{display:none}
@@ -956,7 +962,7 @@ function viewAbend(gs,its,c,info){
   const namen=gs.filter(g=>g.status!=='nein').flatMap(g=>people(g).map(p=>({n:p.name,an:g.status==='ja',ich:g.id===me&&(!mineKey||mineKey===g.id+'|'+p.name)})))
     .sort((a,b)=>b.an-a.an);
   const cast=namen.map(x=>`<span class="${x.an?'an':''}${x.ich?' ich':''}">${esc(x.n)}</span>`).join(' <i aria-hidden="true">·</i> ');
-  const zahl=tage===0?'<div class="zahl wort">Heute Abend</div>':tage===1?'<div class="zahl wort">Morgen</div>':`<div class="zahl">${tage}</div><p class="unter">Tage bis Heiligabend</p>`;
+  const zahl=tage===0?'<div class="zahl wort">Heute Abend</div>':tage===1?'<div class="zahl wort">Morgen</div>':`<div class="zahl">${zahlInnen(tage)}</div><p class="unter">Tage bis Heiligabend</p>`;
   /* Die eine helle Hauptaktion: das Nächste, was bei dir dran ist */
   let haupt;
   if(!meG)haupt=`<button class="knopf weiss" data-a="welcome">Hallo! Wer bist du?</button>`;
@@ -1395,11 +1401,12 @@ function render(){
   const punkt=v=>v==='mitbringen'&&openN?`<span class="punkt" aria-hidden="true">${openN}</span>`:v==='fleisch'&&meatOpen?`<span class="punkt" aria-hidden="true">1</span>`:'';
   const lbl=v=>v==='mitbringen'&&openN?`, ${openN} noch frei`:v==='fleisch'&&meatOpen?', deine Wahl fehlt noch':'';
   $('#leiste').innerHTML=[['abend','star','Abend'],['mitbringen','basket','Mitbringen'],['fleisch','flame','Fleisch'],['gaeste','people','Gäste']].map(([v,i,l])=>`<button data-a="tab" data-v="${v}"${tab===v?' aria-current="page"':''} aria-label="${l}${lbl(v)}">${ico(i)}<span aria-hidden="true">${l}</span>${punkt(v)}</button>`).join('');
-  const m=$('#main');m.dataset.tab=tab;
+  const m=$('#main');m.dataset.tab=tab;if(tab==='abend')rolleKlaeren();
   paint(m,tab==='mitbringen'?viewMitbringen(gs,its):tab==='fleisch'?viewFleisch(gs,its):tab==='gaeste'?viewGaeste(gs,c,its):viewAbend(gs,its,c,info));
   if(letzterTab!==tab){m.classList.remove('blende');void m.offsetWidth;m.classList.add('blende');letzterTab=tab}
   m.querySelectorAll('svg[data-bokeh]').forEach(s=>bokeh(s,+s.dataset.bokeh,18));
   if(sheet&&dlg.open)paint(sh,sheetHTML());
+  hakenMalen();if(tab==='abend')rolleMalen();
   if(tab==='abend'){plakatEinpassen();if(frischDabei&&!dlg.open&&m.querySelector('.namen .ich.an'))zusageMoment(m)}
   lichtDaten(gs);
 }
@@ -1410,6 +1417,9 @@ addEventListener('hashchange',()=>{const t=location.hash.slice(1);if(TABS.includ
 /* Plakat einpassen: die weiße Hauptaktion muss über der Leiste stehen, egal wie groß die Schrift ist */
 function plakatEinpassen(){
   const pl=$('.kino'),k=pl&&pl.querySelector('.aktion .knopf'),z=pl&&pl.querySelector('.zahl:not(.wort)');if(!pl||!k)return;
+  pl.classList.add('messen');try{einpassen(pl,k,z)}finally{pl.classList.remove('messen')}
+}
+function einpassen(pl,k,z){
   pl.classList.remove('ohne-cast','knapp');if(z)z.style.fontSize='';
   const held=pl.querySelector('.held');
   const ok=()=>k.getBoundingClientRect().bottom<=$('#leiste').getBoundingClientRect().top-8&&held.scrollHeight<=held.clientHeight+1;
@@ -1483,6 +1493,55 @@ function ticketLos(e){if(ticketEl&&(!e.target.closest||e.target.closest('.ticket
 document.addEventListener('pointerdown',ticketZeiger,{passive:true});
 document.addEventListener('pointermove',e=>{if(e.target.closest&&e.target.closest('.ticket'))ticketZeiger(e);else if(ticketEl)ticketLos(e)},{passive:true});
 for(const ev of ['pointerup','pointercancel'])document.addEventListener(ev,ticketLos,{passive:true});
+/* ---------- Kleine Bestätigungen: Haken zeichnen, Tageszahl rollen ----------
+   Beide überstehen ein Neuzeichnen (Realtime kommt mitten in die Bewegung): nach jedem paint
+   wird die Animation mit der schon verstrichenen Zeit neu angesetzt statt neu gestartet. */
+const AUSLAUF='cubic-bezier(.23,1,.32,1)';
+const lauf=(el,k,o,dt)=>{const an=el.animate(k,{fill:'backwards',...o});an.currentTime=Math.max(0,dt);return an};
+/* Haken: erst wächst der Kreis, dann zeichnet sich der Haken. Zusammen 470 ms. */
+let haken=null;
+function hakenNach(a,v){haken={a,v,t0:performance.now()};queueMicrotask(hakenMalen)}
+function hakenMalen(){
+  if(!haken)return;const dt=performance.now()-haken.t0;if(dt>520){haken=null;return}
+  const r=document.querySelector(`.wahl-o.an[data-a="${haken.a}"][data-v="${CSS.escape(haken.v||'')}"] .ring`);if(!r)return;
+  if(r.dataset.malt==haken.t0)return;r.dataset.malt=haken.t0;
+  if(reduziert){lauf(r,[{opacity:.3},{opacity:1}],{duration:200,easing:'linear'},dt);return}
+  lauf(r,[{transform:'scale(.55)'},{transform:'scale(1)'}],{duration:260,easing:'cubic-bezier(.34,1.45,.64,1)'},dt);
+  const p=r.querySelector('path');
+  if(p){p.setAttribute('pathLength','1');p.style.strokeDasharray='1';lauf(p,[{strokeDashoffset:1},{strokeDashoffset:0}],{duration:270,delay:200,easing:AUSLAUF},dt)}
+}
+/* Tageszahl: beim ersten Öffnen eines neuen Tages rollt die Zahl vom letzten Stand auf heute.
+   Ziffer für Ziffer, 100 ms versetzt. Erst nach einem kurzen Moment, damit man die alte Zahl noch sieht. */
+const TAGE_KEY='weihnachten-tage-gesehen', ROLLE_START=550, ROLLE_ENDE=ROLLE_START+100*3+600;
+let rolle=null, rolleGeklaert=false;
+function rolleKlaeren(){
+  if(rolleGeklaert||mode==='loading')return;rolleGeklaert=true;
+  const tage=tageBis(),alt=parseInt(store.get(TAGE_KEY),10);store.set(TAGE_KEY,String(tage));
+  if(tage>=2&&alt>tage&&alt-tage<=60)rolle={von:String(alt),bis:String(tage),t0:performance.now()};
+}
+function rolleTeile(){
+  /* gleich lang: nur die geänderten Ziffern rollen. Sonst (10 auf 9) rollt die ganze Zahl. */
+  const {von,bis}=rolle;
+  if(von.length!==bis.length)return [{neu:bis,alt:von}];
+  return [...bis].map((z,i)=>({neu:z,alt:von[i]===z?null:von[i]}));
+}
+function zahlInnen(tage){
+  if(rolle&&performance.now()-rolle.t0>ROLLE_ENDE)rolle=null;
+  if(!rolle||rolle.bis!==String(tage))return String(tage);
+  return rolleTeile().map(t=>t.alt===null?t.neu:`<span class="ziffer"><span class="neu">${t.neu}</span><span class="alt" aria-hidden="true">${t.alt}</span></span>`).join('');
+}
+function rolleMalen(){
+  if(!rolle)return;const dt=performance.now()-rolle.t0;
+  const zf=[...document.querySelectorAll('.kino .zahl .ziffer')];
+  if(dt>ROLLE_ENDE||!zf.length){rolle=null;return}
+  zf.forEach((z,k)=>{
+    if(z.dataset.malt==rolle.t0)return;z.dataset.malt=rolle.t0;
+    const alt=z.querySelector('.alt'),neu=z.querySelector('.neu'),d=ROLLE_START+k*100;
+    if(reduziert){lauf(alt,[{opacity:1},{opacity:0}],{duration:200,delay:d,easing:'linear'},dt);lauf(neu,[{opacity:0},{opacity:1}],{duration:200,delay:d,easing:'linear'},dt);return}
+    lauf(neu,[{opacity:0,top:'.4em',filter:'blur(4px)'},{opacity:1,top:'0',filter:'blur(0)'}],{duration:480,delay:d+170,easing:AUSLAUF},dt);
+    lauf(alt,[{opacity:1,transform:'none',filter:'blur(0)'},{opacity:0,transform:'translateY(-.4em)',filter:'blur(4px)'}],{duration:260,delay:d,easing:'cubic-bezier(.4,0,1,1)'},dt);
+  });
+}
 /* Zusage-Moment: das Blatt ist zu, die Szene kommt aus der Unschärfe, dein Name glüht auf. Haptik kam schon beim Tipp im Blatt. */
 let zusageZeigtT=0;
 function zusageMoment(m){
@@ -1570,6 +1629,7 @@ function wahlAktion(a,b){
   const pid=b.closest('[data-p]')?.dataset.p||(sheet&&sheet.t==='item'?sheet.id:null);
   const gid=sheet&&sheet.t==='guest'?sheet.id:null;
   tick();
+  if(b.classList.contains('wahl-o')&&!b.classList.contains('an'))hakenNach(a,b.dataset.v);
   switch(a){
     case 'answer':askPush();setStatus(me,b.dataset.v);return;
     case 'gstatus':if(!darfGast(gid)){render();return}setStatus(gid,b.dataset.v);return;
