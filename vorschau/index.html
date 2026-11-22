@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="de">
+<html lang="de" class="fest">
 <head>
 <base href="../">
 <meta name="robots" content="noindex">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="text-scale" content="scale">
-<meta name="theme-color" content="#120c08">
+<meta name="theme-color" content="#2a080d">
 <title>Heiligabend bei Andy, Mel & Connor</title>
 <meta name="description" content="Raclette & Fondue an Heiligabend bei Andy, Mel & Connor: wer dabei ist, wer was mitbringt, Wünsche und Rezepte.">
 <link rel="manifest" href="manifest.webmanifest">
@@ -602,6 +602,48 @@ main .abschnitt>.tafelglas>div>b{font-family:var(--serif);font-weight:400!import
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
   .knopf:active,.aufgabe:active,.wahl-o:active,.seg-o:active,.mag:active,.kachel:active,.schuessel:active,.wer-o:active{transform:none}
 }
+/* =====================================================================
+   WEIHNACHTSKINO: das Kino-Gerüst bleibt, dazu Festtagsrot mit Goldrahmen,
+   oben eine Lichterkette, die ruhig glimmt, und leiser Schneefall.
+   Bei „Bewegung reduzieren“ stehen Schnee und Lichter still (Regel oben).
+   ===================================================================== */
+html.fest{--text:#f8ecd9;--warm:#e6bd6e;--glut:#e6bd6e;--leise:#d2ae9e;--still:#c39d8c;--gedimmt:#a07f73;--dunkel:#2a080d;--streifen:0px}
+.fest body{background:#2a080d}
+.fest .welt{background:radial-gradient(ellipse 110% 70% at 50% 35%,#5a1420 0,#3a0c14 45%,#22060b 100%)}
+.fest .welt::before{background:radial-gradient(ellipse 110% 90% at 50% 45%,transparent 50%,rgba(10,0,2,.55))}
+.fest .glut{background:radial-gradient(circle,rgba(255,206,140,.22) 0,rgba(230,170,90,.08) 14%,transparent 40%)}
+.fest .ferne{opacity:0!important}
+.deko{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.deko svg{position:absolute}
+.vorschau-hinweis:not([hidden])~.deko{--streifen:2.1rem}
+.deko .kette{left:0;top:calc(var(--sat) + var(--streifen));width:100%;height:96px}
+.deko .rahmen{position:absolute;left:10px;right:10px;top:calc(var(--sat) + var(--streifen) + 14px);bottom:calc(10px + var(--sab));
+  border:1px solid rgba(230,189,110,.45);box-shadow:inset 0 0 0 5px rgba(230,189,110,.22)}
+.deko .schnee{position:absolute;inset:0;overflow:hidden}
+.schnee i{position:absolute;left:0;top:0;width:100%;height:calc(var(--h) * 2);background-repeat:repeat;will-change:transform;opacity:.8;
+  animation:fallen linear infinite;transform:translate3d(0,calc(var(--h) * -1),0)}
+.schnee .f1{animation-duration:46s}.schnee .f2{animation-duration:28s}.schnee .f3{animation-duration:17s}
+@keyframes fallen{from{transform:translate3d(0,calc(var(--h) * -1),0)}to{transform:translate3d(0,0,0)}}
+.funkel{animation:funkeln ease-in-out infinite}
+@keyframes funkeln{0%,100%{opacity:1}50%{opacity:.45}}
+.fest .kino{padding-left:26px;padding-right:26px}
+.fest .kino .kopf{margin-top:3.6rem}
+.fest .kino .kopf small{color:var(--warm);white-space:nowrap}
+.fest .seitenkopf{padding-top:calc(var(--sat) + 5.5rem)}
+.fest .kino .zahl{color:var(--warm);text-shadow:0 2px 0 rgba(0,0,0,.25),0 0 60px rgba(230,189,110,.22)}
+.fest .kino .unter{color:var(--text)}
+.fest .kino .szene,.fest .kino .cast,.fest .kino .wege{border-color:rgba(230,189,110,.25)}
+.fest .kino .wege button+button{border-color:rgba(230,189,110,.25)}
+.fest .knopf.weiss{background:var(--warm);color:#2a080d}
+.fest .leiste{background:rgba(40,8,13,.93)}
+.fest .leiste .punkt,.fest .neu-marke{background:var(--warm);color:#2a080d}
+.fest .blatt{background:rgba(48,10,16,.98)}
+.fest .klebe{background:linear-gradient(180deg,transparent,rgba(48,10,16,.98) 30%)}
+.fest #toast{background:rgba(52,12,18,.96)}
+.fest .gesicht{background:#3e0e16!important}
+.fest .ticket{background:#3a0c14}
+.fest .ticket .motiv::before{background:radial-gradient(circle at 85% 30%,rgba(230,189,110,.3),transparent 55%),linear-gradient(160deg,#5a1420,#2a080d)}
+
 /* Vorschau-Hinweis und Ladezustand */
 .vorschau-hinweis{position:relative;z-index:30;background:#f4e9d6;color:#2a1a0c;font-size:.875rem;font-weight:650;text-align:center;padding:calc(.45rem + var(--sat)) 1rem .45rem;line-height:1.35}
 .vorschau-hinweis{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:calc(2.1rem + var(--sat))}
@@ -614,6 +656,7 @@ main .abschnitt>.tafelglas>div>b{font-family:var(--serif);font-weight:400!import
 <body>
 <div class="welt" aria-hidden="true"><svg id="bokeh"></svg><div class="licht" id="licht"><div class="ferne" id="ferne"></div><div class="glut" id="glut"></div></div><div class="korn"></div></div>
 <div class="vorschau-hinweis" id="demo" hidden>Vorschau: Beispieldaten, nichts wird gespeichert</div>
+<div class="deko" id="deko" aria-hidden="true"><svg class="kette"></svg><div class="rahmen"></div><div class="schnee"><i class="f1"></i><i class="f2"></i><i class="f3"></i></div></div>
 <main id="main"><p class="lade" id="status">Einen Moment, der Abend wird geladen …</p></main>
 <nav class="leiste" id="leiste" aria-label="Bereiche"></nav>
 <dialog id="dlg" aria-labelledby="blatt-titel">
@@ -1742,6 +1785,48 @@ lichtStart();
     render();
   }).subscribe();
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&mode==='shared')load().then(render).catch(()=>{})});
+})();
+</script>
+<script>
+/* Weihnachtskino: Lichterkette oben und Schneefall. Fester Zufall, damit alles bei jedem Öffnen gleich liegt. */
+(()=>{
+const deko=document.getElementById('deko');if(!deko)return;
+let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;
+const FARBEN=['#ff5a4a','#ffc94d','#5ed08a','#ff9a3d','#6fb3ff'];
+function kette(w){
+  const svg=deko.querySelector('.kette'),h=96,n=Math.max(9,Math.round(w/30));s=31;
+  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  // zwei Bögen, der Draht hängt durch
+  const pt=t=>{const seg=t<.5?0:1,u=(t-seg*.5)*2,x0=-8+seg*(w+16)/2,x1=x0+(w+16)/2;return [x0+(x1-x0)*u,10+216*u*(1-u)]};
+  let d='M'+pt(0);for(let i=1;i<=60;i++)d+=' L'+pt(i/60);
+  let o=`<defs><radialGradient id="halo"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+    <path d="${d}" fill="none" stroke="#06100b" stroke-width="2.2"/><path d="${d}" fill="none" stroke="rgba(236,192,106,.18)" stroke-width="1"/>`;
+  for(let i=0;i<n;i++){
+    const t=(i+.5)/n,[x,y]=pt(t),[x2,y2]=pt(Math.min(1,t+.01)),ang=Math.atan2(y2-y,x2-x)*57.3,c=FARBEN[i%FARBEN.length];
+    // gut jede dritte Birne brennt ruhig, die anderen glimmen langsam auf und ab (5 bis 10 s), alle versetzt
+    const dauer=r()<.4?0:5+r()*5,vers=(r()*10).toFixed(2);
+    const takt=dauer?` class="funkel" style="animation-duration:${dauer.toFixed(2)}s;animation-delay:-${vers}s"`:'';
+    o+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(ang*.6).toFixed(1)})"><rect x="-2.6" y="0" width="5.2" height="5" rx="1" fill="#1c2a22"/>`+
+      `<ellipse cx="0" cy="12" rx="4.6" ry="7.2" fill="${c}" opacity=".32"/><g${takt}><circle cx="0" cy="13" r="15" fill="${c}" opacity=".3"/><circle cx="0" cy="13" r="7" fill="url(#halo)"/>`+
+      `<ellipse cx="0" cy="12" rx="4.6" ry="7.2" fill="${c}"/><ellipse cx="-1.4" cy="9.5" rx="1.2" ry="2.6" fill="#fff" opacity=".65"/></g></g>`;
+  }
+  svg.innerHTML=o;
+}
+// Schnee: drei Ebenen als Kachel, nah = groß und schnell
+function kachel(w,h,n,rMin,rMax,aMin,aMax,seed){
+  s=seed;let o='';
+  for(let i=0;i<n;i++){const rr=rMin+r()*(rMax-rMin);o+=`<circle cx='${(r()*w).toFixed(1)}' cy='${(r()*h).toFixed(1)}' r='${rr.toFixed(2)}' fill='url(%23f)' opacity='${(aMin+r()*(aMax-aMin)).toFixed(2)}'/>`}
+  return `url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'><defs><radialGradient id='f'><stop offset='0' stop-color='%23fff'/><stop offset='.55' stop-color='%23fff' stop-opacity='.85'/><stop offset='1' stop-color='%23fff' stop-opacity='0'/></radialGradient></defs>${o}</svg>")`;
+}
+function schnee(w,h){
+  const sch=deko.querySelector('.schnee'),eb=[[55,1,1.8,.25,.5,3],[35,1.6,2.8,.35,.7,13],[14,2.6,4.2,.45,.85,23]];
+  sch.style.setProperty('--h',h+'px');
+  sch.querySelectorAll('i').forEach((el,i)=>{const [n,a,b,c,d,sd]=eb[i];el.style.backgroundImage=kachel(w,h,n,a,b,c,d,sd);el.style.backgroundSize=`${w}px ${h}px`});
+}
+// Neu zeichnen nur, wenn sich die Breite ändert. Die Adressleiste beim Scrollen löst sonst ständig ein Resize aus.
+let breite=0;
+const zeichne=()=>{const w=innerWidth;if(w===breite)return;breite=w;kette(w);schnee(w,Math.max(innerHeight,screen.height||0))};
+zeichne();addEventListener('resize',zeichne);
 })();
 </script>
 </body>
